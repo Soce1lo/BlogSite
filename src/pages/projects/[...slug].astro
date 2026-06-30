@@ -1,0 +1,22 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import ContentLayout from "../../layouts/ContentLayout.astro";
+import { isGeneratedEntry } from "../../lib/content";
+
+export async function getStaticPaths() {
+  const entries = (await getCollection("projects")).filter(isGeneratedEntry);
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<"projects">;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<ContentLayout entry={entry} sectionLabel="项目">
+  <Content />
+</ContentLayout>
+

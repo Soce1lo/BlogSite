@@ -1,0 +1,32 @@
+{
+  "name": "blogsite",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.8.0",
+  "engines": {
+    "node": ">=22.12.0",
+    "pnpm": ">=11.0.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "test": "tsx --test tests/*.test.mjs tests/*.test.ts",
+    "check:phase1": "node --test tests/phase1-structure.test.mjs",
+    "sync:vault": "tsx scripts/sync-from-vault.ts",
+    "check:publish": "tsx scripts/check-publish-content.ts",
+    "prepare:publish": "pnpm sync:vault && pnpm check:publish && pnpm build"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.18",
+    "astro": "^6.4.8",
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@types/node": "^26.0.0",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
+  }
+}

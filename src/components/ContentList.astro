@@ -1,0 +1,42 @@
+---
+import type { SiteEntry } from "../lib/content";
+import { withBase } from "../lib/site";
+
+interface Props {
+  entries: SiteEntry[];
+  emptyMessage?: string;
+}
+
+const { entries, emptyMessage = "暂无公开内容。" } = Astro.props;
+---
+
+{
+  entries.length === 0 ? (
+    <p class="empty-state">{emptyMessage}</p>
+  ) : (
+    <ol class="content-list">
+      {entries.map((entry) => (
+        <li class="content-card">
+          <p class="content-card__meta">
+            <time datetime={entry.data.pubDate.toISOString()}>
+              {entry.data.pubDate.toLocaleDateString("zh-CN")}
+            </time>
+            <span>{entry.data.category}</span>
+          </p>
+          <h2>
+            <a href={withBase(`${entry.collection}/${entry.id}/`)}>
+              {entry.data.title}
+            </a>
+          </h2>
+          <p>{entry.data.description}</p>
+          {entry.data.tags.length > 0 && (
+            <ul class="tag-list" aria-label="标签">
+              {entry.data.tags.map((tag) => <li>{tag}</li>)}
+            </ul>
+          )}
+        </li>
+      ))}
+    </ol>
+  )
+}
+

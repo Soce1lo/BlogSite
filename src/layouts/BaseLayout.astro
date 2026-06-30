@@ -1,0 +1,48 @@
+---
+import "../styles/global.css";
+import { withBase } from "../lib/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "BlogSite",
+  description = "一个用于发布博客、笔记和项目记录的个人站点。",
+} = Astro.props;
+const pageTitle = title === "BlogSite" ? title : `${title} | BlogSite`;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={withBase("favicon.svg")} />
+    <link rel="alternate" type="application/rss+xml" title="BlogSite RSS" href={withBase("rss.xml")} />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-title" href={withBase("")}>BlogSite</a>
+        <nav aria-label="主导航">
+          <a href={withBase("blog/")}>博客</a>
+          <a href={withBase("notes/")}>笔记</a>
+          <a href={withBase("projects/")}>项目</a>
+          <a href={withBase("about/")}>关于</a>
+        </nav>
+      </div>
+    </header>
+    <main class="page-shell">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <p>内容以静态页面发布。<a href={withBase("rss.xml")}>订阅 RSS</a></p>
+    </footer>
+  </body>
+</html>
+

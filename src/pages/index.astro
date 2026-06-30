@@ -1,0 +1,67 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { isPublicEntry, sortNewestFirst } from "../lib/content";
+import { withBase } from "../lib/site";
+
+const [blog, notes, projects] = await Promise.all([
+  getCollection("blog"),
+  getCollection("notes"),
+  getCollection("projects"),
+]);
+
+const sections = [
+  {
+    title: "最近博客",
+    description: "较完整的主题文章与实践总结。",
+    href: "blog/",
+    entries: blog.filter(isPublicEntry).sort(sortNewestFirst).slice(0, 3),
+  },
+  {
+    title: "最近公开笔记",
+    description: "短篇观察、方法和持续维护的知识片段。",
+    href: "notes/",
+    entries: notes.filter(isPublicEntry).sort(sortNewestFirst).slice(0, 3),
+  },
+  {
+    title: "项目入口",
+    description: "正在建设或已经完成的公开项目记录。",
+    href: "projects/",
+    entries: projects.filter(isPublicEntry).sort(sortNewestFirst).slice(0, 3),
+  },
+];
+---
+
+<BaseLayout>
+  <section class="hero">
+    <p class="eyebrow">个人博客与公开知识库</p>
+    <h1>记录值得公开的思考与实践。</h1>
+    <p>
+      这里汇集经过整理的博客、笔记和项目记录。内容以静态页面发布，并提供
+      <a href={withBase("rss.xml")}>RSS 订阅</a>。
+    </p>
+  </section>
+
+  <div class="section-grid">
+    {
+      sections.map((section) => (
+        <section class="section-card">
+          <p class="eyebrow">{section.description}</p>
+          <h2><a href={withBase(section.href)}>{section.title}</a></h2>
+          {section.entries.length === 0 ? (
+            <p class="empty-state">暂无公开内容。</p>
+          ) : (
+            <ul>
+              {section.entries.map((entry) => (
+                <li>
+                  <a href={withBase(`${entry.collection}/${entry.id}/`)}>{entry.data.title}</a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ))
+    }
+  </div>
+</BaseLayout>
+

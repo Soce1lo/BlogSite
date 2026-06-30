@@ -1,0 +1,18 @@
+---
+import { getCollection } from "astro:content";
+import ContentList from "../../components/ContentList.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { isPublicEntry, sortNewestFirst } from "../../lib/content";
+
+const entries = (await getCollection("blog")).filter(isPublicEntry).sort(sortNewestFirst);
+---
+
+<BaseLayout title="博客" description="BlogSite 的公开博客文章。">
+  <header class="page-heading">
+    <p class="eyebrow">Blog</p>
+    <h1>博客</h1>
+    <p>围绕一个主题展开的完整文章与实践总结。</p>
+  </header>
+  <ContentList entries={entries} />
+</BaseLayout>
+
