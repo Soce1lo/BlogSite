@@ -92,7 +92,7 @@ export async function checkPublishContent(
     if (/80-Archive[/\\]logseq-raw|(?:^|[/\\])_system[/\\]/iu.test(source)) {
       addIssue(errors, relativePath, "private-source-path", "包含禁止发布的私有路径");
     }
-    if (/publish_status\s*:\s*private/iu.test(source)) {
+    if (parsed.data.publish_status === "private") {
       addIssue(errors, relativePath, "private-publish-status", "包含 private 发布状态");
     }
 

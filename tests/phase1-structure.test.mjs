@@ -36,12 +36,18 @@ test("Phase 1 必需文件完整", () => {
   }
 });
 
-test("三个内容集合各有且仅有一篇示例内容", () => {
+test("三个内容集合保留初始示例内容", () => {
+  const exampleFiles = {
+    blog: "welcome-to-blogsite.md",
+    notes: "content-boundaries.md",
+    projects: "blogsite-v1.md",
+  };
+
   for (const collection of ["blog", "notes", "projects"]) {
     const directory = `src/content/${collection}`;
     assert.equal(existsSync(directory), true, `缺少 ${directory}`);
     const entries = readdirSync(directory).filter((file) => file.endsWith(".md"));
-    assert.equal(entries.length, 1, `${collection} 应有一篇示例内容`);
+    assert.ok(entries.includes(exampleFiles[collection]), `${collection} 应保留示例内容`);
   }
 });
 

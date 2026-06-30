@@ -2,7 +2,7 @@
 
 BlogSite 是一个独立的 Astro 静态博客仓库，用于发布经过明确选择的博客、笔记和项目记录。
 
-当前状态为 **V1 Phase 2**：站点骨架之外，已包含本地只读 Vault 同步、双链转换、图片复制、发布检查和短报告。仓库仍不包含真实文章、真实附件或完整 Obsidian Vault。
+当前状态为 **V1 Phase 3**：站点骨架之外，已包含本地只读 Vault 同步、双链转换、图片复制、发布检查和短报告，并已接入首篇真实公开文章。仓库不包含完整 Obsidian Vault、私有附件或本机配置。
 
 ## 技术栈
 
@@ -78,5 +78,6 @@ src/content/
 - [Codex 维护指南](docs/codex-maintenance-guide.md)
 - [Phase 1 执行报告](docs/phase-1-execution-report.md)
 - [Phase 2 执行报告](docs/phase-2-execution-report.md)
+- [Phase 3 执行报告](docs/phase-3-execution-report.md)
 
 完整需求基线见 [BlogSite V1 计划要求](BlogSite%20V1%20计划要求.md)。

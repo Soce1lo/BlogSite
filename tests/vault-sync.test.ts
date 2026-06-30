@@ -343,6 +343,65 @@ sourcePublishStatus: draft
   assert.ok(warningCodes.includes("missing-image"));
 });
 
+test("发布检查允许正文代码块说明 private 发布状态", async (t) => {
+  const root = await mkdtemp(path.join(tmpdir(), "blogsite-check-code-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const contentPath = path.join(root, "content");
+  const publicPath = path.join(root, "public");
+
+  await writeText(
+    path.join(contentPath, "blog", "status-example.md"),
+    `---
+title: "发布状态说明"
+description: "用于验证正文代码块不会被误判。"
+pubDate: 2026-06-01
+draft: false
+category: "测试"
+tags: []
+visibility: public
+sourceVaultPath: "Notes/Status.md"
+---
+
+\`\`\`yaml
+publish_status: private
+\`\`\`
+`,
+  );
+
+  const result = await checkPublishContent({ contentPath, publicPath });
+
+  assert.deepEqual(result.errors, []);
+});
+
+test("发布检查拒绝 frontmatter 中的 private 发布状态", async (t) => {
+  const root = await mkdtemp(path.join(tmpdir(), "blogsite-check-private-status-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const contentPath = path.join(root, "content");
+  const publicPath = path.join(root, "public");
+
+  await writeText(
+    path.join(contentPath, "blog", "private-status.md"),
+    `---
+title: "私有状态"
+description: "用于验证 frontmatter 私有状态会被拒绝。"
+pubDate: 2026-06-01
+draft: true
+category: "测试"
+tags: []
+visibility: public
+sourceVaultPath: "Notes/Private.md"
+publish_status: private
+---
+
+合成内容。
+`,
+  );
+
+  const result = await checkPublishContent({ contentPath, publicPath });
+
+  assert.ok(result.errors.some((issue) => issue.code === "private-publish-status"));
+});
+
 test("发布检查拒绝跨集合重复 slug、缺失字段和 Vault 绝对路径", async (t) => {
   const root = await mkdtemp(path.join(tmpdir(), "blogsite-check-boundary-"));
   t.after(() => rm(root, { recursive: true, force: true }));
