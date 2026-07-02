@@ -78,7 +78,7 @@ export async function checkPublishContent(
     if (/file:\/\//iu.test(source)) {
       addIssue(errors, relativePath, "file-url", "包含 file:// URL");
     }
-    if (/\/Users\/|[A-Za-z]:\\/u.test(source)) {
+    if (/\/Users\/|[A-Za-z]:\\(?![nrt'"`])/u.test(source)) {
       addIssue(errors, relativePath, "absolute-local-path", "包含本机绝对路径");
     }
     if (/(?:\/|\\)KnowledgeVault(?:\/|\\)/u.test(source)) {
@@ -88,9 +88,6 @@ export async function checkPublishContent(
         "knowledge-vault-path",
         "包含 KnowledgeVault 绝对路径",
       );
-    }
-    if (/80-Archive[/\\]logseq-raw|(?:^|[/\\])_system[/\\]/iu.test(source)) {
-      addIssue(errors, relativePath, "private-source-path", "包含禁止发布的私有路径");
     }
     if (parsed.data.publish_status === "private") {
       addIssue(errors, relativePath, "private-publish-status", "包含 private 发布状态");

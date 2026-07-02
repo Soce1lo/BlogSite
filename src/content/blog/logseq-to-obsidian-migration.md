@@ -1,8 +1,8 @@
 ---
-title: 从 Logseq 到 Obsidian：一次可回滚、可验证的知识库迁移
-description: 把一批跨越多年的 Logseq 笔记迁入 Obsidian，并用快照、分批提交、自动检查和后续分类控制风险。
+title: 从 Logseq 到 Obsidian：迁移回顾
+description: 回顾一次 Logseq 到 Obsidian 的真实知识库迁移：边界、批次、验证、踩坑和最终闭环。
 pubDate: '2026-06-20'
-updatedDate: '2026-06-24'
+updatedDate: '2026-07-03'
 draft: false
 category: Knowledge Management
 tags:
@@ -11,17 +11,19 @@ tags:
   - knowledge-management
   - migration
 visibility: public
-sourceVaultPath: 60-Publish/从 Logseq 到 Obsidian，一次可回滚、可验证的知识库迁移.md
+sourceVaultPath: 60-Publish/从 Logseq 到 Obsidian：迁移回顾.md
 managedBy: vault-sync
 sourcePublishStatus: published
 ---
-# 从 Logseq 到 Obsidian：一次可回滚、可验证的知识库迁移
+# 从 Logseq 到 Obsidian：迁移回顾
 
 把 Logseq 中积累的笔记搬到 Obsidian，表面上只是换一套目录。真正动手后，我发现这更像一次小型数据迁移：源数据不能丢，链接不能悄悄失效，转换规则要稳定，出了问题还得能退回去重做。
 
 这批数据从 2022 年延续到 2026 年。整个 Logseq graph 大约 155 MB，除了 pages、journals 和 assets，还混着配置、白板、备份和历史备份。如果直接找一个导入工具跑到底，速度可能更快，但我很难回答几个基本问题：到底迁了多少文件？哪些内容被改过？附件有没有漏？脚本出错后怎么恢复？
 
 所以这次我没有追求“一键导入”，而是把迁移拆成一组可以检查、可以提交、也可以推倒重来的小批次。后面又补了一轮分类，把“数据已经搬进来”推进到“这些笔记可以在新 Vault 里继续使用”。
+
+这篇只做迁移回顾：为什么这样迁、哪里容易出错、最后怎样闭环。具体命令和完整脚本我拆到另一篇《从 Logseq 到 Obsidian：具体迁移指导》里，避免把一次性迁移工具混进日常写作检查。
 
 ## 先定边界，再碰数据
 
@@ -213,42 +215,33 @@ Phase 2 最终验收结果是：
 
 Phase 3 最终验收则证明，所有导入页已经按确认清单进入新结构，且内容没有被分类过程顺手改坏。
 
-## 这次迁移留下的经验
+## 闭环：给当前 Vault 固定最终状态
 
-知识库迁移最容易被低估，因为 Markdown 看上去只是文本文件。但一旦涉及文件名、附件、双链、属性、任务状态和不同工具的专有语法，它就具备了数据迁移的全部风险。
+Phase 3 的内容基线有一个很明确的作用：证明分类移动本身没有改写页面。后来我又做了一轮更适合 Obsidian 的轻量整理，比如 frontmatter 去掉多余引号、把部分 Logseq 标签整理成 Obsidian 更容易识别的形式。这些改动不是迁移丢失，也不是分类移动错误，但它们会让 Phase 3 当时的内容 SHA-256 不再代表当前 master。
 
-对我来说，这次最有用的做法有五个：
+如果继续让默认验证只看旧基线，仓库会长期处在一个尴尬状态：历史迁移是成功的，当前验证却会报内容漂移。既然后面不会再有新的 Logseq 数据迁入，我把这个问题在迁移层闭环处理掉：
 
-- 保留不可变 raw snapshot；
-- 把机械迁移和语义整理拆开；
-- 先生成可确认清单，再执行结构移动；
-- 让每个批次都能独立回滚；
-- 用重算、哈希、测试和 Obsidian 抽样共同证明结果。
+- 保留 `_system/migration/classification-content-baseline-v2.json`，作为 Batch 025 的历史迁移证据；
+- 新增 `_system/migration/classification-final-state-baseline-v2.json`，记录当前 master 在迁移收尾时的最终内容指纹；
+- 保留 `baseline`、`batch`、`report` 对旧迁移基线的默认使用；
+- 把 `verify` 明确限定为迁移档案的手动验收命令，而不是日常写作 gate；
+- 新增 Batch 026 报告，明确迁移已经关闭，不再等待后续批次。
 
-迁移完成并不代表这些笔记已经整理完毕。它只意味着旧数据已经安全地进入新系统，而且后续每一次整理都有明确、可靠的起点。这正是这次切换真正要解决的问题。
+闭环时还修掉了两个迁移尾巴。第一，`80-Archive/logseq-raw` 在后续整理中被误纳入过一轮标签和双链规范化，我把它恢复到脱敏后的归档版本。raw archive 的职责是留作输入快照，不应该随着 Obsidian 使用习惯继续变化。第二，两个脱敏账户页的 HTML 脱敏注释原本放在 frontmatter 前面，导致 Obsidian Properties 和迁移校验都无法识别 metadata。我把注释移到 frontmatter 之后，既保留脱敏说明，也恢复了 metadata 可解析性。
 
-## 完整源码与报告索引
+恢复 raw archive 后，少量历史文件里的尾随空格也会回到 diff 里。这不是我要再清理的对象：对 raw archive 来说，字节稳定性比 Markdown 风格更重要。它也不应该进入日常写作检查；只有回看迁移档案时，才需要单独处理这类历史输入。
 
-这篇文章不展开完整源码，避免正文变成脚本清单。需要复现或核对时，可以从下面这些文件看完整实现和报告。
+闭环后的当前验证结果是：
 
-迁移脚本与测试：
+| 检查项 | 结果 |
+|---|---:|
+| 清单内 pages | 238 |
+| 保留 Inbox pages | 43 |
+| 已移动 pages | 195 |
+| 内容不一致 | 0 |
+| 本地附件缺失 | 0 |
+| 位置错误 | 0 |
+| 附件页面 | 51 |
+| 附件链接 | 150 |
 
-- `_system/scripts/logseq-migrate.mjs`
-- `_system/checks/logseq-migrate.test.mjs`
-- `_system/scripts/classify-logseq-pages.mjs`
-- `_system/checks/classify-logseq-pages.test.mjs`
-
-Phase 2 迁移设计与最终验证：
-
-- `_system/migration/phase2-design.md`
-- `_system/migration/phase2-execution-plan.md`
-- `_system/migration/raw-logseq-manifest.json`
-- `_system/migration/batches/014-final-verification.md`
-
-Phase 3 分类清单、执行计划与最终验证：
-
-- `_system/migration/classification-manifest-v2.md`
-- `_system/migration/classification-content-baseline-v2.json`
-- `_system/migration/phase3-classification-execution-plan.md`
-- `_system/migration/classification-batch-index.md`
-- `_system/migration/batches/025-classification-final-verification.md`
+这一步没有覆盖历史证据，而是把“迁移时没改坏内容”和“当前 Vault 已经闭环可验证”分成两份基线。前者用于追溯，后者用于日常健康检查。

@@ -1,3 +1,71 @@
 # Asset Warnings
 
-暂无记录。
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `../assets/image.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `../../../90-Attachments/logseq-assets/x.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}x.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}x.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${newPrefix}x.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}x.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}x(1`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}x\\(2\\`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}space file.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}percent%20space.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}hash%23file.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}question%3Ffile.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}title.png "CommonMark title"`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}title.png "valid title ("`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}title.png 'valid title ('`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}title.png (valid title`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}real.png "real title ("`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}four-space.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}tab.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}pre.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}script.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}style.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}textarea.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}real.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}missing-indented.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}real.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}missing-body.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}real.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}real2.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}div.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}table.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}processing.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}declaration.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}cdata.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}quote-fence.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}list-fence.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}top-fence.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}real.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}blocked.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}real.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}blocked-${name.replaceAll(' ', '-'`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}real.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `../../../90-Attachments/logseq-assets/list-literal.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `../../../90-Attachments/logseq-assets/quote-literal.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}real.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `../../../90-Attachments/logseq-assets/list-quote-literal.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `../../../90-Attachments/logseq-assets/quote-list-literal.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}real.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}real.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}blank-line-literal.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `../../../90-Attachments/logseq-assets/quote-pre-literal.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `../../../90-Attachments/logseq-assets/list-pre-literal.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `../../../90-Attachments/logseq-assets/quote-div-literal.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}real.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}tab.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}spaces.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}missing-code.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}nested-list.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}nested-content.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}missing-nested-code.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}real.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}missing-code.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}real.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}escaped-image.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}comment.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}fenced.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${oldPrefix}tilde.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${newPrefix}real.png`; action: converted-to-text; reason: missing-asset
+- file: `blog/logseq-to-obsidian-migration-guide.md`; asset: `${destination}`; action: converted-to-text; reason: missing-asset
