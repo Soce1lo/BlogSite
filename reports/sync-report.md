@@ -2,7 +2,7 @@
 
 ## Summary
 
-- scanned_vault_files: 621
+- scanned_vault_files: 626
 - publish_candidates: 2
 - synced: 2
 - skipped_private: 0

@@ -14,6 +14,19 @@ const { entry, sectionLabel } = Astro.props;
   <article class="prose content-detail">
     <p class="eyebrow">{sectionLabel} · {entry.data.category}</p>
     <h1>{entry.data.title}</h1>
+    {
+      (entry.data.series || entry.data.topic) && (
+        <p class="content-detail__taxonomy">
+          {entry.data.series && (
+            <span>
+              系列：{entry.data.series}
+              {entry.data.seriesOrder !== undefined ? ` #${entry.data.seriesOrder}` : ""}
+            </span>
+          )}
+          {entry.data.topic && <span>主题：{entry.data.topic}</span>}
+        </p>
+      )
+    }
     <p class="lead">{entry.data.description}</p>
     <div class="content-detail__meta">
       <time datetime={entry.data.pubDate.toISOString()}>
@@ -30,4 +43,3 @@ const { entry, sectionLabel } = Astro.props;
     <slot />
   </article>
 </BaseLayout>
-

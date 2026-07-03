@@ -45,6 +45,42 @@ function imageReferences(markdown: string): string[] {
   );
 }
 
+export function isFileUrl(value: string): boolean {
+  return /file:\/\//iu.test(value);
+}
+
+export function isLocalAbsolutePathLeak(value: string): boolean {
+  return (
+    /(^|[\s"'(=])\/(?:Users|home)\//u.test(value) ||
+    /[A-Za-z]:\\(?![nrt'"`])/u.test(value)
+  );
+}
+
+export function isPrivateVaultPathLeak(value: string): boolean {
+  return /(?:\/|\\)KnowledgeVault(?:\/|\\)/u.test(value);
+}
+
+export function resolveImageReference(
+  reference: string,
+  markdownFile: string,
+  publicPath: string,
+): string | undefined {
+  if (/^(?:https?:|data:)/iu.test(reference)) {
+    return undefined;
+  }
+
+  let decodedReference = reference;
+  try {
+    decodedReference = decodeURIComponent(reference);
+  } catch {
+    // 保留原引用，由不存在检查给出 warning。
+  }
+
+  return decodedReference.startsWith("/")
+    ? path.join(publicPath, decodedReference.replace(/^\/+/, ""))
+    : path.resolve(path.dirname(markdownFile), decodedReference);
+}
+
 export async function checkPublishContent(
   options: CheckPublishOptions,
 ): Promise<CheckPublishResult> {
@@ -75,13 +111,13 @@ export async function checkPublishContent(
     if (/!?\[\[[^\]]+\]\]/u.test(parsed.content)) {
       addIssue(errors, relativePath, "residual-wikilink", "仍包含 Obsidian 双链");
     }
-    if (/file:\/\//iu.test(source)) {
+    if (isFileUrl(source)) {
       addIssue(errors, relativePath, "file-url", "包含 file:// URL");
     }
-    if (/\/Users\/|[A-Za-z]:\\(?![nrt'"`])/u.test(source)) {
+    if (isLocalAbsolutePathLeak(source)) {
       addIssue(errors, relativePath, "absolute-local-path", "包含本机绝对路径");
     }
-    if (/(?:\/|\\)KnowledgeVault(?:\/|\\)/u.test(source)) {
+    if (isPrivateVaultPathLeak(source)) {
       addIssue(
         errors,
         relativePath,
@@ -103,6 +139,14 @@ export async function checkPublishContent(
           relativePath,
           "absolute-source-path",
           "sourceVaultPath 必须是相对路径",
+        );
+      }
+      if (isPrivateVaultPathLeak(sourceVaultPath)) {
+        addIssue(
+          errors,
+          relativePath,
+          "knowledge-vault-path",
+          "包含 KnowledgeVault 绝对路径",
         );
       }
       if (isDailySourcePath(sourceVaultPath)) {
@@ -137,18 +181,8 @@ export async function checkPublishContent(
     }
 
     for (const reference of imageReferences(parsed.content)) {
-      if (/^(?:https?:|data:)/iu.test(reference)) {
-        continue;
-      }
-      let decodedReference = reference;
-      try {
-        decodedReference = decodeURIComponent(reference);
-      } catch {
-        // 保留原引用，由不存在检查给出 warning。
-      }
-      const imagePath = decodedReference.startsWith("/")
-        ? path.join(publicPath, decodedReference.replace(/^\/+/, ""))
-        : path.resolve(path.dirname(absolutePath), decodedReference);
+      const imagePath = resolveImageReference(reference, absolutePath, publicPath);
+      if (!imagePath) continue;
       if (!(await fileExists(imagePath))) {
         addIssue(warnings, relativePath, "missing-image", `图片不存在: ${reference}`);
       }

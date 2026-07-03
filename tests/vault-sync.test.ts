@@ -115,6 +115,9 @@ publish_status: published
 publish_slug: public-article
 publish_category: "测试"
 publish_visibility: public
+publish_series: "从 Logseq 到 Obsidian"
+publish_series_order: 10
+publish_topic: "Knowledge Management"
 ---
 
 链接到 [[公开笔记|笔记别名]]、[[私密页面]] 和 [[不存在页面]]。
@@ -254,6 +257,9 @@ sourceVaultPath: "examples/manual.md"
   assert.equal(parsedArticle.data.sourcePublishStatus, "published");
   assert.equal(parsedArticle.data.managedBy, "vault-sync");
   assert.equal(parsedArticle.data.sourceVaultPath, "Articles/Article.md");
+  assert.equal(parsedArticle.data.series, "从 Logseq 到 Obsidian");
+  assert.equal(parsedArticle.data.seriesOrder, 10);
+  assert.equal(parsedArticle.data.topic, "Knowledge Management");
   assert.match(article, /\[笔记别名\]\(\/notes\/public-note\/\)/);
   assert.match(article, /私密页面/);
   assert.doesNotMatch(article, /\[私密页面\]\(/);
@@ -270,16 +276,54 @@ sourceVaultPath: "examples/manual.md"
   await assert.rejects(readFile(path.join(contentOutputPath, "blog", "daily-example.md")));
 
   const syncReport = await readFile(path.join(reportsPath, "sync-report.md"), "utf8");
+  const publishManifestJson = await readFile(
+    path.join(reportsPath, "publish-manifest.json"),
+    "utf8",
+  );
+  const publishManifestMarkdown = await readFile(
+    path.join(reportsPath, "publish-manifest.md"),
+    "utf8",
+  );
   const wikilinkReport = await readFile(
     path.join(reportsPath, "wikilink-warnings.md"),
     "utf8",
   );
   const assetReport = await readFile(path.join(reportsPath, "asset-warnings.md"), "utf8");
+  const manifest = JSON.parse(publishManifestJson);
   assert.match(syncReport, /synced: 2/);
+  assert.equal(typeof manifest.generatedAt, "string");
+  assert.equal(manifest.summary.scannedVaultFiles, summary.scannedVaultFiles);
+  assert.equal(manifest.summary.synced, 2);
+  assert.equal(manifest.entries.length, 2);
+  assert.deepEqual(
+    manifest.entries.find((entry: { slug: string }) => entry.slug === "public-article"),
+    {
+      sourceVaultPath: "Articles/Article.md",
+      collection: "blog",
+      slug: "public-article",
+      url: "/blog/public-article/",
+      title: "公开文章",
+      draft: false,
+      visibility: "public",
+      series: "从 Logseq 到 Obsidian",
+      seriesOrder: 10,
+      topic: "Knowledge Management",
+      warnings: [
+        "wikilink: target-not-published",
+        "wikilink: target-not-found",
+        "asset: missing-asset",
+      ],
+    },
+  );
+  assert.match(publishManifestMarkdown, /Articles\/Article\.md/);
+  assert.match(publishManifestMarkdown, /\/blog\/public-article\//);
   assert.match(wikilinkReport, /target-not-published/);
   assert.match(wikilinkReport, /target-not-found/);
   assert.match(assetReport, /missing-asset/);
-  assert.doesNotMatch(syncReport + wikilinkReport + assetReport, /这段私密正文/);
+  assert.doesNotMatch(
+    syncReport + publishManifestJson + publishManifestMarkdown + wikilinkReport + assetReport,
+    /这段私密正文/,
+  );
 
   const checkResult = await checkPublishContent({
     contentPath: contentOutputPath,
@@ -371,6 +415,117 @@ publish_status: private
   const result = await checkPublishContent({ contentPath, publicPath });
 
   assert.deepEqual(result.errors, []);
+});
+
+test("发布检查允许安全相对说明路径、站内路径和可解析图片路径", async (t) => {
+  const root = await mkdtemp(path.join(tmpdir(), "blogsite-check-safe-paths-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const contentPath = path.join(root, "content");
+  const publicPath = path.join(root, "public");
+
+  await writeText(path.join(publicPath, "images", "known", "pic.png"), "image");
+  await writeText(path.join(contentPath, "blog", "images", "relative.png"), "relative");
+  await writeText(
+    path.join(contentPath, "blog", "safe-paths.md"),
+    `---
+title: "安全路径说明"
+description: "用于验证说明路径不会被误判。"
+pubDate: 2026-06-01
+draft: false
+category: "测试"
+tags: []
+visibility: public
+sourceVaultPath: "_system/migration/report.md"
+---
+
+正文提到 _system/migration/report.md、../examples/demo.md、scripts/example.mjs、
+/blog/some-slug/?from=guide#section 和 [锚点](#local-anchor)。
+
+\`\`\`bash
+node scripts/example.mjs --input ../examples/demo.md
+\`\`\`
+
+![公开图片](/images/known/pic.png)
+![相对图片](images/relative.png)
+`,
+  );
+
+  const result = await checkPublishContent({ contentPath, publicPath });
+
+  assert.deepEqual(result.errors, []);
+  assert.deepEqual(result.warnings, []);
+});
+
+test("发布检查拒绝本机绝对路径、sourceVaultPath 绝对路径和 file URL", async (t) => {
+  const root = await mkdtemp(path.join(tmpdir(), "blogsite-check-local-leaks-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const contentPath = path.join(root, "content");
+  const publicPath = path.join(root, "public");
+
+  await writeText(
+    path.join(contentPath, "blog", "local-body.md"),
+    `---
+title: "本机路径泄露"
+description: "用于验证正文路径泄露。"
+pubDate: 2026-06-01
+draft: false
+category: "测试"
+tags: []
+visibility: public
+sourceVaultPath: "Notes/Local Body.md"
+---
+
+/Users/example/Vault/Note.md
+/home/example/Vault/Note.md
+C:\\Users\\example\\Vault\\Note.md
+file:///Users/example/Vault/Note.md
+`,
+  );
+  await writeText(
+    path.join(contentPath, "blog", "absolute-source.md"),
+    `---
+title: "绝对来源路径"
+description: "用于验证来源路径泄露。"
+pubDate: 2026-06-01
+draft: false
+category: "测试"
+tags: []
+visibility: public
+sourceVaultPath: "/tmp/KnowledgeVault/Article.md"
+---
+
+合成内容。
+`,
+  );
+  await writeText(
+    path.join(contentPath, "blog", "home-body.md"),
+    `---
+title: "Home 路径泄露"
+description: "用于验证 /home 绝对路径。"
+pubDate: 2026-06-01
+draft: false
+category: "测试"
+tags: []
+visibility: public
+sourceVaultPath: "Notes/Home Body.md"
+---
+
+/home/example/Vault/Note.md
+`,
+  );
+
+  const result = await checkPublishContent({ contentPath, publicPath });
+  const codes = result.errors.map((issue) => issue.code);
+
+  assert.ok(codes.includes("absolute-local-path"));
+  assert.ok(codes.includes("absolute-source-path"));
+  assert.ok(codes.includes("file-url"));
+  assert.ok(codes.includes("knowledge-vault-path"));
+  assert.ok(
+    result.errors.some(
+      (issue) => issue.file === "blog/home-body.md" && issue.code === "absolute-local-path",
+    ),
+  );
 });
 
 test("发布检查拒绝 frontmatter 中的 private 发布状态", async (t) => {

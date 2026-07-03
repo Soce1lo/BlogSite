@@ -14,6 +14,9 @@ const contentSchema = z.object({
   sourceVaultPath: z.string().min(1),
   managedBy: z.literal("vault-sync").optional(),
   sourcePublishStatus: z.enum(["draft", "published"]).optional(),
+  series: z.string().min(1).optional(),
+  seriesOrder: z.number().optional(),
+  topic: z.string().min(1).optional(),
 });
 
 const blog = defineCollection({

@@ -57,6 +57,34 @@ interface Candidate {
   entry: PublishIndexEntry;
 }
 
+interface PublishManifestSummary {
+  scannedVaultFiles: number;
+  publishCandidates: number;
+  synced: number;
+  warnings: number;
+  errors: number;
+}
+
+interface PublishManifestEntry {
+  sourceVaultPath: string;
+  collection: PublishTarget;
+  slug: string;
+  url: string;
+  title: string;
+  draft: boolean;
+  visibility: PublishIndexEntry["visibility"];
+  series?: string;
+  seriesOrder?: number;
+  topic?: string;
+  warnings: string[];
+}
+
+interface PublishManifest {
+  generatedAt: string;
+  summary: PublishManifestSummary;
+  entries: PublishManifestEntry[];
+}
+
 function createEmptySummary(): SyncSummary {
   return {
     scannedVaultFiles: 0,
@@ -140,6 +168,43 @@ function syncReport(
 
 - wikilink warnings: \`reports/wikilink-warnings.md\`
 - asset warnings: \`reports/asset-warnings.md\`
+`;
+}
+
+function createManifestSummary(summary: SyncSummary): PublishManifestSummary {
+  return {
+    scannedVaultFiles: summary.scannedVaultFiles,
+    publishCandidates: summary.publishCandidates,
+    synced: summary.synced,
+    warnings: summary.warnings,
+    errors: summary.errors,
+  };
+}
+
+function createManifestMarkdown(manifest: PublishManifest): string {
+  const rows = manifest.entries.map((entry) =>
+    [
+      entry.sourceVaultPath,
+      entry.collection,
+      entry.slug,
+      entry.url,
+      entry.draft ? "draft" : "published",
+      String(entry.warnings.length),
+    ].map((value) => value.replaceAll("|", "\\|")).join(" | "),
+  );
+
+  return `# Publish Manifest
+
+- generated_at: ${manifest.generatedAt}
+- scanned_vault_files: ${manifest.summary.scannedVaultFiles}
+- publish_candidates: ${manifest.summary.publishCandidates}
+- synced: ${manifest.summary.synced}
+- warnings: ${manifest.summary.warnings}
+- errors: ${manifest.summary.errors}
+
+| Source | Collection | Slug | URL | Status | Warnings |
+| --- | --- | --- | --- | --- | --- |
+${rows.length ? rows.map((row) => `| ${row} |`).join("\n") : "| 暂无 | - | - | - | - | - |"}
 `;
 }
 
@@ -275,6 +340,7 @@ export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> 
 
   const wikilinkWarnings: WikilinkWarning[] = [];
   const assetWarnings: AssetWarning[] = [];
+  const manifestEntries: PublishManifestEntry[] = [];
   for (const candidate of uniqueCandidates) {
     const { document, entry } = candidate;
     const outputRelativePath = `${entry.publishTarget}/${entry.publishSlug}.md`;
@@ -302,6 +368,25 @@ export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> 
       );
       wikilinkWarnings.push(...normalized.wikilinkWarnings);
       assetWarnings.push(...normalized.assetWarnings);
+      const entryWarnings = [
+        ...normalized.wikilinkWarnings.map((warning) => `wikilink: ${warning.reason}`),
+        ...normalized.assetWarnings.map((warning) => `asset: ${warning.reason}`),
+      ];
+      manifestEntries.push({
+        sourceVaultPath: document.sourceVaultPath,
+        collection: entry.publishTarget,
+        slug: entry.publishSlug,
+        url: entry.url ?? `/${entry.publishTarget}/${entry.publishSlug}/`,
+        title: entry.title,
+        draft: entry.publishStatus === "draft",
+        visibility: entry.visibility,
+        ...(entry.series ? { series: entry.series } : {}),
+        ...(entry.series && entry.seriesOrder !== undefined
+          ? { seriesOrder: entry.seriesOrder }
+          : {}),
+        ...(entry.topic ? { topic: entry.topic } : {}),
+        warnings: entryWarnings,
+      });
       summary.synced += 1;
       summary.outputs[entry.publishTarget] += 1;
     } catch {
@@ -310,6 +395,11 @@ export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> 
   }
 
   summary.warnings = wikilinkWarnings.length + assetWarnings.length;
+  const publishManifest: PublishManifest = {
+    generatedAt: new Date().toISOString(),
+    summary: createManifestSummary(summary),
+    entries: manifestEntries,
+  };
   await writeFile(
     path.join(reportsPath, "wikilink-warnings.md"),
     wikilinkReport(wikilinkWarnings),
@@ -323,6 +413,16 @@ export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> 
   await writeFile(
     path.join(reportsPath, "sync-report.md"),
     syncReport(summary, wikilinkWarnings, assetWarnings),
+    "utf8",
+  );
+  await writeFile(
+    path.join(reportsPath, "publish-manifest.json"),
+    `${JSON.stringify(publishManifest, null, 2)}\n`,
+    "utf8",
+  );
+  await writeFile(
+    path.join(reportsPath, "publish-manifest.md"),
+    createManifestMarkdown(publishManifest),
     "utf8",
   );
 

@@ -28,6 +28,9 @@ export interface PublishedFrontmatter {
   sourceVaultPath: string;
   managedBy: "vault-sync";
   sourcePublishStatus: PublishStatus;
+  series?: string;
+  seriesOrder?: number;
+  topic?: string;
 }
 
 export async function readVaultDocument(
@@ -95,6 +98,11 @@ export function toPublishedFrontmatter(
     sourceVaultPath: document.sourceVaultPath,
     managedBy: "vault-sync",
     sourcePublishStatus: entry.publishStatus,
+    ...(entry.series ? { series: entry.series } : {}),
+    ...(entry.series && entry.seriesOrder !== undefined
+      ? { seriesOrder: entry.seriesOrder }
+      : {}),
+    ...(entry.topic ? { topic: entry.topic } : {}),
   };
 }
 

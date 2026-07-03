@@ -20,6 +20,9 @@ export interface PublishIndexEntry {
   publishSlug: string;
   publishStatus: PublishStatus;
   visibility: PublishVisibility;
+  series?: string;
+  seriesOrder?: number;
+  topic?: string;
   url?: string;
 }
 
@@ -119,6 +122,19 @@ export function evaluatePublishCandidate(document: VaultDocument): CandidateEval
   if (!document.data.created) {
     return { reason: "missing-date" };
   }
+  const series = getString(document.data, "publish_series");
+  const rawSeriesOrder = document.data.publish_series_order;
+  const parsedSeriesOrder =
+    typeof rawSeriesOrder === "number"
+      ? rawSeriesOrder
+      : typeof rawSeriesOrder === "string" && rawSeriesOrder.trim()
+        ? Number(rawSeriesOrder)
+        : undefined;
+  const seriesOrder =
+    typeof parsedSeriesOrder === "number" && Number.isFinite(parsedSeriesOrder)
+      ? parsedSeriesOrder
+      : undefined;
+  const topic = getString(document.data, "publish_topic");
 
   return {
     entry: {
@@ -129,6 +145,9 @@ export function evaluatePublishCandidate(document: VaultDocument): CandidateEval
       publishSlug,
       publishStatus: rawStatus as PublishStatus,
       visibility: rawVisibility as PublishVisibility,
+      ...(series ? { series } : {}),
+      ...(series && seriesOrder !== undefined ? { seriesOrder } : {}),
+      ...(topic ? { topic } : {}),
       url: `/${publishTarget}/${publishSlug}/`,
     },
   };

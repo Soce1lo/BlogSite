@@ -139,13 +139,18 @@ nav a {
 }
 
 .content-card__meta,
-.content-detail__meta {
+.content-detail__meta,
+.content-detail__taxonomy {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem 1rem;
   margin: 0;
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.content-detail__taxonomy {
+  margin-bottom: 1rem;
 }
 
 .tag-list {
@@ -210,4 +215,3 @@ nav a {
     --border: #354037;
   }
 }
-
