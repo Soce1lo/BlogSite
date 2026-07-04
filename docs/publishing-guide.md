@@ -31,6 +31,7 @@ pnpm build
 8. MUST 提交范围只包含公开副本、公开图片、报告、文档和代码改动。DO NOT 提交 `.env`、真实 Vault、私有附件、本机绝对路径或未授权草稿正文。
 9. 如果需要线上发布，MUST 推送后检查 GitHub Actions，并用 live URL 验证首页、目标文章页和 RSS。
 10. DO NOT 在 `check:publish` 有 error 时发布。DO NOT 通过删除检查规则绕过隐私边界；路径规则调整必须有测试覆盖。
+11. UI 或主题变更发布时，MUST 额外验证搜索入口、明暗主题、文章目录、阅读进度、桌面/移动无横向溢出和 GitHub Pages 子路径。
 
 ## 发布方式
 
@@ -80,3 +81,13 @@ pnpm build
 `check:publish` 会检查残留双链、本机绝对路径、`file://`、必需 frontmatter、重复 slug、缺失图片、Daily 来源和同步状态来源。严重风险返回非零退出码；缺失图片只输出 warning。
 
 `check:publish` 允许文章正文中用于说明的安全相对路径、站内根路径、Markdown 锚点和查询片段，例如 `_system/migration/report.md`、`../examples/demo.md`、`scripts/example.mjs`、`/images/slug/file.png` 和 `/blog/some-slug/`。它仍会拒绝 `file://`、`/Users/...`、`/home/...`、Windows 盘符路径、真实 Vault 绝对路径、Daily 来源、残留双链和不可信发布状态。
+
+## 主题发布验证
+
+当前站点使用 Tone-inspired 阅读主题适配。主题或布局变更发布前，除常规命令外，还应在本地或线上核对：
+
+- 首页包含搜索入口和明暗主题切换。
+- 长文详情页包含阅读进度条和 `content-toc` 目录。
+- 目录链接能跳转到对应 heading，滚动后目录高亮正常。
+- 移动宽度下 `document.documentElement.scrollWidth` 不大于视口宽度。
+- live URL 中资源路径带正确 GitHub Pages 子路径 `/BlogSite/`。

@@ -23,7 +23,7 @@ pnpm build
 3. 将已发布目标双链转为网页链接；未发布或不存在目标转为纯文本并记录 warning。
 4. 将本地图片复制到 `public/images/{publish_slug}/`；缺失图片转为文本并记录 warning。
 5. 只清理带 `managedBy: vault-sync` 的旧副本，保留手工内容。
-6. 写入三份短报告，不粘贴正文。
+6. 写入同步报告、双链 warning、资源 warning、发布 manifest JSON 和发布 manifest Markdown，不粘贴正文。
 
 ## 安全边界
 
@@ -34,3 +34,12 @@ pnpm build
 5. 未明确标记为可发布的内容不得同步。
 
 同步器拒绝把内容、图片或报告输出目录放到 Vault 内部。自动测试还会比较合成 Vault 同步前后的完整文件哈希。
+
+## 当前公开同步状态
+
+当前仓库已包含两篇由真实 Vault 同步生成的公开博客副本：
+
+- `blog/logseq-to-obsidian-migration-guide`
+- `blog/logseq-to-obsidian-migration`
+
+最新报告位于 `reports/`：`sync-report.md`、`wikilink-warnings.md`、`asset-warnings.md`、`publish-manifest.json` 和 `publish-manifest.md`。报告显示 `publish_candidates: 2`、`synced: 2`、`errors: 0`；warning 来自迁移指导文中用于说明脚本和测试边界的降级链接/缺失图片记录，发布前仍需逐项确认其合理性。
