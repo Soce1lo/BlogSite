@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-03T14:49:21.901Z",
+  "generatedAt": "2026-07-06T17:00:05.096Z",
   "summary": {
-    "scannedVaultFiles": 626,
-    "publishCandidates": 2,
-    "synced": 2,
+    "scannedVaultFiles": 636,
+    "publishCandidates": 3,
+    "synced": 3,
     "warnings": 73,
     "errors": 0
   },
@@ -100,6 +100,19 @@
       "title": "从 Logseq 到 Obsidian：迁移回顾",
       "draft": false,
       "visibility": "public",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层开始.md",
+      "collection": "blog",
+      "slug": "llm-wiki-derived-layer",
+      "url": "/blog/llm-wiki-derived-layer/",
+      "title": "在 Obsidian Vault 中引入 LLM Wiki：从独立派生层开始",
+      "draft": false,
+      "visibility": "public",
+      "series": "KnowledgeVault 实践",
+      "seriesOrder": 20,
+      "topic": "LLM Wiki",
       "warnings": []
     }
   ]

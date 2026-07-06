@@ -2,7 +2,7 @@
 title: 从 Logseq 到 Obsidian：具体迁移指导
 description: 把 Logseq graph 迁到 Obsidian 的可执行步骤、检查边界和完整脚本。迁移脚本只用于一次性迁移，不进入日常写作 gate。
 pubDate: '2026-07-03'
-updatedDate: '2026-07-03'
+updatedDate: '2026-07-05'
 draft: false
 category: Knowledge Management
 tags:
@@ -20,7 +20,7 @@ sourcePublishStatus: published
 
 这篇是《从 Logseq 到 Obsidian：迁移回顾》的配套操作稿，只保留可执行步骤、检查边界和完整脚本。它面向一次性迁移，不面向日常写作。
 
-最重要的边界是：迁移脚本只能用于迁移窗口内的验收，或者之后手动回看迁移档案。不要把 `logseq-migrate.mjs verify`、`classify-logseq-pages.mjs verify`、迁移测试，或任何依赖 `_system/migration/` 基线的命令接入日常写作 gate。迁移完成后，日常写作检查应该只关心发布文章自己的 frontmatter、链接、附件和正文质量，不应要求旧 Logseq 页面仍等于迁移闭环时的内容 hash。
+最重要的边界是：迁移脚本只能用于迁移窗口内的验收，或者之后手动回看迁移档案。不要把 `logseq-migrate.mjs verify`、`classify-logseq-pages.mjs verify`、迁移测试，或任何依赖 `80-Archive/logseq-migration/reports/` 基线的命令接入日常写作 gate。迁移完成后，日常写作检查应该只关心发布文章自己的 frontmatter、链接、附件和正文质量，不应要求旧 Logseq 页面仍等于迁移闭环时的内容 hash。
 
 ## 适用范围
 
@@ -30,14 +30,14 @@ sourcePublishStatus: published
 
 ## 目录和输入约定
 
-脚本默认在 Vault 根目录执行，使用这些路径：
+脚本默认在 Vault 根目录执行。当前仓库不再随附原始 Logseq graph；复现 Phase 2 时，需要把原始快照放在仓库外，并用 `LOGSEQ_RAW_ROOT` 指向它。脚本使用这些路径：
 
-- `80-Archive/logseq-raw/`：Logseq graph 的只读归档输入；
+- `LOGSEQ_RAW_ROOT=/path/to/logseq-snapshot`：仓库外 Logseq graph 只读输入；
 - `90-Attachments/logseq-assets/`：迁移后的附件目录；
 - `01-Daily/`：journals 目标目录；
 - `00-Inbox/imported-logseq/pages/`：pages 的初始落点；
-- `_system/migration/`：迁移报告、清单和基线；
-- `_system/scripts/` 与 `_system/checks/`：迁移窗口内使用的脚本和测试。
+- `80-Archive/logseq-migration/reports/`：迁移报告、清单和基线；
+- `80-Archive/logseq-migration/scripts/` 与 `80-Archive/logseq-migration/checks/`：迁移窗口内使用的脚本和测试。
 
 执行前先冻结一份 raw snapshot，并完成自己的数量审计。下面命令里的 210 / 371 / 238 是这次 Vault 的实际结果，不是通用常量。
 
@@ -45,17 +45,17 @@ sourcePublishStatus: published
 
 迁移完成后，请把迁移检查从日常写作流程里移除。具体来说：
 
-- 不在写作检查、发布检查或 pre-commit 中运行 `node _system/scripts/logseq-migrate.mjs verify`；
-- 不在写作检查、发布检查或 pre-commit 中运行 `node _system/scripts/classify-logseq-pages.mjs verify`；
-- 不要求普通文章修改后仍匹配 `_system/migration/classification-final-state-baseline-v2.json`；
-- 不把 `80-Archive/logseq-raw/` 的历史 whitespace 当作日常 Markdown 风格问题；
+- 不在写作检查、发布检查或 pre-commit 中运行 `node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs verify`；
+- 不在写作检查、发布检查或 pre-commit 中运行 `node 80-Archive/logseq-migration/scripts/classify-logseq-pages.mjs verify`；
+- 不要求普通文章修改后仍匹配 `80-Archive/logseq-migration/reports/classification-final-state-baseline-v2.json`；
+- 不把仓库外 raw snapshot 的历史 whitespace 当作日常 Markdown 风格问题；
 - 如需复核迁移，只手动运行迁移命令，并把它当作历史档案验收，不当作写作质量门禁。
 
 ## 1. 先跑迁移脚本测试
 
 ~~~bash
-node --test _system/checks/logseq-migrate.test.mjs
-node --test _system/checks/classify-logseq-pages.test.mjs
+node --test 80-Archive/logseq-migration/checks/logseq-migrate.test.mjs
+node --test 80-Archive/logseq-migration/checks/classify-logseq-pages.test.mjs
 ~~~
 
 测试通过后再碰真实数据。如果你改过目标目录、批次大小、frontmatter 字段或附件规则，先改测试，再改脚本。
@@ -63,26 +63,28 @@ node --test _system/checks/classify-logseq-pages.test.mjs
 ## 2. 迁移 assets、journals 和 pages
 
 ~~~bash
-node _system/scripts/logseq-migrate.mjs assets --dry-run
-node _system/scripts/logseq-migrate.mjs assets
+export LOGSEQ_RAW_ROOT=/path/to/logseq-snapshot
+
+node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs assets --dry-run
+node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs assets
 
 for year in 2022 2023 2024 2025 2026; do
-  node _system/scripts/logseq-migrate.mjs journals --year "$year" --dry-run
-  node _system/scripts/logseq-migrate.mjs journals --year "$year"
+  node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs journals --year "$year" --dry-run
+  node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs journals --year "$year"
 done
 
-node _system/scripts/logseq-migrate.mjs pages --offset 0 --limit 50 --dry-run
-node _system/scripts/logseq-migrate.mjs pages --offset 0 --limit 50
-node _system/scripts/logseq-migrate.mjs pages --offset 50 --limit 50 --dry-run
-node _system/scripts/logseq-migrate.mjs pages --offset 50 --limit 50
-node _system/scripts/logseq-migrate.mjs pages --offset 100 --limit 50 --dry-run
-node _system/scripts/logseq-migrate.mjs pages --offset 100 --limit 50
-node _system/scripts/logseq-migrate.mjs pages --offset 150 --limit 50 --dry-run
-node _system/scripts/logseq-migrate.mjs pages --offset 150 --limit 50
-node _system/scripts/logseq-migrate.mjs pages --offset 200 --limit 38 --dry-run
-node _system/scripts/logseq-migrate.mjs pages --offset 200 --limit 38
+node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs pages --offset 0 --limit 50 --dry-run
+node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs pages --offset 0 --limit 50
+node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs pages --offset 50 --limit 50 --dry-run
+node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs pages --offset 50 --limit 50
+node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs pages --offset 100 --limit 50 --dry-run
+node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs pages --offset 100 --limit 50
+node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs pages --offset 150 --limit 50 --dry-run
+node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs pages --offset 150 --limit 50
+node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs pages --offset 200 --limit 38 --dry-run
+node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs pages --offset 200 --limit 38
 
-node _system/scripts/logseq-migrate.mjs verify \
+node 80-Archive/logseq-migration/scripts/logseq-migrate.mjs verify \
   --expected-assets 210 \
   --expected-journals 371 \
   --expected-pages 238
@@ -94,21 +96,21 @@ node _system/scripts/logseq-migrate.mjs verify \
 
 ## 3. 审阅并确认分类清单
 
-分类脚本不替你判断知识语义。先人工生成并审阅一份类似 `_system/migration/classification-manifest-v2.md` 的清单，确认每个文件只出现一次、目标目录明确、边界项有解释。
+分类脚本不替你判断知识语义。先人工生成并审阅一份类似 `80-Archive/logseq-migration/reports/classification-manifest-v2.md` 的清单，确认每个文件只出现一次、目标目录明确、边界项有解释。
 
 清单确认前不要移动文件。清单确认后，执行阶段也不要再重新分类；执行脚本只负责按已确认清单移动文件和重写托管附件相对路径。
 
 ## 4. 按固定批次移动页面
 
 ~~~bash
-node _system/scripts/classify-logseq-pages.mjs baseline
+node 80-Archive/logseq-migration/scripts/classify-logseq-pages.mjs baseline
 
 for batch in 015 016 017 018 019 020 021 022 023 024; do
-  node _system/scripts/classify-logseq-pages.mjs batch --batch "$batch" --dry-run
-  node _system/scripts/classify-logseq-pages.mjs batch --batch "$batch"
-  node _system/scripts/classify-logseq-pages.mjs verify
+  node 80-Archive/logseq-migration/scripts/classify-logseq-pages.mjs batch --batch "$batch" --dry-run
+  node 80-Archive/logseq-migration/scripts/classify-logseq-pages.mjs batch --batch "$batch"
+  node 80-Archive/logseq-migration/scripts/classify-logseq-pages.mjs verify
   git status --short
-  git add -- 00-Inbox 10-Notes 20-Projects 30-Areas 40-Resources 50-MOCs _system/migration
+  git add -- 00-Inbox 10-Notes 20-Projects 30-Areas 40-Resources 50-MOCs 80-Archive/logseq-migration/reports
   git commit -m "migration: classify logseq batch $batch"
 done
 ~~~
@@ -118,8 +120,8 @@ done
 ## 5. 生成最终迁移状态基线
 
 ~~~bash
-node _system/scripts/classify-logseq-pages.mjs final-baseline
-node _system/scripts/classify-logseq-pages.mjs verify
+node 80-Archive/logseq-migration/scripts/classify-logseq-pages.mjs final-baseline
+node 80-Archive/logseq-migration/scripts/classify-logseq-pages.mjs verify
 ~~~
 
 `final-baseline` 只应该在迁移完全结束后运行。它固定的是迁移收尾时的最终状态，不是一个长期约束日常写作的基线。后续你正常修改这些页面时，内容 hash 变化是合理的；不要因为它让迁移 verify 失败，就把日常写作视为破坏迁移。
@@ -128,7 +130,7 @@ node _system/scripts/classify-logseq-pages.mjs verify
 
 推荐做法是把脚本留在迁移档案或文章里，而不是接入写作流水线：
 
-- `_system/scripts/` 与 `_system/checks/` 可以作为本 Vault 的历史迁移实现保存；
+- `80-Archive/logseq-migration/scripts/` 与 `80-Archive/logseq-migration/checks/` 可以作为本 Vault 的历史迁移实现保存；
 - 发布文章里直接内嵌完整脚本，方便复现和阅读；
 - `60-Publish/` 下不再保留单独 `scripts/` 附件目录，避免发布工具或写作检查把它误当成当前站点资产；
 - 日常写作检查只看发布内容本身，不运行迁移命令。
@@ -139,7 +141,7 @@ node _system/scripts/classify-logseq-pages.mjs verify
 
 ### Phase 2 机械迁移脚本
 
-源文件：_system/scripts/logseq-migrate.mjs
+源文件：80-Archive/logseq-migration/scripts/logseq-migrate.mjs
 
 ~~~js
 import crypto from 'node:crypto';
@@ -148,12 +150,14 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const SCRIPT_PATH = fileURLToPath(import.meta.url);
-const VAULT_ROOT = path.resolve(path.dirname(SCRIPT_PATH), '../..');
-const RAW_ROOT = path.join(VAULT_ROOT, '80-Archive/logseq-raw');
+const VAULT_ROOT = path.resolve(path.dirname(SCRIPT_PATH), '../../..');
+const RAW_ROOT = process.env.LOGSEQ_RAW_ROOT
+  ? path.resolve(process.env.LOGSEQ_RAW_ROOT)
+  : path.resolve(VAULT_ROOT, '../logseq-raw-snapshot');
 const ASSET_OUTPUT = path.join(VAULT_ROOT, '90-Attachments/logseq-assets');
 const JOURNAL_OUTPUT = path.join(VAULT_ROOT, '01-Daily');
 const PAGE_OUTPUT = path.join(VAULT_ROOT, '00-Inbox/imported-logseq/pages');
-const MIGRATION_ROOT = path.join(VAULT_ROOT, '_system/migration');
+const MIGRATION_ROOT = path.join(VAULT_ROOT, '80-Archive/logseq-migration/reports');
 
 const RECOGNIZED_PROPERTIES = new Set(['tags', 'alias', 'description', 'public']);
 const SPECIAL_TASK_STATES = new Set(['DOING', 'NOW', 'LATER', 'WAITING', 'CANCELED']);
@@ -676,7 +680,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === SCRIPT_PATH) {
 
 ### Phase 2 转换规则测试
 
-源文件：_system/checks/logseq-migrate.test.mjs
+源文件：80-Archive/logseq-migration/checks/logseq-migrate.test.mjs
 
 ~~~js
 import assert from 'node:assert/strict';
@@ -844,7 +848,7 @@ test('uses Unicode NFC paths for cross-checkout aggregate fingerprints', () => {
 
 ### Phase 3 分类移动与迁移验收脚本
 
-源文件：_system/scripts/classify-logseq-pages.mjs
+源文件：80-Archive/logseq-migration/scripts/classify-logseq-pages.mjs
 
 ~~~js
 import crypto from 'node:crypto';
@@ -867,12 +871,13 @@ const ASSET_DIRECTORY = '90-Attachments/logseq-assets';
 const ASSET_MARKER = '90-Attachments/logseq-assets/';
 const OLD_ASSET_PREFIX = '../../../90-Attachments/logseq-assets/';
 const NEW_ASSET_PREFIX = '../90-Attachments/logseq-assets/';
+const SCAFFOLDING_MARKDOWN_FILES = new Set(['AGENTS.md']);
 const SCRIPT_PATH = fileURLToPath(import.meta.url);
-const CLI_ROOT = path.resolve(path.dirname(SCRIPT_PATH), '../..');
-const DEFAULT_MANIFEST = '_system/migration/classification-manifest-v2.md';
-const DEFAULT_BASELINE = '_system/migration/classification-content-baseline-v2.json';
-const DEFAULT_FINAL_STATE_BASELINE = '_system/migration/classification-final-state-baseline-v2.json';
-const REPORT_DIRECTORY = '_system/migration/batches';
+const CLI_ROOT = path.resolve(path.dirname(SCRIPT_PATH), '../../..');
+const DEFAULT_MANIFEST = '80-Archive/logseq-migration/reports/classification-manifest-v2.md';
+const DEFAULT_BASELINE = '80-Archive/logseq-migration/reports/classification-content-baseline-v2.json';
+const DEFAULT_FINAL_STATE_BASELINE = '80-Archive/logseq-migration/reports/classification-final-state-baseline-v2.json';
+const REPORT_DIRECTORY = '80-Archive/logseq-migration/reports/batches';
 
 const BATCHES = Object.freeze({
   '015': Object.freeze({
@@ -1047,6 +1052,7 @@ function auditDirectoryMarkdown(root, directory, location, manifestNames, locati
       continue;
     }
     if (!entry.name.endsWith('.md')) continue;
+    if (SCAFFOLDING_MARKDOWN_FILES.has(entry.name)) continue;
     if (!stats.isFile()) {
       if (!manifestNames.has(entry.name)) {
         locationErrors.push({
@@ -2418,7 +2424,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === SCRIPT_PATH) {
 
 ### Phase 3 清单、批次、附件、报告和最终基线测试
 
-源文件：_system/checks/classify-logseq-pages.test.mjs
+源文件：80-Archive/logseq-migration/checks/classify-logseq-pages.test.mjs
 
 ~~~js
 import assert from 'node:assert/strict';
@@ -2551,7 +2557,7 @@ function twoNoteFixture() {
 
 function cliFixture() {
   const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'classify-cli-')));
-  const scriptPath = path.join(root, '_system/scripts/classify-logseq-pages.mjs');
+  const scriptPath = path.join(root, '80-Archive/logseq-migration/scripts/classify-logseq-pages.mjs');
   fs.mkdirSync(path.dirname(scriptPath), { recursive: true });
   fs.copyFileSync(CLASSIFIER_SCRIPT_PATH, scriptPath);
   return { root, scriptPath };
@@ -2581,10 +2587,10 @@ function approvedManifestFixture(root) {
   }
   manifestLines.push('## Synthetic constraints', '');
 
-  const manifestPath = path.join(root, '_system/migration/classification-manifest-v2.md');
+  const manifestPath = path.join(root, '80-Archive/logseq-migration/reports/classification-manifest-v2.md');
   const baselinePath = path.join(
     root,
-    '_system/migration/classification-content-baseline-v2.json',
+    '80-Archive/logseq-migration/reports/classification-content-baseline-v2.json',
   );
   fs.mkdirSync(path.dirname(manifestPath), { recursive: true });
   fs.writeFileSync(manifestPath, manifestLines.join('\n'));
@@ -2913,11 +2919,11 @@ test('rejects report directory symlinks without writing outside the controlled r
     expectedTotal: 238,
   });
   const cliExternal = temporaryDirectory('classify-external-cli-report-');
-  const reportDirectory = path.join(root, '_system/migration/batches');
+  const reportDirectory = path.join(root, '80-Archive/logseq-migration/reports/batches');
   fs.symlinkSync(cliExternal, reportDirectory, 'dir');
   const result = childProcess.spawnSync(
     process.execPath,
-    [scriptPath, 'report', '--batch', '015', '--output', '_system/migration/batches/015-classify-area.md'],
+    [scriptPath, 'report', '--batch', '015', '--output', '80-Archive/logseq-migration/reports/batches/015-classify-area.md'],
     { encoding: 'utf8' },
   );
   assert.notEqual(result.status, 0);
@@ -4121,7 +4127,7 @@ test('CLI report rejects nested managed directories without creating output', ()
   });
   fs.mkdirSync(path.join(root, '10-Notes/nested'), { recursive: true });
   fs.writeFileSync(path.join(root, '10-Notes/nested/unlisted.md'), 'nested\n');
-  const outputRelativePath = '_system/migration/batches/015-classify-area.md';
+  const outputRelativePath = '80-Archive/logseq-migration/reports/batches/015-classify-area.md';
   const result = childProcess.spawnSync(
     process.execPath,
     [scriptPath, 'report', '--batch', '015', '--output', outputRelativePath],
@@ -4142,6 +4148,7 @@ test('verify reports unlisted and non-regular Markdown while ignoring scaffoldin
     const targetRoot = path.join(f.root, target);
     fs.mkdirSync(targetRoot, { recursive: true });
     fs.writeFileSync(path.join(targetRoot, '.gitkeep'), '');
+    fs.writeFileSync(path.join(targetRoot, 'AGENTS.md'), 'agent instructions\n');
     fs.writeFileSync(path.join(targetRoot, `${target}-extra.md`), 'extra\n');
   }
   fs.mkdirSync(path.join(f.root, '10-Notes/target-directory.md'));
@@ -4191,7 +4198,7 @@ test('CLI report rejects extra, missing, and non-regular Markdown entries', () =
       expectedTotal: 238,
     });
     mutate(fixturePaths);
-    const outputRelativePath = '_system/migration/batches/015-classify-area.md';
+    const outputRelativePath = '80-Archive/logseq-migration/reports/batches/015-classify-area.md';
     const result = childProcess.spawnSync(
       process.execPath,
       [scriptPath, 'report', '--batch', '015', '--output', outputRelativePath],
@@ -4331,7 +4338,7 @@ test('writeBatchReport requires a complete clean verifyState result', () => {
 
 test('CLI requires the fixed report path under its own root', () => {
   const { root, scriptPath } = cliFixture();
-  const wrongRelativePath = `_system/elsewhere/${BATCH_016_CONFIGURATION.report}`;
+  const wrongRelativePath = `80-Archive/logseq-migration/elsewhere/${BATCH_016_CONFIGURATION.report}`;
   const result = childProcess.spawnSync(
     process.execPath,
     [scriptPath, 'report', '--batch', '016', '--output', wrongRelativePath],
@@ -4339,7 +4346,10 @@ test('CLI requires the fixed report path under its own root', () => {
   );
 
   assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /report-path-mismatch: _system\/migration\/batches\/016-classify-notes-001\.md/);
+  assert.match(
+    result.stderr,
+    /report-path-mismatch: 80-Archive\/logseq-migration\/reports\/batches\/016-classify-notes-001\.md/,
+  );
   assert.equal(fs.existsSync(path.join(root, wrongRelativePath)), false);
 });
 
@@ -4379,7 +4389,7 @@ test('CLI report rejects an exact-count state containing the wrong batch pages',
   assert.deepEqual(verification.contentMismatches, []);
   assert.deepEqual(verification.missingAttachments, []);
 
-  const outputRelativePath = `_system/migration/batches/${BATCH_016_CONFIGURATION.report}`;
+  const outputRelativePath = `80-Archive/logseq-migration/reports/batches/${BATCH_016_CONFIGURATION.report}`;
   const outputPath = path.join(root, outputRelativePath);
   const result = childProcess.spawnSync(
     process.execPath,
@@ -4421,7 +4431,7 @@ test('CLI completes the synthetic baseline through batch 015 report workflow', (
   assert.equal(after.source, 237);
   assert.equal(after.moved, 1);
 
-  const reportRelativePath = '_system/migration/batches/015-classify-area.md';
+  const reportRelativePath = '80-Archive/logseq-migration/reports/batches/015-classify-area.md';
   const report = childProcess.spawnSync(
     process.execPath,
     [scriptPath, 'report', '--batch', '015', '--output', reportRelativePath],
@@ -4516,17 +4526,17 @@ test('CLI exposes the fixed batch table and rejects user-defined scope', () => {
 
 Phase 2 迁移设计与最终验证：
 
-- _system/migration/phase2-design.md
-- _system/migration/phase2-execution-plan.md
-- _system/migration/raw-logseq-manifest.json
-- _system/migration/batches/014-final-verification.md
+- 80-Archive/logseq-migration/reports/phase2-design.md
+- 80-Archive/logseq-migration/reports/phase2-execution-plan.md
+- 80-Archive/logseq-migration/reports/raw-logseq-manifest.json
+- 80-Archive/logseq-migration/reports/batches/014-final-verification.md
 
 Phase 3 分类清单、执行计划与最终验证：
 
-- _system/migration/classification-manifest-v2.md
-- _system/migration/classification-content-baseline-v2.json
-- _system/migration/classification-final-state-baseline-v2.json
-- _system/migration/phase3-classification-execution-plan.md
-- _system/migration/classification-batch-index.md
-- _system/migration/batches/025-classification-final-verification.md
-- _system/migration/batches/026-migration-closure-final-state.md
+- 80-Archive/logseq-migration/reports/classification-manifest-v2.md
+- 80-Archive/logseq-migration/reports/classification-content-baseline-v2.json
+- 80-Archive/logseq-migration/reports/classification-final-state-baseline-v2.json
+- 80-Archive/logseq-migration/reports/phase3-classification-execution-plan.md
+- 80-Archive/logseq-migration/reports/classification-batch-index.md
+- 80-Archive/logseq-migration/reports/batches/025-classification-final-verification.md
+- 80-Archive/logseq-migration/reports/batches/026-migration-closure-final-state.md

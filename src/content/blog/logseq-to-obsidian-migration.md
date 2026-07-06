@@ -2,7 +2,7 @@
 title: 从 Logseq 到 Obsidian：迁移回顾
 description: 回顾一次 Logseq 到 Obsidian 的真实知识库迁移：边界、批次、验证、踩坑和最终闭环。
 pubDate: '2026-06-20'
-updatedDate: '2026-07-03'
+updatedDate: '2026-07-05'
 draft: false
 category: Knowledge Management
 tags:
@@ -24,6 +24,8 @@ sourcePublishStatus: published
 所以这次我没有追求“一键导入”，而是把迁移拆成一组可以检查、可以提交、也可以推倒重来的小批次。后面又补了一轮分类，把“数据已经搬进来”推进到“这些笔记可以在新 Vault 里继续使用”。
 
 这篇只做迁移回顾：为什么这样迁、哪里容易出错、最后怎样闭环。具体命令和完整脚本我拆到另一篇《从 Logseq 到 Obsidian：具体迁移指导》里，避免把一次性迁移工具混进日常写作检查。
+
+补充说明：这篇记录的是迁移当时的工程过程。迁移闭环后，我又把原始 Logseq graph 从当前 `master` 工作树移除，只保留迁移脚本、测试、报告和基线作为历史归档。复现 Phase 2 时需要使用仓库外 raw snapshot。
 
 ## 先定边界，再碰数据
 
@@ -221,8 +223,8 @@ Phase 3 的内容基线有一个很明确的作用：证明分类移动本身没
 
 如果继续让默认验证只看旧基线，仓库会长期处在一个尴尬状态：历史迁移是成功的，当前验证却会报内容漂移。既然后面不会再有新的 Logseq 数据迁入，我把这个问题在迁移层闭环处理掉：
 
-- 保留 `_system/migration/classification-content-baseline-v2.json`，作为 Batch 025 的历史迁移证据；
-- 新增 `_system/migration/classification-final-state-baseline-v2.json`，记录当前 master 在迁移收尾时的最终内容指纹；
+- 保留 `80-Archive/logseq-migration/reports/classification-content-baseline-v2.json`，作为 Batch 025 的历史迁移证据；
+- 新增 `80-Archive/logseq-migration/reports/classification-final-state-baseline-v2.json`，记录当前 master 在迁移收尾时的最终内容指纹；
 - 保留 `baseline`、`batch`、`report` 对旧迁移基线的默认使用；
 - 把 `verify` 明确限定为迁移档案的手动验收命令，而不是日常写作 gate；
 - 新增 Batch 026 报告，明确迁移已经关闭，不再等待后续批次。
@@ -245,3 +247,5 @@ Phase 3 的内容基线有一个很明确的作用：证明分类移动本身没
 | 附件链接 | 150 |
 
 这一步没有覆盖历史证据，而是把“迁移时没改坏内容”和“当前 Vault 已经闭环可验证”分成两份基线。前者用于追溯，后者用于日常健康检查。
+
+后续仓库清理又新增了一步：`80-Archive/logseq-raw` 不再随当前 `master` 保留，迁移材料统一归档到 `80-Archive/logseq-migration/`。这不改变已经迁入 Obsidian 的正式笔记和附件，只是让支持库不再直接携带原始 Logseq 文件。
