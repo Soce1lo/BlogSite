@@ -1,13 +1,26 @@
 {
-  "generatedAt": "2026-07-06T17:00:05.096Z",
+  "generatedAt": "2026-07-07T06:41:23.065Z",
   "summary": {
-    "scannedVaultFiles": 636,
-    "publishCandidates": 3,
-    "synced": 3,
+    "scannedVaultFiles": 648,
+    "publishCandidates": 4,
+    "synced": 4,
     "warnings": 73,
     "errors": 0
   },
   "entries": [
+    {
+      "sourceVaultPath": "60-Publish/Obsidian 入门：本地 Markdown、链接网络与我的知识库实践.md",
+      "collection": "blog",
+      "slug": "obsidian-local-markdown-knowledge-vault",
+      "url": "/blog/obsidian-local-markdown-knowledge-vault/",
+      "title": "Obsidian 入门：本地 Markdown、链接网络与我的知识库实践",
+      "draft": false,
+      "visibility": "public",
+      "series": "KnowledgeVault 实践",
+      "seriesOrder": 30,
+      "topic": "Obsidian",
+      "warnings": []
+    },
     {
       "sourceVaultPath": "60-Publish/从 Logseq 到 Obsidian：具体迁移指导.md",
       "collection": "blog",
