@@ -140,7 +140,16 @@ const searchJson = serializeForInlineJson(searchItems);
         const searchOpen = document.querySelector("[data-search-open]");
         const searchClose = document.querySelector("[data-search-close]");
         const dataNode = document.getElementById("site-search-data");
+        const searchFocusableSelector = [
+          "a[href]",
+          "button:not([disabled])",
+          "input:not([disabled])",
+          "select:not([disabled])",
+          "textarea:not([disabled])",
+          '[tabindex]:not([tabindex="-1"])',
+        ].join(",");
         let searchItems = [];
+        let lastFocusedElement = null;
 
         try {
           searchItems = JSON.parse(dataNode?.textContent || "[]");
@@ -149,6 +158,16 @@ const searchJson = serializeForInlineJson(searchItems);
         }
 
         const normalize = (value) => value.toLowerCase().trim();
+
+        const getSearchFocusableElements = () => {
+          if (!searchPanel || searchPanel.hidden) return [];
+          return Array.from(searchPanel.querySelectorAll(searchFocusableSelector)).filter(
+            (element) =>
+              element instanceof HTMLElement &&
+              !element.hidden &&
+              element.getClientRects().length > 0,
+          );
+        };
 
         const renderResults = () => {
           if (!searchResults || !searchInput) return;
@@ -199,6 +218,15 @@ const searchJson = serializeForInlineJson(searchItems);
 
         const openSearch = () => {
           if (!searchPanel || !searchInput) return;
+          if (searchPanel.hidden) {
+            lastFocusedElement = document.activeElement;
+            if (
+              !(lastFocusedElement instanceof HTMLElement) ||
+              lastFocusedElement === document.body
+            ) {
+              lastFocusedElement = searchOpen;
+            }
+          }
           searchPanel.hidden = false;
           document.body.classList.add("search-open");
           renderResults();
@@ -209,6 +237,8 @@ const searchJson = serializeForInlineJson(searchItems);
           if (!searchPanel) return;
           searchPanel.hidden = true;
           document.body.classList.remove("search-open");
+          lastFocusedElement?.focus();
+          lastFocusedElement = null;
         };
 
         searchOpen?.addEventListener("click", openSearch);
@@ -221,6 +251,29 @@ const searchJson = serializeForInlineJson(searchItems);
           if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
             event.preventDefault();
             openSearch();
+          }
+          if (event.key === "Tab" && searchPanel && !searchPanel.hidden) {
+            const focusableElements = getSearchFocusableElements();
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements.at(-1);
+            const activeElement = document.activeElement;
+            const focusIsOutside = !activeElement || !searchPanel.contains(activeElement);
+
+            if (
+              event.shiftKey &&
+              lastElement &&
+              (activeElement === firstElement || focusIsOutside)
+            ) {
+              event.preventDefault();
+              lastElement.focus();
+            } else if (
+              !event.shiftKey &&
+              firstElement &&
+              (activeElement === lastElement || focusIsOutside)
+            ) {
+              event.preventDefault();
+              firstElement.focus();
+            }
           }
           if (event.key === "Escape" && searchPanel && !searchPanel.hidden) {
             closeSearch();

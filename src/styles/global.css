@@ -427,7 +427,10 @@ img {
 }
 
 .collection-row__count {
+  display: inline-flex;
+  align-items: center;
   min-width: max-content;
+  min-height: var(--control-height);
   color: var(--subtle);
   font-family: var(--font-utility);
   font-size: var(--text-xs);
@@ -643,7 +646,9 @@ img {
 }
 
 .content-toc__link {
-  display: block;
+  display: flex;
+  align-items: center;
+  min-height: var(--control-height);
   padding-block: var(--space-2);
   color: var(--muted);
   line-height: var(--leading-heading);

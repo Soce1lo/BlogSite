@@ -7,7 +7,7 @@ export interface TagGroup {
 }
 
 export function tagId(name: string): string {
-  return `tag-${encodeURIComponent(name.toLocaleLowerCase("zh-CN"))}`;
+  return `tag-${encodeURIComponent(name.trim().toLocaleLowerCase("zh-CN"))}`;
 }
 
 export function buildTagGroups(entries: SiteEntry[]): TagGroup[] {

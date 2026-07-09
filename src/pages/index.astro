@@ -16,7 +16,7 @@ const publicNotes = notes.filter(isPublicEntry).sort(sortNewestFirst);
 const publicProjects = projects.filter(isPublicEntry).sort(sortNewestFirst);
 const recentEntries: SiteEntry[] = [...publicBlog, ...publicNotes, ...publicProjects]
   .sort(sortNewestFirst)
-  .slice(0, 4);
+  .slice(0, 3);
 const sectionLabels: Record<SiteEntry["collection"], string> = {
   blog: "博客",
   notes: "笔记",

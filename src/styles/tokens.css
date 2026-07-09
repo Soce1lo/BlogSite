@@ -5,8 +5,8 @@
   --palette-sheet: light-dark(#ffffff, #101a1d);
   --palette-ink: light-dark(#152225, #edf5f3);
   --palette-slate: light-dark(#5b6b6e, #a7b8b6);
-  --palette-fog: light-dark(#78878a, #829694);
-  --palette-signal: light-dark(#087f8c, #65d1cf);
+  --palette-fog: light-dark(#607174, #829694);
+  --palette-signal: light-dark(#077480, #65d1cf);
   --palette-signal-deep: light-dark(#075e68, #a0e4e0);
   --palette-success: light-dark(#287a52, #65cf91);
   --palette-warning: light-dark(#a75b18, #f1ad67);
