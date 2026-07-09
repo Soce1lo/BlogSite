@@ -1,6 +1,7 @@
 ---
 import type { SiteEntry } from "../lib/content";
 import { withBase } from "../lib/site";
+import { tagId } from "../lib/tags";
 
 interface Props {
   entries: SiteEntry[];
@@ -31,7 +32,11 @@ const { entries, emptyMessage = "暂无公开内容。" } = Astro.props;
           <p>{entry.data.description}</p>
           {entry.data.tags.length > 0 && (
             <ul class="tag-list" aria-label="标签">
-              {entry.data.tags.map((tag) => <li>{tag}</li>)}
+              {entry.data.tags.map((tag) => (
+                <li>
+                  <a href={`${withBase("tags/")}#${tagId(tag)}`}>{tag}</a>
+                </li>
+              ))}
             </ul>
           )}
         </li>
@@ -39,4 +44,3 @@ const { entries, emptyMessage = "暂无公开内容。" } = Astro.props;
     </ol>
   )
 }
-

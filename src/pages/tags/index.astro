@@ -1,0 +1,52 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import type { SiteEntry } from "../../lib/content";
+import { buildTagGroups } from "../../lib/tags";
+import { withBase } from "../../lib/site";
+
+const [blogEntries, noteEntries, projectEntries] = await Promise.all([
+  getCollection("blog"),
+  getCollection("notes"),
+  getCollection("projects"),
+]);
+const entries: SiteEntry[] = [...blogEntries, ...noteEntries, ...projectEntries];
+const groups = buildTagGroups(entries);
+---
+
+<BaseLayout title="标签" description="按标签浏览 BlogSite 的公开内容。">
+  <header class="page-heading">
+    <p class="eyebrow">Index / Tags</p>
+    <h1>标签</h1>
+    <p>从主题词进入博客、笔记和项目记录。这里只索引公开内容。</p>
+  </header>
+
+  {
+    groups.length === 0 ? (
+      <p class="empty-state">暂无公开标签。</p>
+    ) : (
+      <div class="tag-directory">
+        {groups.map((group) => (
+          <section class="tag-group" id={group.id}>
+            <header class="tag-group__header">
+              <h2>#{group.name}</h2>
+              <span>{group.entries.length} 篇</span>
+            </header>
+            <ol class="tag-group__entries">
+              {group.entries.map((entry) => (
+                <li>
+                  <a href={withBase(`${entry.collection}/${entry.id}/`)}>
+                    <span>{entry.data.title}</span>
+                    <time datetime={entry.data.pubDate.toISOString()}>
+                      {entry.data.pubDate.toLocaleDateString("zh-CN")}
+                    </time>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))}
+      </div>
+    )
+  }
+</BaseLayout>

@@ -1,13 +1,39 @@
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
+import type { SiteEntry } from "../src/lib/content";
 import { buildSearchItems, serializeForInlineJson } from "../src/lib/search";
+import { buildTagGroups } from "../src/lib/tags";
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
 
 async function readProjectFile(relativePath: string): Promise<string> {
   return readFile(path.join(projectRoot, relativePath), "utf8");
+}
+
+function makeEntry(
+  collection: SiteEntry["collection"],
+  id: string,
+  tags: string[],
+  pubDate: string,
+  options: { draft?: boolean; visibility?: "public" | "unlisted" } = {},
+): SiteEntry {
+  return {
+    collection,
+    id,
+    data: {
+      title: id,
+      description: `${id} description`,
+      pubDate: new Date(pubDate),
+      draft: options.draft ?? false,
+      category: "测试",
+      tags,
+      visibility: options.visibility ?? "public",
+      sourceVaultPath: `fixtures/${id}.md`,
+    },
+  } as SiteEntry;
 }
 
 test("Ink & Signal token 覆盖颜色、字体、排版、间距、圆角、阴影和代码", async () => {
@@ -43,6 +69,37 @@ test("展示层颜色字面量只允许出现在 tokens.css", async () => {
   for (const file of files) {
     assert.doesNotMatch(await readProjectFile(file), colorLiteral, file);
   }
+});
+
+test("标签聚合只包含公开条目并生成稳定锚点", () => {
+  const groups = buildTagGroups([
+    makeEntry("notes", "newer", ["Astro", "中文标签"], "2026-07-03"),
+    makeEntry("blog", "older", ["Astro"], "2026-07-01"),
+    makeEntry("projects", "draft", ["Astro"], "2026-07-04", { draft: true }),
+    makeEntry("notes", "unlisted", ["private"], "2026-07-05", { visibility: "unlisted" }),
+  ]);
+
+  assert.deepEqual(
+    groups.map(({ name, id }) => ({ name, id })),
+    [
+      { name: "Astro", id: "tag-astro" },
+      { name: "中文标签", id: "tag-%E4%B8%AD%E6%96%87%E6%A0%87%E7%AD%BE" },
+    ],
+  );
+  assert.deepEqual(groups[0].entries.map((entry) => entry.id), ["newer", "older"]);
+});
+
+test("标签目录渲染公开分组且内容列表链接到对应锚点", async () => {
+  const tagsPagePath = path.join(projectRoot, "src/pages/tags/index.astro");
+  assert.equal(existsSync(tagsPagePath), true, "缺少标签目录页面");
+
+  const tagsPage = await readProjectFile("src/pages/tags/index.astro");
+  const contentList = await readProjectFile("src/components/ContentList.astro");
+  assert.match(tagsPage, /buildTagGroups/);
+  assert.match(tagsPage, /class="tag-directory"/);
+  assert.match(tagsPage, /id=\{group\.id\}/);
+  assert.match(contentList, /tagId\(tag\)/);
+  assert.match(contentList, /withBase\("tags\/"\)/);
 });
 
 test("文章布局隔离页面标题和正文 prose，避免同步正文首个 H1 重复显示", async () => {
