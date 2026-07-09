@@ -52,27 +52,27 @@ const tocHeadings = headings.filter((heading) => heading.depth >= 2 && heading.d
           }
         </div>
       </header>
+      {
+        tocHeadings.length > 1 && (
+          <aside class="content-toc" aria-label="文章目录">
+            <p>目录</p>
+            <nav>
+              {tocHeadings.map((heading) => (
+                <a
+                  class={`content-toc__link content-toc__link--depth-${heading.depth}`}
+                  data-toc-link
+                  href={`#${heading.slug}`}
+                >
+                  {heading.text}
+                </a>
+              ))}
+            </nav>
+          </aside>
+        )
+      }
       <div class="prose content-body">
         <slot />
       </div>
     </article>
-    {
-      tocHeadings.length > 1 && (
-        <aside class="content-toc" aria-label="文章目录">
-          <p>目录</p>
-          <nav>
-            {tocHeadings.map((heading) => (
-              <a
-                class={`content-toc__link content-toc__link--depth-${heading.depth}`}
-                data-toc-link
-                href={`#${heading.slug}`}
-              >
-                {heading.text}
-              </a>
-            ))}
-          </nav>
-        </aside>
-      )
-    }
   </div>
 </BaseLayout>

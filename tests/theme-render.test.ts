@@ -166,6 +166,25 @@ test("内容详情页使用 render headings 生成文章目录 rail", async () =
   }
 });
 
+test("主题样式覆盖首页、列表、标签、404、阅读和 reduced motion", async () => {
+  const css = await readProjectFile("src/styles/global.css");
+  for (const selector of [
+    ".home-intro",
+    ".recent-stream",
+    ".collection-index",
+    ".content-list",
+    ".tag-directory",
+    ".not-found",
+    ".content-detail-shell",
+    ".prose pre",
+  ]) {
+    assert.match(css, new RegExp(selector.replace(".", "\\.")));
+  }
+  assert.match(css, /@media\s+\(prefers-reduced-motion:\s*reduce\)/);
+  assert.match(css, /@media\s+\(max-width:\s*48rem\)/);
+  assert.match(css, /@media\s+\(max-width:\s*30rem\)/);
+});
+
 test("搜索索引只包含公开内容并安全序列化到页面脚本", () => {
   const items = buildSearchItems([
     {
