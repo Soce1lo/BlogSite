@@ -302,7 +302,7 @@ img {
 }
 
 .home-intro h1 {
-  max-width: 13ch;
+  max-width: 100%;
   font-size: var(--text-5xl);
 }
 

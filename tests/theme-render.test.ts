@@ -224,6 +224,14 @@ test("手机导航退出 sticky 并重设正文标题锚点偏移", async () => 
   );
 });
 
+test("首页中文标题不使用拉丁字符宽度限制换行", async () => {
+  const css = await readProjectFile("src/styles/global.css");
+  const titleRule = extractCssBlock(css, ".home-intro h1 {");
+
+  assert.doesNotMatch(titleRule, /max-width:\s*[\d.]+ch;/);
+  assert.match(titleRule, /max-width:\s*100%;/);
+});
+
 test("搜索索引只包含公开内容并安全序列化到页面脚本", () => {
   const items = buildSearchItems([
     {
