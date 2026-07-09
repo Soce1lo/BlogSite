@@ -31,6 +31,8 @@ BlogSite 已从通用卡片式阅读主题收敛为 Ink & Signal：以纸墨色�
 
 颜色使用 `light-dark()` 定义成对主题值，`[data-theme]` 只改变
 `color-scheme`，不再复制整套深色调色板。系统主题和手动切换继续共存。
+Light 模式中用于小号文字的 Fog 和 Signal 均通过自动对比度测试，
+相对 Paper 的对比度分别约为 4.78:1 和 5.15:1。
 
 ## 文件与页面变化
 
@@ -40,6 +42,7 @@ BlogSite 已从通用卡片式阅读主题收敛为 Ink & Signal：以纸墨色�
   - 所有颜色改为 token。
   - 重写首页、列表、文章、标签、404、搜索、导航和响应式样式。
   - 新增 48rem/30rem 断点和 reduced-motion 处理。
+  - 集合计数、目录链接和其他交互目标统一使用至少 40px 高度。
 - `src/pages/index.astro`
   - 首页改为“站点定位 + 最近更新”主区域和真实集合索引轨道。
   - 保留博客、笔记、项目三类入口及最新内容。
@@ -47,7 +50,8 @@ BlogSite 已从通用卡片式阅读主题收敛为 Ink & Signal：以纸墨色�
   - 列表改为编辑式分隔结构，强化日期、分类、标题、摘要和标签层级。
   - 标签链接到标签聚合页锚点。
 - `src/layouts/BaseLayout.astro`
-  - 导航增加标签入口；搜索、主题切换和阅读进度行为保留。
+  - 导航增加标签入口；主题切换和阅读进度行为保留。
+  - 搜索增加 Tab/Shift+Tab 焦点循环，并在关闭后恢复触发前焦点。
 - `src/layouts/ContentLayout.astro`
   - 目录进入文章语义结构，移动端位于标题和正文之间，桌面保持右侧 sticky rail。
 - `src/lib/tags.ts`
@@ -58,7 +62,8 @@ BlogSite 已从通用卡片式阅读主题收敛为 Ink & Signal：以纸墨色�
   - 新增静态 404，提供返回首页和浏览博客两个动作。
 - `tests/theme-render.test.ts`
   - 增加 token、颜色边界、标签、页面结构、断点、reduced-motion、
-    移动锚点和中文标题换行回归测试。
+    移动锚点、对比度、触控目标、搜索焦点和中文标题换行回归测试。
+  - 颜色边界递归扫描全部展示层文件，不依赖固定文件白名单。
 
 设计规范与实施计划分别位于：
 
@@ -69,7 +74,7 @@ BlogSite 已从通用卡片式阅读主题收敛为 Ink & Signal：以纸墨色�
 
 自动化门禁：
 
-- `pnpm test`：29/29 通过。
+- `pnpm test`：33/33 通过。
 - `pnpm check:publish`：`scanned=7, errors=0, warnings=0`。
 - `pnpm build`：Astro check 0 errors、0 warnings、0 hints；14 个页面构建完成。
 - `git diff --check`：通过。
@@ -80,7 +85,7 @@ Playwright 使用独立 `4322` 端口和 `BASE_PATH=/BlogSite`，验证：
 - 宽度：390px、768px、1440px。
 - 主题：light、dark。
 - 结果：30/30 张截图通过，无横向溢出、console error 或 page error。
-- 交互：主题切换与持久化、搜索打开/关闭、标签锚点均通过。
+- 交互：主题切换与持久化、搜索焦点循环/关闭恢复、标签锚点均通过。
 
 截图保存在本地目录 `output/playwright/ink-signal/`。人工检查覆盖三档首页、
 移动与桌面文章、标签和 404；检查中发现并修复了中文标题使用 `ch` 导致的孤行。
