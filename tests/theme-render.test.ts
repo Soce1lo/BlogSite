@@ -10,6 +10,41 @@ async function readProjectFile(relativePath: string): Promise<string> {
   return readFile(path.join(projectRoot, relativePath), "utf8");
 }
 
+test("Ink & Signal token 覆盖颜色、字体、排版、间距、圆角、阴影和代码", async () => {
+  const tokens = await readProjectFile("src/styles/tokens.css");
+  const css = await readProjectFile("src/styles/global.css");
+
+  assert.match(css, /@import\s+"\.\/tokens\.css";/);
+  for (const token of [
+    "--color-page",
+    "--font-display",
+    "--text-base",
+    "--leading-reading",
+    "--space-6",
+    "--radius-md",
+    "--shadow-float",
+    "--code-background",
+  ]) {
+    assert.match(tokens, new RegExp(`${token}:`));
+  }
+  assert.match(tokens, /light-dark\(/);
+});
+
+test("展示层颜色字面量只允许出现在 tokens.css", async () => {
+  const files = [
+    "src/styles/global.css",
+    "src/layouts/BaseLayout.astro",
+    "src/layouts/ContentLayout.astro",
+    "src/components/ContentList.astro",
+    "src/pages/index.astro",
+  ];
+  const colorLiteral = /#[0-9a-f]{3,8}\b|(?:rgb|hsl)a?\(/i;
+
+  for (const file of files) {
+    assert.doesNotMatch(await readProjectFile(file), colorLiteral, file);
+  }
+});
+
 test("文章布局隔离页面标题和正文 prose，避免同步正文首个 H1 重复显示", async () => {
   const layout = await readProjectFile("src/layouts/ContentLayout.astro");
   const css = await readProjectFile("src/styles/global.css");

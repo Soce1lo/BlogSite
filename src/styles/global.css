@@ -1,77 +1,7 @@
-:root {
-  color-scheme: light;
-  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-  --background: #ffffff;
-  --background-soft: #f6fafc;
-  --surface: #ffffff;
-  --surface-muted: #eef6f9;
-  --text: #11181c;
-  --muted: #5f6f78;
-  --subtle: #7c8992;
-  --accent: #197ca8;
-  --accent-strong: #0f5f85;
-  --accent-soft: rgba(25, 124, 168, 0.1);
-  --success: #2a8c55;
-  --warning: #b76516;
-  --border: rgba(55, 68, 76, 0.18);
-  --border-strong: rgba(55, 68, 76, 0.32);
-  --shadow: 0 16px 44px rgba(17, 24, 28, 0.08);
-  --content-width: 48rem;
-  --wide-width: 72rem;
-  --nav-height: 4rem;
-  --radius: 8px;
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-10: 2.5rem;
-  --space-12: 3rem;
-  font-family: var(--font-sans);
-  line-height: 1.65;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --background: #07090b;
-    --background-soft: #11171b;
-    --surface: #101519;
-    --surface-muted: #162027;
-    --text: #f4f8fa;
-    --muted: #b8c4ca;
-    --subtle: #8fa0aa;
-    --accent: #74c7dc;
-    --accent-strong: #a7dce9;
-    --accent-soft: rgba(116, 199, 220, 0.15);
-    --success: #56d083;
-    --warning: #ffb15f;
-    --border: rgba(219, 232, 238, 0.16);
-    --border-strong: rgba(219, 232, 238, 0.28);
-    --shadow: 0 18px 48px rgba(0, 0, 0, 0.34);
-  }
-}
+@import "./tokens.css";
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --background: #07090b;
-  --background-soft: #11171b;
-  --surface: #101519;
-  --surface-muted: #162027;
-  --text: #f4f8fa;
-  --muted: #b8c4ca;
-  --subtle: #8fa0aa;
-  --accent: #74c7dc;
-  --accent-strong: #a7dce9;
-  --accent-soft: rgba(116, 199, 220, 0.15);
-  --success: #56d083;
-  --warning: #ffb15f;
-  --border: rgba(219, 232, 238, 0.16);
-  --border-strong: rgba(219, 232, 238, 0.28);
-  --shadow: 0 18px 48px rgba(0, 0, 0, 0.34);
 }
 
 [data-theme="light"] {
@@ -382,7 +312,7 @@ nav a:hover {
 
 .content-card:hover {
   border-color: var(--border-strong);
-  box-shadow: 0 10px 30px rgba(17, 24, 28, 0.06);
+  box-shadow: var(--shadow-hover);
   transform: translateY(-1px);
 }
 
@@ -724,7 +654,7 @@ nav a:hover {
   display: grid;
   place-items: start center;
   padding: 12vh var(--space-4) var(--space-4);
-  background: rgba(7, 9, 11, 0.42);
+  background: var(--color-overlay);
 }
 
 .search-dialog {
