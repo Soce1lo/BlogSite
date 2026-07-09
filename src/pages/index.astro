@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import type { SiteEntry } from "../lib/content";
 import { isPublicEntry, sortNewestFirst } from "../lib/content";
 import { withBase } from "../lib/site";
 
@@ -10,58 +11,117 @@ const [blog, notes, projects] = await Promise.all([
   getCollection("projects"),
 ]);
 
+const publicBlog = blog.filter(isPublicEntry).sort(sortNewestFirst);
+const publicNotes = notes.filter(isPublicEntry).sort(sortNewestFirst);
+const publicProjects = projects.filter(isPublicEntry).sort(sortNewestFirst);
+const recentEntries: SiteEntry[] = [...publicBlog, ...publicNotes, ...publicProjects]
+  .sort(sortNewestFirst)
+  .slice(0, 4);
+const sectionLabels: Record<SiteEntry["collection"], string> = {
+  blog: "博客",
+  notes: "笔记",
+  projects: "项目",
+};
 const sections = [
   {
-    title: "最近博客",
-    description: "较完整的主题文章与实践总结。",
+    key: "blog",
+    index: "01",
+    title: "博客",
+    description: "围绕一个主题展开的完整文章与实践总结。",
     href: "blog/",
-    entries: blog.filter(isPublicEntry).sort(sortNewestFirst).slice(0, 3),
+    entries: publicBlog.slice(0, 3),
+    total: publicBlog.length,
   },
   {
-    title: "最近公开笔记",
+    key: "notes",
+    index: "02",
+    title: "笔记",
     description: "短篇观察、方法和持续维护的知识片段。",
     href: "notes/",
-    entries: notes.filter(isPublicEntry).sort(sortNewestFirst).slice(0, 3),
+    entries: publicNotes.slice(0, 3),
+    total: publicNotes.length,
   },
   {
-    title: "项目入口",
+    key: "projects",
+    index: "03",
+    title: "项目",
     description: "正在建设或已经完成的公开项目记录。",
     href: "projects/",
-    entries: projects.filter(isPublicEntry).sort(sortNewestFirst).slice(0, 3),
+    entries: publicProjects.slice(0, 3),
+    total: publicProjects.length,
   },
 ];
 ---
 
 <BaseLayout>
-  <section class="hero">
-    <p class="eyebrow">个人博客与公开知识库</p>
-    <h1>记录值得公开的思考与实践。</h1>
-    <p>
-      这里汇集经过整理的博客、笔记和项目记录。内容以静态页面发布，并提供
-      <a href={withBase("rss.xml")}>RSS 订阅</a>。
-    </p>
+  <section class="home-intro">
+    <div class="home-intro__copy">
+      <p class="eyebrow">BlogSite / 公开知识库</p>
+      <h1>把本地知识整理成<br />值得公开的文本。</h1>
+      <p>
+        这里收录经过筛选的技术实践、知识笔记和项目记录。保留清晰来源，
+        也保留继续修订的空间。
+      </p>
+      <a class="text-link" href={withBase("rss.xml")}>订阅 RSS <span aria-hidden="true">↗</span></a>
+    </div>
+
+    <aside class="recent-stream" aria-labelledby="recent-heading">
+      <header>
+        <p class="eyebrow">Latest signal</p>
+        <h2 id="recent-heading">最近更新</h2>
+      </header>
+      <ol>
+        {
+          recentEntries.map((entry) => (
+            <li>
+              <a href={withBase(`${entry.collection}/${entry.id}/`)}>
+                <span class="recent-stream__meta">
+                  <time datetime={entry.data.pubDate.toISOString()}>
+                    {entry.data.pubDate.toLocaleDateString("zh-CN")}
+                  </time>
+                  <span>{sectionLabels[entry.collection]}</span>
+                </span>
+                <strong>{entry.data.title}</strong>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </aside>
   </section>
 
-  <div class="section-grid">
+  <div class="collection-index" aria-label="内容分类">
     {
       sections.map((section) => (
-        <section class="section-card">
-          <p class="eyebrow">{section.description}</p>
-          <h2><a href={withBase(section.href)}>{section.title}</a></h2>
+        <section class="collection-row">
+          <header class="collection-row__label">
+            <span>{section.index}</span>
+            <div>
+              <h2><a href={withBase(section.href)}>{section.title}</a></h2>
+              <p>{section.description}</p>
+            </div>
+            <a class="collection-row__count" href={withBase(section.href)}>
+              {section.total} 篇
+            </a>
+          </header>
           {section.entries.length === 0 ? (
             <p class="empty-state">暂无公开内容。</p>
           ) : (
-            <ul>
+            <ol class="collection-row__entries">
               {section.entries.map((entry) => (
                 <li>
-                  <a href={withBase(`${entry.collection}/${entry.id}/`)}>{entry.data.title}</a>
+                  <a href={withBase(`${entry.collection}/${entry.id}/`)}>
+                    <span>{entry.data.title}</span>
+                    <time datetime={entry.data.pubDate.toISOString()}>
+                      {entry.data.pubDate.toLocaleDateString("zh-CN")}
+                    </time>
+                  </a>
                 </li>
               ))}
-            </ul>
+            </ol>
           )}
         </section>
       ))
     }
   </div>
 </BaseLayout>
-

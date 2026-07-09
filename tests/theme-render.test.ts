@@ -102,6 +102,23 @@ test("标签目录渲染公开分组且内容列表链接到对应锚点", async
   assert.match(contentList, /withBase\("tags\/"\)/);
 });
 
+test("首页、标签和 404 提供 Ink & Signal 信息结构", async () => {
+  const notFoundPath = path.join(projectRoot, "src/pages/404.astro");
+  assert.equal(existsSync(notFoundPath), true, "缺少 404 页面");
+
+  const home = await readProjectFile("src/pages/index.astro");
+  const tags = await readProjectFile("src/pages/tags/index.astro");
+  const notFound = await readProjectFile("src/pages/404.astro");
+  const layout = await readProjectFile("src/layouts/BaseLayout.astro");
+  assert.match(home, /class="home-intro"/);
+  assert.match(home, /class="recent-stream"/);
+  assert.match(home, /class="collection-index"/);
+  assert.match(tags, /class="tag-directory"/);
+  assert.match(notFound, /返回首页/);
+  assert.match(notFound, /浏览博客/);
+  assert.match(layout, /withBase\("tags\/"\)/);
+});
+
 test("文章布局隔离页面标题和正文 prose，避免同步正文首个 H1 重复显示", async () => {
   const layout = await readProjectFile("src/layouts/ContentLayout.astro");
   const css = await readProjectFile("src/styles/global.css");
