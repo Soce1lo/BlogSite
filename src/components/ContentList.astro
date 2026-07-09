@@ -30,7 +30,20 @@ const { entries, emptyMessage = "暂无公开内容。" } = Astro.props;
                 {entry.data.title}
               </a>
             </h2>
-            <p>{entry.data.description}</p>
+            {
+              (entry.data.series || entry.data.topic) && (
+                <p class="content-card__taxonomy">
+                  {entry.data.series && (
+                    <span>
+                      {entry.data.series}
+                      {entry.data.seriesOrder !== undefined ? ` #${entry.data.seriesOrder}` : ""}
+                    </span>
+                  )}
+                  {entry.data.topic && <span>{entry.data.topic}</span>}
+                </p>
+              )
+            }
+            <p class="content-card__description">{entry.data.description}</p>
             {entry.data.tags.length > 0 && (
               <ul class="tag-list" aria-label="标签">
                 {entry.data.tags.map((tag) => (

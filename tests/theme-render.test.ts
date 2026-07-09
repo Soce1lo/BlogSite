@@ -121,17 +121,22 @@ test("Ink & Signal token 覆盖颜色、字体、排版、间距、圆角、阴�
   assert.match(css, /@import\s+"\.\/tokens\.css";/);
   for (const token of [
     "--color-page",
+    "--color-annotation",
     "--font-display",
     "--text-base",
     "--leading-reading",
     "--space-6",
+    "--rule-width",
     "--radius-md",
     "--shadow-float",
     "--code-background",
+    "--toc-width",
   ]) {
     assert.match(tokens, new RegExp(`${token}:`));
   }
   assert.match(tokens, /light-dark\(/);
+  assert.match(tokens, /--tracking-tight:\s*0;/);
+  assert.doesNotMatch(tokens, /vw/);
 });
 
 test("亮色 fog 与 signal 在 paper 上达到 WCAG AA 正文对比度", async () => {
@@ -266,7 +271,10 @@ test("内容详情页使用 render headings 生成文章目录 rail", async () =
   assert.match(css, /\.content-toc/);
   assert.match(css, /\.reading-progress/);
   assert.match(css, /\.content-toc__link\.is-active/);
-  assert.match(css, /grid-template-columns:\s*minmax\(0,\s*var\(--content-width\)\)\s*minmax\(12rem,\s*16rem\)/);
+  assert.match(
+    css,
+    /grid-template-columns:\s*minmax\(0,\s*var\(--content-width\)\)\s*minmax\(var\(--toc-min-width\),\s*var\(--toc-width\)\)/,
+  );
 
   for (const route of [
     "src/pages/blog/[...slug].astro",

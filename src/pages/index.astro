@@ -51,6 +51,11 @@ const sections = [
     total: publicProjects.length,
   },
 ];
+const homeStats = sections.map((section) => ({
+  label: section.title,
+  value: section.total,
+  href: section.href,
+}));
 ---
 
 <BaseLayout>
@@ -62,6 +67,18 @@ const sections = [
         这里收录经过筛选的技术实践、知识笔记和项目记录。保留清晰来源，
         也保留继续修订的空间。
       </p>
+      <ul class="home-stats" aria-label="公开内容计数">
+        {
+          homeStats.map((stat) => (
+            <li>
+              <a href={withBase(stat.href)}>
+                <strong>{stat.value}</strong>
+                <span>{stat.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
       <a class="text-link" href={withBase("rss.xml")}>订阅 RSS <span aria-hidden="true">↗</span></a>
     </div>
 
