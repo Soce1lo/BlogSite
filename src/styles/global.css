@@ -1142,6 +1142,10 @@ img {
 }
 
 @media (max-width: 30rem) {
+  .site-header {
+    position: static;
+  }
+
   .site-header__inner,
   .page-shell,
   .site-footer {
@@ -1226,6 +1230,15 @@ img {
     font-size: var(--text-base);
   }
 
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    scroll-margin-top: var(--space-4);
+  }
+
   .prose pre {
     padding: var(--space-4);
   }
@@ -1254,7 +1267,6 @@ img {
     transition-duration: 0.01ms !important;
   }
 
-  .skip-link,
   .text-link span,
   .content-card {
     transform: none;

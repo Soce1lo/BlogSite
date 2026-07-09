@@ -13,6 +13,27 @@ async function readProjectFile(relativePath: string): Promise<string> {
   return readFile(path.join(projectRoot, relativePath), "utf8");
 }
 
+function extractCssBlock(css: string, marker: string): string {
+  const markerIndex = css.indexOf(marker);
+  assert.notEqual(markerIndex, -1, `缺少 CSS 块：${marker}`);
+  const openingBrace = css.indexOf("{", markerIndex);
+  assert.notEqual(openingBrace, -1, `CSS 块缺少起始括号：${marker}`);
+
+  let depth = 0;
+  for (let index = openingBrace; index < css.length; index += 1) {
+    if (css[index] === "{") {
+      depth += 1;
+    } else if (css[index] === "}") {
+      depth -= 1;
+      if (depth === 0) {
+        return css.slice(openingBrace + 1, index);
+      }
+    }
+  }
+
+  assert.fail(`CSS 块缺少结束括号：${marker}`);
+}
+
 function makeEntry(
   collection: SiteEntry["collection"],
   id: string,
@@ -183,6 +204,24 @@ test("主题样式覆盖首页、列表、标签、404、阅读和 reduced motio
   assert.match(css, /@media\s+\(prefers-reduced-motion:\s*reduce\)/);
   assert.match(css, /@media\s+\(max-width:\s*48rem\)/);
   assert.match(css, /@media\s+\(max-width:\s*30rem\)/);
+});
+
+test("reduced motion 不覆盖跳转正文链接的隐藏与聚焦状态", async () => {
+  const css = await readProjectFile("src/styles/global.css");
+  const reducedMotion = extractCssBlock(css, "@media (prefers-reduced-motion: reduce)");
+
+  assert.doesNotMatch(reducedMotion, /\.skip-link/);
+});
+
+test("手机导航退出 sticky 并重设正文标题锚点偏移", async () => {
+  const css = await readProjectFile("src/styles/global.css");
+  const mobile = extractCssBlock(css, "@media (max-width: 30rem)");
+
+  assert.match(mobile, /\.site-header\s*\{[\s\S]*?position:\s*static;/);
+  assert.match(
+    mobile,
+    /\.prose h1,[\s\S]*?\.prose h6\s*\{[\s\S]*?scroll-margin-top:\s*var\(--space-4\);/,
+  );
 });
 
 test("搜索索引只包含公开内容并安全序列化到页面脚本", () => {
