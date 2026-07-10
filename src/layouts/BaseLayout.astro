@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import "../styles/global.css";
+import { siteProfile } from "../data/site-profile";
 import type { SiteEntry } from "../lib/content";
 import { buildSearchItems, serializeForInlineJson } from "../lib/search";
 import { withBase } from "../lib/site";
@@ -11,10 +12,10 @@ interface Props {
 }
 
 const {
-  title = "BlogSite",
-  description = "一个用于发布博客、笔记和项目记录的个人站点。",
+  title = siteProfile.name,
+  description = "Soce1lo 的成长输出日志：记录思考、技术学习与项目实践。",
 } = Astro.props;
-const pageTitle = title === "BlogSite" ? title : `${title} | BlogSite`;
+const pageTitle = title === siteProfile.name ? title : `${title} | ${siteProfile.name}`;
 
 const [blogEntries, noteEntries, projectEntries] = await Promise.all([
   getCollection("blog"),
@@ -37,7 +38,7 @@ const searchJson = serializeForInlineJson(searchItems);
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href={withBase("favicon.svg")} />
-    <link rel="alternate" type="application/rss+xml" title="BlogSite RSS" href={withBase("rss.xml")} />
+    <link rel="alternate" type="application/rss+xml" title="Soce1lo RSS" href={withBase("rss.xml")} />
     <title>{pageTitle}</title>
     <script is:inline>
       (() => {
@@ -56,15 +57,15 @@ const searchJson = serializeForInlineJson(searchItems);
     <header class="site-header">
       <div class="site-header__inner">
         <div class="site-brand">
-          <a class="site-title" href={withBase("")}>BlogSite</a>
-          <span>公开知识库</span>
+          <a class="site-title" href={withBase("")}>{siteProfile.name}</a>
+          <span>成长输出日志</span>
         </div>
         <div class="site-navigation">
           <nav aria-label="主导航">
-            <a href={withBase("blog/")}>博客</a>
-            <a href={withBase("notes/")}>笔记</a>
+            <a href={withBase("blog/")}>思考</a>
+            <a href={withBase("notes/")}>学习</a>
             <a href={withBase("projects/")}>项目</a>
-            <a href={withBase("tags/")}>标签</a>
+            <a href={withBase("tags/")}>主题</a>
             <a href={withBase("about/")}>关于</a>
           </nav>
           <div class="site-actions">
@@ -82,7 +83,7 @@ const searchJson = serializeForInlineJson(searchItems);
       <slot />
     </main>
     <footer class="site-footer">
-      <p>内容以静态页面发布。<a href={withBase("rss.xml")}>订阅 RSS</a></p>
+      <p>{siteProfile.boundary} <a href={withBase("rss.xml")}>订阅 RSS</a></p>
     </footer>
     <div class="search-panel" data-search-panel hidden>
       <section class="search-dialog" role="dialog" aria-modal="true" aria-label="站内搜索">
@@ -93,7 +94,7 @@ const searchJson = serializeForInlineJson(searchItems);
               type="search"
               data-search-input
               autocomplete="off"
-              placeholder="标题、摘要、标签"
+              placeholder="标题、摘要、主题"
             />
           </label>
           <button class="control-button" type="button" data-search-close aria-label="关闭搜索">

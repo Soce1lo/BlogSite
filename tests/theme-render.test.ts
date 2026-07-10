@@ -11,16 +11,18 @@ import { buildTagGroups, tagId } from "../src/lib/tags";
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
 const execFileAsync = promisify(execFile);
+let buildPromise: Promise<void> | undefined;
 
 async function readProjectFile(relativePath: string): Promise<string> {
   return readFile(path.join(projectRoot, relativePath), "utf8");
 }
 
 async function buildProject(): Promise<void> {
-  await execFileAsync("pnpm", ["build"], {
+  buildPromise ??= execFileAsync("pnpm", ["build"], {
     cwd: projectRoot,
     maxBuffer: 10 * 1024 * 1024,
-  });
+  }).then(() => undefined);
+  await buildPromise;
 }
 
 async function discoverDisplayFiles(): Promise<string[]> {
@@ -207,30 +209,66 @@ test("标签目录渲染公开分组且内容列表链接到对应锚点", async
   assert.match(contentList, /withBase\("tags\/"\)/);
 });
 
-test("首页、标签和 404 提供 Ink & Signal 信息结构", async () => {
+test("全站对外品牌与导航语义统一为 Soce1lo 成长输出", async () => {
   const notFoundPath = path.join(projectRoot, "src/pages/404.astro");
   assert.equal(existsSync(notFoundPath), true, "缺少 404 页面");
 
-  const home = await readProjectFile("src/pages/index.astro");
   const tags = await readProjectFile("src/pages/tags/index.astro");
   const notFound = await readProjectFile("src/pages/404.astro");
   const layout = await readProjectFile("src/layouts/BaseLayout.astro");
-  assert.match(home, /class="home-intro"/);
-  assert.match(home, /class="recent-stream"/);
-  assert.match(home, /class="collection-index"/);
+  const profile = await readProjectFile("src/data/site-profile.ts");
+  const search = await readProjectFile("src/lib/search.ts");
+  const blogIndex = await readProjectFile("src/pages/blog/index.astro");
+  const notesIndex = await readProjectFile("src/pages/notes/index.astro");
+  const projectsIndex = await readProjectFile("src/pages/projects/index.astro");
+  const blogDetail = await readProjectFile("src/pages/blog/[...slug].astro");
+  const notesDetail = await readProjectFile("src/pages/notes/[...slug].astro");
+
+  assert.match(profile, /name: "Soce1lo"/);
+  assert.match(profile, /输入留在私人系统，输出经过选择后公开。/);
+  assert.match(layout, /title = siteProfile\.name/);
+  assert.match(layout, /class="site-title"[^>]*>\{siteProfile\.name\}</);
+  assert.match(layout, />成长输出日志</);
+  assert.match(layout, />思考</);
+  assert.match(layout, />学习</);
+  assert.match(layout, /siteProfile\.boundary/);
+  assert.match(blogIndex, /<h1>思考<\/h1>/);
+  assert.match(notesIndex, /<h1>学习<\/h1>/);
+  assert.match(projectsIndex, /<h1>项目<\/h1>/);
+  assert.match(blogDetail, /sectionLabel="思考"/);
+  assert.match(notesDetail, /sectionLabel="学习"/);
+  assert.match(search, /blog: "思考"/);
+  assert.match(search, /notes: "学习"/);
+  assert.match(tags, /<h1>主题<\/h1>/);
   assert.match(tags, /class="tag-directory"/);
   assert.match(notFound, /返回首页/);
-  assert.match(notFound, /浏览博客/);
+  assert.match(notFound, /浏览思考/);
+  assert.match(notFound, /查看主题/);
   assert.match(layout, /withBase\("tags\/"\)/);
 });
 
-test("首页最近更新只展示设计规范要求的三条内容", async () => {
-  const home = await readProjectFile("src/pages/index.astro");
+test("RSS 聚合三个公开集合并排除 starter 内容", async () => {
+  const rssPage = await readProjectFile("src/pages/rss.xml.js");
+  assert.match(rssPage, /getCollection\("blog"\)/);
+  assert.match(rssPage, /getCollection\("notes"\)/);
+  assert.match(rssPage, /getCollection\("projects"\)/);
+  assert.match(rssPage, /entry\.collection/);
 
-  assert.match(
-    home,
-    /const recentEntries:[\s\S]*?\.sort\(sortNewestFirst\)[\s\S]*?\.slice\(0,\s*3\);/,
-  );
+  for (const starter of [
+    "src/content/blog/welcome-to-blogsite.md",
+    "src/content/notes/content-boundaries.md",
+    "src/content/projects/blogsite-v1.md",
+  ]) {
+    assert.match(await readProjectFile(starter), /^visibility:\s*unlisted$/m, starter);
+  }
+
+  await buildProject();
+  const rss = await readProjectFile("dist/rss.xml");
+  assert.match(rss, /Soce1lo/);
+  assert.match(rss, /从 Logseq 到 Obsidian/);
+  assert.doesNotMatch(rss, /欢迎来到 BlogSite/);
+  assert.doesNotMatch(rss, /公开内容边界/);
+  assert.doesNotMatch(rss, /BlogSite V1/);
 });
 
 test("文章详情构建产物只暴露一个 canonical H1", async () => {

@@ -8,11 +8,10 @@ category: "发布规范"
 tags:
   - 内容治理
   - 示例
-visibility: public
+visibility: unlisted
 sourceVaultPath: "examples/content-boundaries.md"
 ---
 
 BlogSite 只保存公开发布副本和公开资源，不保存完整私人知识库。
 
 在后续阶段接入同步功能前，所有内容均为仓库内的独立示例材料。
-

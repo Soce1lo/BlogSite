@@ -8,7 +8,7 @@ category: "站点说明"
 tags:
   - Astro
   - 示例
-visibility: public
+visibility: unlisted
 sourceVaultPath: "examples/welcome-to-blogsite.md"
 ---
 
