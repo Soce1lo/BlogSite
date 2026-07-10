@@ -112,10 +112,13 @@ export function evaluatePublishCandidate(document: VaultDocument): CandidateEval
   }
 
   const rawOutputKind = getString(document.data, "publish_kind");
-  if (rawOutputKind && !isOutputKind(rawOutputKind)) {
-    return { reason: "invalid-publish-kind" };
+  let outputKind = defaultOutputKind(publishTarget);
+  if (rawOutputKind) {
+    if (!isOutputKind(rawOutputKind)) {
+      return { reason: "invalid-publish-kind" };
+    }
+    outputKind = rawOutputKind;
   }
-  const outputKind = rawOutputKind || defaultOutputKind(publishTarget);
 
   const publishSlug = getString(document.data, "publish_slug");
   if (!publishSlug) {
