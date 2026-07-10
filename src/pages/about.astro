@@ -3,12 +3,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="关于" description="关于 BlogSite 及其内容边界。">
-  <article class="prose">
+  <header class="page-heading">
     <p class="eyebrow">About</p>
     <h1>关于本站</h1>
-    <p class="lead">
-      BlogSite 是一个独立的静态发布站点，用于呈现经过明确选择的公开内容。
-    </p>
+    <p>BlogSite 是一个独立的静态发布站点，用于呈现经过明确选择的公开内容。</p>
+  </header>
+
+  <article class="prose">
     <h2>内容范围</h2>
     <p>
       站点分为博客、笔记和项目三类内容。当前仓库仅包含公开发布副本与示例材料，不包含私人知识库。
@@ -19,4 +20,3 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </p>
   </article>
 </BaseLayout>
-

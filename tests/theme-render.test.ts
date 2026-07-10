@@ -1,16 +1,26 @@
 import assert from "node:assert/strict";
+import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
+import { promisify } from "node:util";
 import type { SiteEntry } from "../src/lib/content";
 import { buildSearchItems, serializeForInlineJson } from "../src/lib/search";
 import { buildTagGroups, tagId } from "../src/lib/tags";
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
+const execFileAsync = promisify(execFile);
 
 async function readProjectFile(relativePath: string): Promise<string> {
   return readFile(path.join(projectRoot, relativePath), "utf8");
+}
+
+async function buildProject(): Promise<void> {
+  await execFileAsync("pnpm", ["build"], {
+    cwd: projectRoot,
+    maxBuffer: 10 * 1024 * 1024,
+  });
 }
 
 async function discoverDisplayFiles(): Promise<string[]> {
@@ -188,8 +198,11 @@ test("标签目录渲染公开分组且内容列表链接到对应锚点", async
   const tagsPage = await readProjectFile("src/pages/tags/index.astro");
   const contentList = await readProjectFile("src/components/ContentList.astro");
   assert.match(tagsPage, /buildTagGroups/);
+  assert.match(tagsPage, /const tagCloud\s*=/);
+  assert.match(tagsPage, /class="tag-cloud"/);
   assert.match(tagsPage, /class="tag-directory"/);
   assert.match(tagsPage, /id=\{group\.id\}/);
+  assert.match(tagsPage, /href=\{`#\$\{group\.id\}`\}/);
   assert.match(contentList, /tagId\(tag\)/);
   assert.match(contentList, /withBase\("tags\/"\)/);
 });
@@ -220,14 +233,14 @@ test("首页最近更新只展示设计规范要求的三条内容", async () =>
   );
 });
 
-test("文章布局隔离页面标题和正文 prose，避免同步正文首个 H1 重复显示", async () => {
-  const layout = await readProjectFile("src/layouts/ContentLayout.astro");
-  const css = await readProjectFile("src/styles/global.css");
+test("文章详情构建产物只暴露一个 canonical H1", async () => {
+  await buildProject();
+  const html = await readProjectFile("dist/blog/logseq-to-obsidian-migration/index.html");
 
-  assert.match(layout, /<article class="content-detail">/);
-  assert.match(layout, /<div class="prose content-body">/);
-  assert.match(css, /\.content-body\s*>\s*h1:first-child\s*\{/);
-  assert.match(css, /\.content-body\s*>\s*h1:first-child[\s\S]*display:\s*none/);
+  assert.equal(
+    [...html.matchAll(/<h1(?:\s[^>]*)?>从 Logseq 到 Obsidian：迁移回顾<\/h1>/g)].length,
+    1,
+  );
 });
 
 test("基础布局提供 Tone 风格的搜索面板和主题切换入口", async () => {

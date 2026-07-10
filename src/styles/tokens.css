@@ -95,6 +95,7 @@
   --home-stat-min-width: 6.75rem;
   --toc-min-width: 12rem;
   --toc-width: 16rem;
+  --toc-compact-max-height: 16rem;
   --wide-width: 74rem;
   --nav-height: 4.25rem;
   --control-height: 2.5rem;

@@ -597,12 +597,12 @@ img {
 .tag-list a {
   display: inline-flex;
   align-items: center;
-  min-height: var(--control-height);
+  min-height: 2rem;
   padding-inline: var(--space-3);
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-pill);
-  color: var(--muted);
-  background: var(--accent-wash);
+  color: var(--subtle);
+  background: transparent;
   font-family: var(--font-utility);
   font-size: var(--text-xs);
   text-decoration: none;
@@ -611,7 +611,7 @@ img {
 .tag-list a:hover {
   border-color: var(--border-strong);
   color: var(--accent-strong);
-  background: var(--secondary-soft);
+  background: var(--accent-wash);
 }
 
 /* 详情页：标题、正文和目录共享一条可预测的阅读网格。 */
@@ -665,10 +665,6 @@ img {
 .content-detail__taxonomy {
   margin-top: var(--space-4);
   color: var(--accent-strong);
-}
-
-.content-body > h1:first-child {
-  display: none;
 }
 
 .content-toc {
@@ -759,12 +755,12 @@ img {
 }
 
 .prose h2 {
-  margin-top: var(--space-16);
+  margin-top: var(--space-12);
   font-size: var(--text-3xl);
 }
 
 .prose h3 {
-  margin-top: var(--space-10);
+  margin-top: var(--space-8);
   font-size: var(--text-2xl);
 }
 
@@ -925,6 +921,45 @@ img {
   margin-top: var(--space-8);
   padding-top: var(--space-8);
   border-top: var(--rule-width) solid var(--rule);
+}
+
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  max-width: var(--content-wide-width);
+  margin-top: var(--space-6);
+}
+
+.tag-cloud__item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-height: var(--control-height);
+  padding-inline: var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  background: var(--surface);
+  text-decoration: none;
+}
+
+.tag-cloud__item:hover {
+  border-color: var(--border-strong);
+  color: var(--accent-strong);
+  background: var(--accent-wash);
+}
+
+.tag-cloud__item small {
+  color: var(--subtle);
+  font-family: var(--font-utility);
+  font-size: var(--text-xs);
+}
+
+.tag-cloud__item--count-3,
+.tag-cloud__item--count-4 {
+  border-color: var(--border-strong);
+  background: var(--accent-wash);
 }
 
 .tag-group {
@@ -1180,9 +1215,10 @@ img {
   .content-toc {
     position: static;
     grid-row: 3;
-    max-height: none;
+    max-height: var(--toc-compact-max-height);
     margin-bottom: var(--space-8);
-    padding: var(--space-5);
+    overflow-y: auto;
+    padding: var(--space-4);
     border: var(--border-width) solid var(--border);
     border-top: var(--rule-width) solid var(--accent);
     border-radius: var(--radius-sm);

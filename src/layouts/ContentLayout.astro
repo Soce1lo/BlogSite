@@ -16,6 +16,31 @@ interface Props {
 const { entry, sectionLabel, headings = [] } = Astro.props;
 const sectionHref = withBase(`${entry.collection}/`);
 const tocHeadings = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
+const bodyHtml = stripLeadingDuplicateH1(await Astro.slots.render("default"), entry.data.title);
+
+function stripLeadingDuplicateH1(html: string, title: string): string {
+  const leadingH1Pattern = /^\s*<h1(?:\s[^>]*)?>([\s\S]*?)<\/h1>\s*/i;
+  const match = html.match(leadingH1Pattern);
+
+  if (!match) {
+    return html;
+  }
+
+  return normalizeHtmlText(match[1]) === normalizeHtmlText(title) ? html.slice(match[0].length) : html;
+}
+
+function normalizeHtmlText(value: string): string {
+  return value
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, "\"")
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 ---
 
 <BaseLayout title={entry.data.title} description={entry.data.description}>
@@ -70,9 +95,7 @@ const tocHeadings = headings.filter((heading) => heading.depth >= 2 && heading.d
           </aside>
         )
       }
-      <div class="prose content-body">
-        <slot />
-      </div>
+      <div class="prose content-body" set:html={bodyHtml} />
     </article>
   </div>
 </BaseLayout>
