@@ -92,7 +92,10 @@
 
   --content-width: 43rem;
   --content-wide-width: 58rem;
-  --home-stat-min-width: 6.75rem;
+  --home-now-width: 18rem;
+  --output-date-width: 7rem;
+  --output-marker-size: 0.625rem;
+  --output-spine-offset: 0.3125rem;
   --toc-min-width: 12rem;
   --toc-width: 16rem;
   --toc-compact-max-height: 16rem;

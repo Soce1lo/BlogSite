@@ -1,0 +1,47 @@
+---
+import type { ResolvedThread } from "../lib/output";
+import { getOutputDate } from "../lib/output";
+import { withBase } from "../lib/site";
+
+interface Props {
+  threads: ResolvedThread[];
+}
+
+const { threads } = Astro.props;
+---
+
+<ol class="long-threads">
+  {
+    threads.map((thread) => (
+      <li class="long-thread" id={`thread-${thread.id}`}>
+        <header class="long-thread__identity">
+          <p class="long-thread__meta">
+            {thread.entries.length} 条记录
+            <span aria-hidden="true">·</span>
+            更新于
+            <time datetime={thread.latestDate.toISOString()}>
+              {thread.latestDate.toLocaleDateString("zh-CN")}
+            </time>
+          </p>
+          <h3>{thread.label}</h3>
+          <p>{thread.description}</p>
+        </header>
+        <ol class="long-thread__entries">
+          {thread.entries.slice(0, 3).map((entry) => (
+            <li>
+              <a href={withBase(`${entry.collection}/${entry.id}/`)}>
+                <span>{entry.data.title}</span>
+                <time datetime={getOutputDate(entry).toISOString()}>
+                  {getOutputDate(entry).toLocaleDateString("zh-CN", {
+                    year: "numeric",
+                    month: "2-digit",
+                  })}
+                </time>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </li>
+    ))
+  }
+</ol>

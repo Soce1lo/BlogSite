@@ -271,6 +271,42 @@ test("RSS 聚合三个公开集合并排除 starter 内容", async () => {
   assert.doesNotMatch(rss, /BlogSite V1/);
 });
 
+test("首页与 About 呈现 Soce1lo 的成长输出结构和公开管道", async () => {
+  const outputLogPath = path.join(projectRoot, "src/components/OutputLog.astro");
+  const longThreadsPath = path.join(projectRoot, "src/components/LongThreads.astro");
+  assert.equal(existsSync(outputLogPath), true, "缺少 OutputLog 组件");
+  assert.equal(existsSync(longThreadsPath), true, "缺少 LongThreads 组件");
+
+  const home = await readProjectFile("src/pages/index.astro");
+  const about = await readProjectFile("src/pages/about.astro");
+  const outputLog = await readProjectFile("src/components/OutputLog.astro");
+  const longThreads = await readProjectFile("src/components/LongThreads.astro");
+
+  assert.match(home, /siteProfile\.title/);
+  assert.match(home, /class="growth-hero"/);
+  assert.match(home, /class="home-now"/);
+  assert.match(home, /<OutputLog groups=\{outputGroups\}/);
+  assert.match(home, /<LongThreads threads=\{threads\}/);
+  assert.match(home, /class="selected-section"/);
+  assert.match(home, /class="archive-links"/);
+  assert.doesNotMatch(home, /homeStats|公开内容计数|collection-index/);
+  assert.match(outputLog, /class="output-log"/);
+  assert.match(outputLog, /class="output-log__marker"/);
+  assert.match(outputLog, /getOutputKind/);
+  assert.match(longThreads, /class="long-threads"/);
+
+  assert.match(about, /关于 Soce1lo/);
+  assert.match(about, /长期建设者/);
+  assert.match(about, /研究型工程师/);
+  assert.match(about, /INTJ/);
+  assert.match(about, /知识如何抵达这里/);
+  assert.match(about, /捕捉/);
+  assert.match(about, /复盘/);
+  assert.match(about, /公开什么/);
+  assert.match(about, /不公开什么/);
+  assert.doesNotMatch(about, /\/Users\//);
+});
+
 test("文章详情构建产物只暴露一个 canonical H1", async () => {
   await buildProject();
   const html = await readProjectFile("dist/blog/logseq-to-obsidian-migration/index.html");
@@ -341,9 +377,14 @@ test("内容详情页使用 render headings 生成文章目录 rail", async () =
 test("主题样式覆盖首页、列表、标签、404、阅读和 reduced motion", async () => {
   const css = await readProjectFile("src/styles/global.css");
   for (const selector of [
-    ".home-intro",
-    ".recent-stream",
-    ".collection-index",
+    ".growth-hero",
+    ".home-now",
+    ".output-log",
+    ".output-log__item",
+    ".output-log__marker",
+    ".long-threads",
+    ".selected-section",
+    ".archive-links",
     ".content-list",
     ".tag-directory",
     ".not-found",
@@ -362,6 +403,7 @@ test("reduced motion 不覆盖跳转正文链接的隐藏与聚焦状态", async
   const reducedMotion = extractCssBlock(css, "@media (prefers-reduced-motion: reduce)");
 
   assert.doesNotMatch(reducedMotion, /\.skip-link/);
+  assert.match(reducedMotion, /\.output-log__marker/);
 });
 
 test("手机导航退出 sticky 并重设正文标题锚点偏移", async () => {
@@ -377,20 +419,20 @@ test("手机导航退出 sticky 并重设正文标题锚点偏移", async () => 
 
 test("首页中文标题不使用拉丁字符宽度限制换行", async () => {
   const css = await readProjectFile("src/styles/global.css");
-  const titleRule = extractCssBlock(css, ".home-intro h1 {");
+  const titleRule = extractCssBlock(css, ".growth-hero h1 {");
 
   assert.doesNotMatch(titleRule, /max-width:\s*[\d.]+ch;/);
   assert.match(titleRule, /max-width:\s*100%;/);
 });
 
-test("集合计数与文章目录链接达到统一触控高度", async () => {
+test("档案入口与文章目录链接达到统一触控高度", async () => {
   const css = await readProjectFile("src/styles/global.css");
-  const collectionCount = extractCssBlock(css, ".collection-row__count {");
+  const archiveLink = extractCssBlock(css, ".archive-links a {");
   const tocLink = extractCssBlock(css, ".content-toc__link {");
 
-  assert.match(collectionCount, /display:\s*inline-flex;/);
-  assert.match(collectionCount, /align-items:\s*center;/);
-  assert.match(collectionCount, /min-height:\s*var\(--control-height\);/);
+  assert.match(archiveLink, /display:\s*inline-flex;/);
+  assert.match(archiveLink, /align-items:\s*center;/);
+  assert.match(archiveLink, /min-height:\s*var\(--control-height\);/);
   assert.match(tocLink, /display:\s*flex;/);
   assert.match(tocLink, /align-items:\s*center;/);
   assert.match(tocLink, /min-height:\s*var\(--control-height\);/);
