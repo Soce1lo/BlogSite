@@ -17,6 +17,7 @@ const contentSchema = z.object({
   series: z.string().min(1).optional(),
   seriesOrder: z.number().optional(),
   topic: z.string().min(1).optional(),
+  outputKind: z.enum(["thought", "learned", "built", "revised"]).optional(),
 });
 
 const blog = defineCollection({

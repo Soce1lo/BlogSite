@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
+import type { OutputKind } from "../../src/lib/output-kind";
 import { toPosixPath } from "./path";
 import type {
   PublishIndexEntry,
@@ -28,6 +29,7 @@ export interface PublishedFrontmatter {
   sourceVaultPath: string;
   managedBy: "vault-sync";
   sourcePublishStatus: PublishStatus;
+  outputKind: OutputKind;
   series?: string;
   seriesOrder?: number;
   topic?: string;
@@ -98,6 +100,7 @@ export function toPublishedFrontmatter(
     sourceVaultPath: document.sourceVaultPath,
     managedBy: "vault-sync",
     sourcePublishStatus: entry.publishStatus,
+    outputKind: entry.outputKind,
     ...(entry.series ? { series: entry.series } : {}),
     ...(entry.series && entry.seriesOrder !== undefined
       ? { seriesOrder: entry.seriesOrder }
