@@ -1,0 +1,56 @@
+---
+import type { OutputGroup } from "../lib/output";
+import { getOutputDate, getOutputKind, getPrimaryTopic } from "../lib/output";
+import type { OutputKind } from "../lib/output-kind";
+import { withBase } from "../lib/site";
+
+interface Props {
+  groups: OutputGroup[];
+}
+
+const { groups } = Astro.props;
+const kindLabels: Record<OutputKind, string> = {
+  thought: "THOUGHT",
+  learned: "LEARNED",
+  built: "BUILT",
+  revised: "REVISED",
+};
+---
+
+<ol class="output-log">
+  {
+    groups.map((group) => (
+      <li class="output-log__group">
+        <p class="output-log__month">{group.label}</p>
+        <ol class="output-log__entries">
+          {group.entries.map((entry) => {
+            const outputDate = getOutputDate(entry);
+            return (
+              <li class="output-log__item">
+                <span class="output-log__marker" aria-hidden="true" />
+                <article>
+                  <p class="output-log__meta">
+                    <time datetime={outputDate.toISOString()}>
+                      {outputDate.toLocaleDateString("zh-CN", {
+                        month: "2-digit",
+                        day: "2-digit",
+                      })}
+                    </time>
+                    <span>{kindLabels[getOutputKind(entry)]}</span>
+                    <span>{getPrimaryTopic(entry)}</span>
+                  </p>
+                  <h3>
+                    <a href={withBase(`${entry.collection}/${entry.id}/`)}>
+                      {entry.data.title}
+                    </a>
+                  </h3>
+                  <p class="output-log__description">{entry.data.description}</p>
+                </article>
+              </li>
+            );
+          })}
+        </ol>
+      </li>
+    ))
+  }
+</ol>

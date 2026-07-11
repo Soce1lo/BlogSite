@@ -54,6 +54,7 @@ test("双链只为发布目标生成链接并记录降级 warning", async () => 
       publishSlug: "public-note",
       publishStatus: "published",
       visibility: "public",
+      outputKind: "learned",
     },
   ], ["私密页面"]);
 
@@ -118,6 +119,7 @@ publish_visibility: public
 publish_series: "从 Logseq 到 Obsidian"
 publish_series_order: 10
 publish_topic: "Knowledge Management"
+publish_kind: revised
 ---
 
 链接到 [[公开笔记|笔记别名]]、[[私密页面]] 和 [[不存在页面]]。
@@ -260,6 +262,7 @@ sourceVaultPath: "examples/manual.md"
   assert.equal(parsedArticle.data.series, "从 Logseq 到 Obsidian");
   assert.equal(parsedArticle.data.seriesOrder, 10);
   assert.equal(parsedArticle.data.topic, "Knowledge Management");
+  assert.equal(parsedArticle.data.outputKind, "revised");
   assert.match(article, /\[笔记别名\]\(\/notes\/public-note\/\)/);
   assert.match(article, /私密页面/);
   assert.doesNotMatch(article, /\[私密页面\]\(/);
@@ -272,6 +275,10 @@ sourceVaultPath: "examples/manual.md"
   await readFile(path.join(imageOutputPath, "public-article", "other.png"));
   await assert.rejects(readFile(path.join(contentOutputPath, "blog", "stale.md")));
   await readFile(path.join(contentOutputPath, "blog", "manual.md"));
+  const publicNote = matter(
+    await readFile(path.join(contentOutputPath, "notes", "public-note.md"), "utf8"),
+  );
+  assert.equal(publicNote.data.outputKind, "learned");
   await assert.rejects(readFile(path.join(contentOutputPath, "notes", "private-note.md")));
   await assert.rejects(readFile(path.join(contentOutputPath, "blog", "daily-example.md")));
 
@@ -308,6 +315,7 @@ sourceVaultPath: "examples/manual.md"
       series: "从 Logseq 到 Obsidian",
       seriesOrder: 10,
       topic: "Knowledge Management",
+      outputKind: "revised",
       warnings: [
         "wikilink: target-not-published",
         "wikilink: target-not-found",
@@ -317,6 +325,7 @@ sourceVaultPath: "examples/manual.md"
   );
   assert.match(publishManifestMarkdown, /Articles\/Article\.md/);
   assert.match(publishManifestMarkdown, /\/blog\/public-article\//);
+  assert.match(publishManifestMarkdown, /revised/);
   assert.match(wikilinkReport, /target-not-published/);
   assert.match(wikilinkReport, /target-not-found/);
   assert.match(assetReport, /missing-asset/);
@@ -330,6 +339,73 @@ sourceVaultPath: "examples/manual.md"
     publicPath: path.join(root, "public"),
   });
   assert.deepEqual(checkResult.errors, []);
+});
+
+test("同步拒绝非法 publish_kind 且为缺省 kind 使用集合映射", async (t) => {
+  const root = await mkdtemp(path.join(tmpdir(), "blogsite-output-kind-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+
+  const vaultPath = path.join(root, "vault");
+  const contentOutputPath = path.join(root, "content");
+  const imageOutputPath = path.join(root, "public", "images");
+  const reportsPath = path.join(root, "reports");
+
+  await writeText(
+    path.join(vaultPath, "Valid.md"),
+    `---
+title: "缺省输出类型"
+description: "应按集合映射为 thought。"
+created: 2026-07-10
+tags: [test]
+aliases: []
+publish_target: blog
+publish_status: published
+publish_slug: default-output-kind
+publish_category: "测试"
+publish_visibility: public
+---
+
+公开正文。
+`,
+  );
+  await writeText(
+    path.join(vaultPath, "Invalid.md"),
+    `---
+title: "非法输出类型"
+description: "不得进入公开输出。"
+created: 2026-07-10
+tags: [test]
+aliases: []
+publish_target: notes
+publish_status: published
+publish_slug: invalid-output-kind
+publish_category: "测试"
+publish_visibility: public
+publish_kind: speculative
+---
+
+不得同步的正文。
+`,
+  );
+
+  const summary = await syncFromVault({
+    vaultPath,
+    contentOutputPath,
+    imageOutputPath,
+    reportsPath,
+    excludeVaultDirs: [".git", ".obsidian", "80-Archive", "_system", "90-Attachments"],
+    routes: { blog: "/blog", notes: "/notes", projects: "/projects" },
+  });
+
+  assert.equal(summary.synced, 1);
+  assert.equal(summary.errors, 1);
+  const published = matter(
+    await readFile(path.join(contentOutputPath, "blog", "default-output-kind.md"), "utf8"),
+  );
+  assert.equal(published.data.outputKind, "thought");
+  await assert.rejects(
+    readFile(path.join(contentOutputPath, "notes", "invalid-output-kind.md")),
+  );
 });
 
 test("同步拒绝把输出目录放进 Vault", async (t) => {

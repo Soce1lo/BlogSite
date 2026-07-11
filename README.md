@@ -1,8 +1,8 @@
-# BlogSite
+# Soce1lo Growth Output Log
 
-BlogSite 是一个独立的 Astro 静态博客仓库，用于发布经过明确选择的博客、笔记和项目记录。
+这是 Soce1lo 的成长输出日志：记录我如何理解、学习与构建。它是个人知识管道的公开输出端，用于发布经过选择、核验和整理的思考、技术学习与项目记录。
 
-当前状态为 **V1 Phase 3 + Tone 阅读主题适配**：站点骨架之外，已包含本地只读 Vault 同步、双链转换、图片复制、发布检查、发布 manifest、短报告和两篇真实公开文章。阅读体验已完成一轮 Tone-inspired 适配并发布到 GitHub Pages。仓库不包含完整 Obsidian Vault、私有附件或本机配置。
+当前站点以 **Soce1lo / Growth Output Log** 为公开品牌：首页由 NOW、跨集合 Output Log、长期主题、精选成果和档案入口组成；内容层仍使用 `blog`、`notes`、`projects` 三个稳定集合。仓库包含本地只读 Vault 同步、双链转换、图片复制、发布检查、发布 manifest、搜索、明暗主题和长文阅读能力，但不包含完整 Obsidian Vault、私有附件或本机配置。
 
 线上地址：[https://soce1lo.github.io/BlogSite/](https://soce1lo.github.io/BlogSite/)
 
@@ -17,42 +17,36 @@ BlogSite 是一个独立的 Astro 静态博客仓库，用于发布经过明确�
 ## 当前能力
 
 - 三类内容集合：`blog`、`notes`、`projects`。
+- 跨集合成长输出：按 `updatedDate ?? pubDate` 排序并按年月组织思考、学习、构建与修订。
+- 人工维护的公开 Profile：集中管理身份、NOW、长期主题和精选内容，不从私人 Daily 自动推导状态。
 - 真实 Vault 只读同步：生成公开 Markdown、公开图片和报告，不写回 Vault。
+- 输出语义合同：Vault 可用 `publish_kind` 指定 `thought`、`learned`、`built` 或 `revised`，缺省时按集合稳定映射。
 - 发布边界检查：拦截残留双链、本机绝对路径、`file://`、Daily 来源、重复 slug、不可信发布状态和缺失必需 frontmatter。
 - 发布 manifest：生成 `reports/publish-manifest.json` 和 `reports/publish-manifest.md`，用于对账来源、URL、状态和 warning。
 - GitHub Pages 部署：push 到 `main` 后由 Actions 构建并部署；CI 不执行 Vault 同步。
 - Tone-inspired 阅读主题：明暗主题、轻量站内搜索、阅读进度条、文章目录 rail、目录高亮、长文 prose、移动端适配和重复 H1 隐藏。
 
-## 主题优化过程
+## 页面与视觉结构
 
-本次主题优化没有直接套用完整 Tone 模板，也没有导入主题 demo 内容。实际做法是把 Tone 作为参考主题，将阅读版式和交互逐步适配到现有 BlogSite：
+视觉概念是 **Trace / 一个人持续变化留下的轨迹**，在既有 Ink & Signal 色彩与排版系统上演进：
 
-1. 保留现有 `src/content/{blog,notes,projects}`、Vault 同步、发布检查和 GitHub Pages 子路径规则。
-2. 先在 `codex/tone-preview` 分支做本地预览，再把主题改动合入并推送 `main` 发布。
-3. 重写 `src/styles/global.css` 的设计 token、prose、列表、搜索、目录和响应式样式。
-4. 调整 `BaseLayout` 与 `ContentLayout`：加入主题切换、站内搜索、阅读进度、文章目录和正文容器隔离。
-5. 三类详情页都从 `render(entry)` 传入 `headings`，由统一布局生成目录。
-6. 新增 `tests/theme-render.test.ts`，覆盖主题结构、搜索索引安全序列化、目录接入和重复 H1 处理。
-7. 发布前后验证 `pnpm test`、`pnpm check:publish`、`pnpm build`、Playwright 冒烟检查、GitHub Actions 和 live URL。
+1. 首页首先回答“我是谁、现在关注什么、最近产生了什么输出”。
+2. Output Log 使用连续时间脊线，不用内容数量或热力图替代成长。
+3. 长期主题跨越思考、学习和项目，只在已有真实公开成果时出现。
+4. Signal 色仅用于链接、状态、焦点和轨迹节点；明暗主题共享同一语义层级。
+5. 搜索、阅读进度、文章目录、响应式阅读和 GitHub Pages 子路径能力继续保留。
 
-发布提交：`572e27f Introduce Tone-inspired reading theme`。
+## 长期演进
 
-## 后续可引入特性
+后续演进以真实公开内容为触发条件，不为填满页面制造空功能：
 
-后续可以继续评估以下能力。引入时应先补测试，再验证本地构建、GitHub Pages 子路径和发布内容边界。
+- 当 Vault 中形成适合公开的技术笔记和项目复盘时，让 `notes` 与 `projects` 成为真实输出。
+- 当某个长期主题积累至少 3 条公开记录时，再考虑独立主题详情页。
+- 有持续半年以上的公开输出后，再增加按年月浏览和年度回顾。
+- NOW 历史只在显式发布快照后保留，不自动读取私人状态。
+- Pagefind、相关文章、代码复制、图片查看、OG 图片和评论等能力，只有在真实使用需求出现后再引入。
 
-- 完整 Pagefind 索引，用于更强的全文搜索。
-- 阅读时长和字数统计。
-- 相关文章或同系列文章导航。
-- 代码块复制按钮。
-- 图片 lightbox。
-- Open Graph 图片生成。
-- 标签、主题和系列筛选页。
-- RSS 分类输出。
-- Giscus 评论。
-- 更完整的键盘导航和无障碍状态。
-
-这些特性都不得导入主题示例内容，不得让 GitHub Actions 读取真实 Vault，不得绕过 `check:publish` 的隐私边界。
+任何新增能力都不得导入示例内容冒充个人输出，不得让 GitHub Actions 读取真实 Vault，也不得绕过 `check:publish` 的隐私边界。
 
 ## 本地运行
 
@@ -82,7 +76,7 @@ pnpm check:publish
 pnpm build
 ```
 
-`sync:vault` 只读取 Vault，将发布副本、公开图片和短报告写入 BlogSite。路径可以通过 `BLOGSITE_VAULT_PATH`、`BLOGSITE_CONTENT_OUTPUT_PATH`、`BLOGSITE_IMAGE_OUTPUT_PATH` 和 `BLOGSITE_REPORTS_PATH` 覆盖。
+`sync:vault` 只读取 Vault，将发布副本、公开图片和短报告写入 BlogSite。路径可以通过 `BLOGSITE_VAULT_PATH`、`BLOGSITE_CONTENT_OUTPUT_PATH`、`BLOGSITE_IMAGE_OUTPUT_PATH` 和 `BLOGSITE_REPORTS_PATH` 覆盖。正式同步前必须先按发布指南执行临时目录 preview。
 
 ## 内容结构
 
@@ -98,11 +92,12 @@ src/content/
 ## 页面
 
 - `/`：首页
-- `/about/`：关于
-- `/blog/` 与 `/blog/{slug}/`
-- `/notes/` 与 `/notes/{slug}/`
-- `/projects/` 与 `/projects/{slug}/`
-- `/rss.xml`：公开博客 RSS
+- `/about/`：个人定位、工作方式与公开边界
+- `/blog/` 与 `/blog/{slug}/`：思考、经历、判断与复盘
+- `/notes/` 与 `/notes/{slug}/`：已经自洽、可复用的学习记录
+- `/projects/` 与 `/projects/{slug}/`：项目决策、实施与结果
+- `/tags/`：跨输出形式的公开主题
+- `/rss.xml`：思考、学习与项目的公开输出 RSS
 
 ## GitHub Pages
 

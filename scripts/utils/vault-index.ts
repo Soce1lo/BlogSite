@@ -1,5 +1,10 @@
 import path from "node:path";
 import {
+  defaultOutputKind,
+  isOutputKind,
+  type OutputKind,
+} from "../../src/lib/output-kind";
+import {
   getString,
   getStringArray,
   readPublishTarget,
@@ -20,6 +25,7 @@ export interface PublishIndexEntry {
   publishSlug: string;
   publishStatus: PublishStatus;
   visibility: PublishVisibility;
+  outputKind: OutputKind;
   series?: string;
   seriesOrder?: number;
   topic?: string;
@@ -78,7 +84,8 @@ export type CandidateSkipReason =
   | "missing-description"
   | "missing-date"
   | "daily"
-  | "invalid-slug";
+  | "invalid-slug"
+  | "invalid-publish-kind";
 
 export type CandidateEvaluation =
   | { entry: PublishIndexEntry; reason?: never }
@@ -102,6 +109,15 @@ export function evaluatePublishCandidate(document: VaultDocument): CandidateEval
     (rawVisibility !== "public" && rawVisibility !== "unlisted")
   ) {
     return { reason: "private" };
+  }
+
+  const rawOutputKind = getString(document.data, "publish_kind");
+  let outputKind = defaultOutputKind(publishTarget);
+  if (rawOutputKind) {
+    if (!isOutputKind(rawOutputKind)) {
+      return { reason: "invalid-publish-kind" };
+    }
+    outputKind = rawOutputKind;
   }
 
   const publishSlug = getString(document.data, "publish_slug");
@@ -145,6 +161,7 @@ export function evaluatePublishCandidate(document: VaultDocument): CandidateEval
       publishSlug,
       publishStatus: rawStatus as PublishStatus,
       visibility: rawVisibility as PublishVisibility,
+      outputKind,
       ...(series ? { series } : {}),
       ...(series && seriesOrder !== undefined ? { seriesOrder } : {}),
       ...(topic ? { topic } : {}),

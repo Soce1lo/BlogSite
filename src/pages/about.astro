@@ -1,22 +1,55 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { withBase } from "../lib/site";
 ---
 
-<BaseLayout title="关于" description="关于 BlogSite 及其内容边界。">
-  <article class="prose">
-    <p class="eyebrow">About</p>
-    <h1>关于本站</h1>
+<BaseLayout title="关于 Soce1lo" description="关于 Soce1lo，以及知识如何从私人系统抵达公开页面。">
+  <header class="page-heading">
+    <p class="eyebrow">ABOUT / 关于</p>
+    <h1>关于 Soce1lo</h1>
+    <p>一个长期建设者的公开工作台，也是我与同频者相认的坐标。</p>
+  </header>
+
+  <article class="prose about-content">
     <p class="lead">
-      BlogSite 是一个独立的静态发布站点，用于呈现经过明确选择的公开内容。
+      我是一名研究型工程师，也是一名偏好独立判断、结构化思考与长期主义的 INTJ。
+      我关心的不只是一个答案是否正确，也关心它如何被理解、验证，并最终变成可以工作的系统。
     </p>
-    <h2>内容范围</h2>
+
+    <h2>我如何工作</h2>
     <p>
-      站点分为博客、笔记和项目三类内容。当前仓库仅包含公开发布副本与示例材料，不包含私人知识库。
+      我习惯从真实问题开始：先观察约束，再拆解机制，通过项目验证理解，最后把结论整理成能被复用的文本。
+      这里记录的不是一份完成态简历，而是理解、学习与构建彼此推进的过程。
     </p>
-    <h2>技术方案</h2>
+
+    <h2>知识如何抵达这里</h2>
     <p>
-      本站使用 Astro、TypeScript 和 pnpm 构建，通过 GitHub Pages workflow 生成并部署静态页面。
+      Blog 是我的知识管道的公开输出端。原始输入和未经整理的过程留在私人系统里；只有经过选择、核对与重写的内容，才会成为这里的公开记录。
+    </p>
+    <ol class="about-pipeline">
+      <li><strong>捕捉</strong><span>收集阅读、工作和生活里值得继续追问的信号。</span></li>
+      <li><strong>复盘</strong><span>把经历还原成问题、判断、证据与未解决的分歧。</span></li>
+      <li><strong>加工</strong><span>连接旧知识，通过研究或项目把直觉变成可检验的理解。</span></li>
+      <li><strong>选择</strong><span>判断哪些内容具有公开价值，并移除不应暴露的私人上下文。</span></li>
+      <li><strong>发布</strong><span>以思考、学习、项目或修订的形式留下可追踪输出。</span></li>
+    </ol>
+
+    <h2>公开什么</h2>
+    <p>
+      我会公开已经形成判断的思考、可复用的技术学习、真实项目中的方法与取舍，以及观点变化后的修订记录。
+      它们不一定给出最终答案，但应当足够诚实、具体，并能接受以后重新检查。
+    </p>
+
+    <h2>不公开什么</h2>
+    <p>
+      私人日记、原始摘录、未经授权的项目细节、敏感路径与仍缺少基本核验的草稿不会出现在这里。
+      输入留在私人系统，输出经过选择后公开。
+    </p>
+
+    <h2>保持联系</h2>
+    <p>
+      如果你也喜欢把复杂问题拆开、长期追踪一个主题，或用实际构建检验想法，可以通过
+      <a href={withBase("rss.xml")}>RSS 订阅</a>继续关注这里的变化。
     </p>
   </article>
 </BaseLayout>
-

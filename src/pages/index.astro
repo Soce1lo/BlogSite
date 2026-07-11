@@ -1,8 +1,18 @@
 ---
 import { getCollection } from "astro:content";
+import LongThreads from "../components/LongThreads.astro";
+import OutputLog from "../components/OutputLog.astro";
+import { siteProfile } from "../data/site-profile";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import type { SiteEntry } from "../lib/content";
-import { isPublicEntry, sortNewestFirst } from "../lib/content";
+import {
+  buildOutputGroups,
+  getOutputDate,
+  getOutputKind,
+  getPrimaryTopic,
+  resolveFeaturedEntries,
+  resolveThreads,
+} from "../lib/output";
 import { withBase } from "../lib/site";
 
 const [blog, notes, projects] = await Promise.all([
@@ -10,135 +20,102 @@ const [blog, notes, projects] = await Promise.all([
   getCollection("notes"),
   getCollection("projects"),
 ]);
-
-const publicBlog = blog.filter(isPublicEntry).sort(sortNewestFirst);
-const publicNotes = notes.filter(isPublicEntry).sort(sortNewestFirst);
-const publicProjects = projects.filter(isPublicEntry).sort(sortNewestFirst);
-const recentEntries: SiteEntry[] = [...publicBlog, ...publicNotes, ...publicProjects]
-  .sort(sortNewestFirst)
-  .slice(0, 3);
-const sectionLabels: Record<SiteEntry["collection"], string> = {
-  blog: "博客",
-  notes: "笔记",
-  projects: "项目",
+const entries: SiteEntry[] = [...blog, ...notes, ...projects];
+const outputGroups = buildOutputGroups(entries, 8);
+const threads = resolveThreads(entries, siteProfile.threads);
+const featured = resolveFeaturedEntries(entries, siteProfile.featured);
+const kindLabels = {
+  thought: "思考",
+  learned: "学习",
+  built: "构建",
+  revised: "修订",
 };
-const sections = [
-  {
-    key: "blog",
-    index: "01",
-    title: "博客",
-    description: "围绕一个主题展开的完整文章与实践总结。",
-    href: "blog/",
-    entries: publicBlog.slice(0, 3),
-    total: publicBlog.length,
-  },
-  {
-    key: "notes",
-    index: "02",
-    title: "笔记",
-    description: "短篇观察、方法和持续维护的知识片段。",
-    href: "notes/",
-    entries: publicNotes.slice(0, 3),
-    total: publicNotes.length,
-  },
-  {
-    key: "projects",
-    index: "03",
-    title: "项目",
-    description: "正在建设或已经完成的公开项目记录。",
-    href: "projects/",
-    entries: publicProjects.slice(0, 3),
-    total: publicProjects.length,
-  },
-];
-const homeStats = sections.map((section) => ({
-  label: section.title,
-  value: section.total,
-  href: section.href,
-}));
 ---
 
-<BaseLayout>
-  <section class="home-intro">
-    <div class="home-intro__copy">
-      <p class="eyebrow">BlogSite / 公开知识库</p>
-      <h1>把本地知识整理成<br />值得公开的文本。</h1>
-      <p>
-        这里收录经过筛选的技术实践、知识笔记和项目记录。保留清晰来源，
-        也保留继续修订的空间。
-      </p>
-      <ul class="home-stats" aria-label="公开内容计数">
-        {
-          homeStats.map((stat) => (
-            <li>
-              <a href={withBase(stat.href)}>
-                <strong>{stat.value}</strong>
-                <span>{stat.label}</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-      <a class="text-link" href={withBase("rss.xml")}>订阅 RSS <span aria-hidden="true">↗</span></a>
+<BaseLayout description={siteProfile.description}>
+  <section class="growth-hero">
+    <div class="growth-hero__copy">
+      <p class="eyebrow">{siteProfile.eyebrow}</p>
+      <h1>{siteProfile.title}</h1>
+      <p>{siteProfile.description}</p>
+      <div class="growth-hero__actions">
+        <a class="text-link" href={withBase("about/")}>认识 Soce1lo <span aria-hidden="true">↗</span></a>
+        <a class="text-link" href={withBase("rss.xml")}>订阅 RSS <span aria-hidden="true">↗</span></a>
+      </div>
     </div>
 
-    <aside class="recent-stream" aria-labelledby="recent-heading">
-      <header>
-        <p class="eyebrow">Latest signal</p>
-        <h2 id="recent-heading">最近更新</h2>
-      </header>
-      <ol>
-        {
-          recentEntries.map((entry) => (
-            <li>
-              <a href={withBase(`${entry.collection}/${entry.id}/`)}>
-                <span class="recent-stream__meta">
-                  <time datetime={entry.data.pubDate.toISOString()}>
-                    {entry.data.pubDate.toLocaleDateString("zh-CN")}
-                  </time>
-                  <span>{sectionLabels[entry.collection]}</span>
-                </span>
-                <strong>{entry.data.title}</strong>
-              </a>
-            </li>
-          ))
-        }
-      </ol>
+    <aside class="home-now" aria-labelledby="now-heading">
+      <p class="eyebrow" id="now-heading">{siteProfile.now.label}</p>
+      <p>{siteProfile.now.text}</p>
+      <time datetime={siteProfile.now.updated}>更新于 {siteProfile.now.updated}</time>
     </aside>
   </section>
 
-  <div class="collection-index" aria-label="内容分类">
+  <section class="output-section" aria-labelledby="output-heading">
+    <header class="home-section-heading">
+      <p class="eyebrow">OUTPUT LOG / 最近输出</p>
+      <h2 id="output-heading">沿着时间，看见思考如何形成</h2>
+      <p>同一条轨迹里，保留想明白的事、学会的方法、做出的项目，以及后来发生的修订。</p>
+    </header>
     {
-      sections.map((section) => (
-        <section class="collection-row">
-          <header class="collection-row__label">
-            <span>{section.index}</span>
-            <div>
-              <h2><a href={withBase(section.href)}>{section.title}</a></h2>
-              <p>{section.description}</p>
-            </div>
-            <a class="collection-row__count" href={withBase(section.href)}>
-              {section.total} 篇
-            </a>
-          </header>
-          {section.entries.length === 0 ? (
-            <p class="empty-state">暂无公开内容。</p>
-          ) : (
-            <ol class="collection-row__entries">
-              {section.entries.map((entry) => (
-                <li>
-                  <a href={withBase(`${entry.collection}/${entry.id}/`)}>
-                    <span>{entry.data.title}</span>
-                    <time datetime={entry.data.pubDate.toISOString()}>
-                      {entry.data.pubDate.toLocaleDateString("zh-CN")}
-                    </time>
-                  </a>
-                </li>
-              ))}
-            </ol>
-          )}
-        </section>
-      ))
+      outputGroups.length > 0
+        ? <OutputLog groups={outputGroups} />
+        : <p class="empty-state">暂无公开输出。</p>
     }
-  </div>
+  </section>
+
+  {
+    threads.length > 0 && (
+      <section class="threads-section" aria-labelledby="threads-heading">
+        <header class="home-section-heading">
+          <p class="eyebrow">LONG THREADS / 长期主题</p>
+          <h2 id="threads-heading">不是栏目，而是持续追踪的问题</h2>
+          <p>当一条问题线索不断返回，它会在这里长成可以回看的脉络。</p>
+        </header>
+        <LongThreads threads={threads} />
+      </section>
+    )
+  }
+
+  {
+    featured.length > 0 && (
+      <section class="selected-section" aria-labelledby="selected-heading">
+        <header class="home-section-heading">
+          <p class="eyebrow">SELECTED / 精选</p>
+          <h2 id="selected-heading">从这里开始认识我的工作方式</h2>
+        </header>
+        <ol class="selected-list">
+          {featured.map((entry) => (
+            <li>
+              <a href={withBase(`${entry.collection}/${entry.id}/`)}>
+                <p class="selected-list__meta">
+                  <span>{kindLabels[getOutputKind(entry)]}</span>
+                  <span>{getPrimaryTopic(entry)}</span>
+                  <time datetime={getOutputDate(entry).toISOString()}>
+                    {getOutputDate(entry).toLocaleDateString("zh-CN")}
+                  </time>
+                </p>
+                <h3>{entry.data.title}</h3>
+                <p>{entry.data.description}</p>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )
+  }
+
+  <section class="archive-section" aria-labelledby="archive-heading">
+    <header class="home-section-heading">
+      <p class="eyebrow">ARCHIVE / 档案</p>
+      <h2 id="archive-heading">按你关心的方式继续浏览</h2>
+    </header>
+    <nav class="archive-links" aria-label="内容档案">
+      <a href={withBase("blog/")}>思考 <span aria-hidden="true">↗</span></a>
+      <a href={withBase("notes/")}>学习 <span aria-hidden="true">↗</span></a>
+      <a href={withBase("projects/")}>项目 <span aria-hidden="true">↗</span></a>
+      <a href={withBase("tags/")}>主题 <span aria-hidden="true">↗</span></a>
+      <a href={withBase("rss.xml")}>RSS <span aria-hidden="true">↗</span></a>
+    </nav>
+  </section>
 </BaseLayout>

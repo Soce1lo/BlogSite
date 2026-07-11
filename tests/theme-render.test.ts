@@ -1,16 +1,28 @@
 import assert from "node:assert/strict";
+import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
+import { promisify } from "node:util";
 import type { SiteEntry } from "../src/lib/content";
 import { buildSearchItems, serializeForInlineJson } from "../src/lib/search";
 import { buildTagGroups, tagId } from "../src/lib/tags";
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
+const execFileAsync = promisify(execFile);
+let buildPromise: Promise<void> | undefined;
 
 async function readProjectFile(relativePath: string): Promise<string> {
   return readFile(path.join(projectRoot, relativePath), "utf8");
+}
+
+async function buildProject(): Promise<void> {
+  buildPromise ??= execFileAsync("pnpm", ["build"], {
+    cwd: projectRoot,
+    maxBuffer: 10 * 1024 * 1024,
+  }).then(() => undefined);
+  await buildPromise;
 }
 
 async function discoverDisplayFiles(): Promise<string[]> {
@@ -188,46 +200,121 @@ test("标签目录渲染公开分组且内容列表链接到对应锚点", async
   const tagsPage = await readProjectFile("src/pages/tags/index.astro");
   const contentList = await readProjectFile("src/components/ContentList.astro");
   assert.match(tagsPage, /buildTagGroups/);
+  assert.match(tagsPage, /const tagCloud\s*=/);
+  assert.match(tagsPage, /class="tag-cloud"/);
   assert.match(tagsPage, /class="tag-directory"/);
   assert.match(tagsPage, /id=\{group\.id\}/);
+  assert.match(tagsPage, /href=\{`#\$\{group\.id\}`\}/);
   assert.match(contentList, /tagId\(tag\)/);
   assert.match(contentList, /withBase\("tags\/"\)/);
 });
 
-test("首页、标签和 404 提供 Ink & Signal 信息结构", async () => {
+test("全站对外品牌与导航语义统一为 Soce1lo 成长输出", async () => {
   const notFoundPath = path.join(projectRoot, "src/pages/404.astro");
   assert.equal(existsSync(notFoundPath), true, "缺少 404 页面");
 
-  const home = await readProjectFile("src/pages/index.astro");
   const tags = await readProjectFile("src/pages/tags/index.astro");
   const notFound = await readProjectFile("src/pages/404.astro");
   const layout = await readProjectFile("src/layouts/BaseLayout.astro");
-  assert.match(home, /class="home-intro"/);
-  assert.match(home, /class="recent-stream"/);
-  assert.match(home, /class="collection-index"/);
+  const profile = await readProjectFile("src/data/site-profile.ts");
+  const search = await readProjectFile("src/lib/search.ts");
+  const blogIndex = await readProjectFile("src/pages/blog/index.astro");
+  const notesIndex = await readProjectFile("src/pages/notes/index.astro");
+  const projectsIndex = await readProjectFile("src/pages/projects/index.astro");
+  const blogDetail = await readProjectFile("src/pages/blog/[...slug].astro");
+  const notesDetail = await readProjectFile("src/pages/notes/[...slug].astro");
+
+  assert.match(profile, /name: "Soce1lo"/);
+  assert.match(profile, /输入留在私人系统，输出经过选择后公开。/);
+  assert.match(layout, /title = siteProfile\.name/);
+  assert.match(layout, /class="site-title"[^>]*>\{siteProfile\.name\}</);
+  assert.match(layout, />成长输出日志</);
+  assert.match(layout, />思考</);
+  assert.match(layout, />学习</);
+  assert.match(layout, /siteProfile\.boundary/);
+  assert.match(blogIndex, /<h1>思考<\/h1>/);
+  assert.match(notesIndex, /<h1>学习<\/h1>/);
+  assert.match(projectsIndex, /<h1>项目<\/h1>/);
+  assert.match(blogDetail, /sectionLabel="思考"/);
+  assert.match(notesDetail, /sectionLabel="学习"/);
+  assert.match(search, /blog: "思考"/);
+  assert.match(search, /notes: "学习"/);
+  assert.match(tags, /<h1>主题<\/h1>/);
   assert.match(tags, /class="tag-directory"/);
   assert.match(notFound, /返回首页/);
-  assert.match(notFound, /浏览博客/);
+  assert.match(notFound, /浏览思考/);
+  assert.match(notFound, /查看主题/);
   assert.match(layout, /withBase\("tags\/"\)/);
 });
 
-test("首页最近更新只展示设计规范要求的三条内容", async () => {
-  const home = await readProjectFile("src/pages/index.astro");
+test("RSS 聚合三个公开集合并排除 starter 内容", async () => {
+  const rssPage = await readProjectFile("src/pages/rss.xml.js");
+  assert.match(rssPage, /getCollection\("blog"\)/);
+  assert.match(rssPage, /getCollection\("notes"\)/);
+  assert.match(rssPage, /getCollection\("projects"\)/);
+  assert.match(rssPage, /entry\.collection/);
 
-  assert.match(
-    home,
-    /const recentEntries:[\s\S]*?\.sort\(sortNewestFirst\)[\s\S]*?\.slice\(0,\s*3\);/,
-  );
+  for (const starter of [
+    "src/content/blog/welcome-to-blogsite.md",
+    "src/content/notes/content-boundaries.md",
+    "src/content/projects/blogsite-v1.md",
+  ]) {
+    assert.match(await readProjectFile(starter), /^visibility:\s*unlisted$/m, starter);
+  }
+
+  await buildProject();
+  const rss = await readProjectFile("dist/rss.xml");
+  assert.match(rss, /Soce1lo/);
+  assert.match(rss, /从 Logseq 到 Obsidian/);
+  assert.doesNotMatch(rss, /欢迎来到 BlogSite/);
+  assert.doesNotMatch(rss, /公开内容边界/);
+  assert.doesNotMatch(rss, /BlogSite V1/);
 });
 
-test("文章布局隔离页面标题和正文 prose，避免同步正文首个 H1 重复显示", async () => {
-  const layout = await readProjectFile("src/layouts/ContentLayout.astro");
-  const css = await readProjectFile("src/styles/global.css");
+test("首页与 About 呈现 Soce1lo 的成长输出结构和公开管道", async () => {
+  const outputLogPath = path.join(projectRoot, "src/components/OutputLog.astro");
+  const longThreadsPath = path.join(projectRoot, "src/components/LongThreads.astro");
+  assert.equal(existsSync(outputLogPath), true, "缺少 OutputLog 组件");
+  assert.equal(existsSync(longThreadsPath), true, "缺少 LongThreads 组件");
 
-  assert.match(layout, /<article class="content-detail">/);
-  assert.match(layout, /<div class="prose content-body">/);
-  assert.match(css, /\.content-body\s*>\s*h1:first-child\s*\{/);
-  assert.match(css, /\.content-body\s*>\s*h1:first-child[\s\S]*display:\s*none/);
+  const home = await readProjectFile("src/pages/index.astro");
+  const about = await readProjectFile("src/pages/about.astro");
+  const outputLog = await readProjectFile("src/components/OutputLog.astro");
+  const longThreads = await readProjectFile("src/components/LongThreads.astro");
+
+  assert.match(home, /siteProfile\.title/);
+  assert.match(home, /class="growth-hero"/);
+  assert.match(home, /class="home-now"/);
+  assert.match(home, /<OutputLog groups=\{outputGroups\}/);
+  assert.match(home, /<LongThreads threads=\{threads\}/);
+  assert.match(home, /class="selected-section"/);
+  assert.match(home, /class="archive-links"/);
+  assert.doesNotMatch(home, /homeStats|公开内容计数|collection-index/);
+  assert.match(outputLog, /class="output-log"/);
+  assert.match(outputLog, /class="output-log__marker"/);
+  assert.match(outputLog, /getOutputKind/);
+  assert.match(longThreads, /class="long-threads"/);
+
+  assert.match(about, /关于 Soce1lo/);
+  assert.match(about, /长期建设者/);
+  assert.match(about, /研究型工程师/);
+  assert.match(about, /INTJ/);
+  assert.match(about, /知识如何抵达这里/);
+  assert.match(about, /捕捉/);
+  assert.match(about, /复盘/);
+  assert.match(about, /公开什么/);
+  assert.match(about, /不公开什么/);
+  assert.doesNotMatch(about, /\/Users\//);
+});
+
+test("文章详情构建产物只暴露一个 canonical H1", async () => {
+  await buildProject();
+  const html = await readProjectFile("dist/blog/logseq-to-obsidian-migration/index.html");
+
+  assert.equal(
+    [...html.matchAll(/<h1(?:\s[^>]*)?>从 Logseq 到 Obsidian：迁移回顾<\/h1>/g)].length,
+    1,
+  );
 });
 
 test("基础布局提供 Tone 风格的搜索面板和主题切换入口", async () => {
@@ -290,9 +377,14 @@ test("内容详情页使用 render headings 生成文章目录 rail", async () =
 test("主题样式覆盖首页、列表、标签、404、阅读和 reduced motion", async () => {
   const css = await readProjectFile("src/styles/global.css");
   for (const selector of [
-    ".home-intro",
-    ".recent-stream",
-    ".collection-index",
+    ".growth-hero",
+    ".home-now",
+    ".output-log",
+    ".output-log__item",
+    ".output-log__marker",
+    ".long-threads",
+    ".selected-section",
+    ".archive-links",
     ".content-list",
     ".tag-directory",
     ".not-found",
@@ -311,6 +403,7 @@ test("reduced motion 不覆盖跳转正文链接的隐藏与聚焦状态", async
   const reducedMotion = extractCssBlock(css, "@media (prefers-reduced-motion: reduce)");
 
   assert.doesNotMatch(reducedMotion, /\.skip-link/);
+  assert.match(reducedMotion, /\.output-log__marker/);
 });
 
 test("手机导航退出 sticky 并重设正文标题锚点偏移", async () => {
@@ -326,20 +419,20 @@ test("手机导航退出 sticky 并重设正文标题锚点偏移", async () => 
 
 test("首页中文标题不使用拉丁字符宽度限制换行", async () => {
   const css = await readProjectFile("src/styles/global.css");
-  const titleRule = extractCssBlock(css, ".home-intro h1 {");
+  const titleRule = extractCssBlock(css, ".growth-hero h1 {");
 
   assert.doesNotMatch(titleRule, /max-width:\s*[\d.]+ch;/);
   assert.match(titleRule, /max-width:\s*100%;/);
 });
 
-test("集合计数与文章目录链接达到统一触控高度", async () => {
+test("档案入口与文章目录链接达到统一触控高度", async () => {
   const css = await readProjectFile("src/styles/global.css");
-  const collectionCount = extractCssBlock(css, ".collection-row__count {");
+  const archiveLink = extractCssBlock(css, ".archive-links a {");
   const tocLink = extractCssBlock(css, ".content-toc__link {");
 
-  assert.match(collectionCount, /display:\s*inline-flex;/);
-  assert.match(collectionCount, /align-items:\s*center;/);
-  assert.match(collectionCount, /min-height:\s*var\(--control-height\);/);
+  assert.match(archiveLink, /display:\s*inline-flex;/);
+  assert.match(archiveLink, /align-items:\s*center;/);
+  assert.match(archiveLink, /min-height:\s*var\(--control-height\);/);
   assert.match(tocLink, /display:\s*flex;/);
   assert.match(tocLink, /align-items:\s*center;/);
   assert.match(tocLink, /min-height:\s*var\(--control-height\);/);

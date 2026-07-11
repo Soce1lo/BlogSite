@@ -7,12 +7,11 @@ import { isPublicEntry, sortNewestFirst } from "../../lib/content";
 const entries = (await getCollection("blog")).filter(isPublicEntry).sort(sortNewestFirst);
 ---
 
-<BaseLayout title="博客" description="BlogSite 的公开博客文章。">
+<BaseLayout title="思考" description="Soce1lo 经过整理的思考、经历与复盘。">
   <header class="page-heading">
-    <p class="eyebrow">Blog</p>
-    <h1>博客</h1>
-    <p>围绕一个主题展开的完整文章与实践总结。</p>
+    <p class="eyebrow">Thoughts</p>
+    <h1>思考</h1>
+    <p>从经历、判断和实践中沉淀出的长文与复盘。</p>
   </header>
   <ContentList entries={entries} />
 </BaseLayout>
-

@@ -14,8 +14,8 @@ export interface SearchItem {
 }
 
 const sectionLabels: Record<SiteEntry["collection"], string> = {
-  blog: "博客",
-  notes: "笔记",
+  blog: "思考",
+  notes: "学习",
   projects: "项目",
 };
 

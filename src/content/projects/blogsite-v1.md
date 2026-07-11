@@ -8,7 +8,7 @@ category: "网站建设"
 tags:
   - Astro
   - GitHub Pages
-visibility: public
+visibility: unlisted
 sourceVaultPath: "examples/blogsite-v1.md"
 ---
 
@@ -17,4 +17,3 @@ BlogSite V1 使用 Astro、TypeScript 和 pnpm 构建，支持博客、笔记与
 ## Phase 1 范围
 
 当前阶段只建立静态站点骨架、示例内容、文档和部署 workflow。同步与真实内容接入留给后续阶段。
-

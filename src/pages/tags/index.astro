@@ -12,41 +12,57 @@ const [blogEntries, noteEntries, projectEntries] = await Promise.all([
 ]);
 const entries: SiteEntry[] = [...blogEntries, ...noteEntries, ...projectEntries];
 const groups = buildTagGroups(entries);
+const tagCloud = [...groups]
+  .sort((a, b) => b.entries.length - a.entries.length || a.name.localeCompare(b.name, "zh-CN"))
+  .slice(0, 12);
 ---
 
-<BaseLayout title="标签" description="按标签浏览 BlogSite 的公开内容。">
+<BaseLayout title="主题" description="按主题浏览 Soce1lo 的公开输出。">
   <header class="page-heading">
-    <p class="eyebrow">Index / Tags</p>
-    <h1>标签</h1>
-    <p>从主题词进入博客、笔记和项目记录。这里只索引公开内容。</p>
+    <p class="eyebrow">Index / Topics</p>
+    <h1>主题</h1>
+    <p>从主题词进入思考、学习和项目记录。这里只索引公开输出。</p>
   </header>
 
   {
     groups.length === 0 ? (
-      <p class="empty-state">暂无公开标签。</p>
+      <p class="empty-state">暂无公开主题。</p>
     ) : (
-      <div class="tag-directory">
-        {groups.map((group) => (
-          <section class="tag-group" id={group.id}>
-            <header class="tag-group__header">
-              <h2>#{group.name}</h2>
-              <span>{group.entries.length} 篇</span>
-            </header>
-            <ol class="tag-group__entries">
-              {group.entries.map((entry) => (
-                <li>
-                  <a href={withBase(`${entry.collection}/${entry.id}/`)}>
-                    <span>{entry.data.title}</span>
-                    <time datetime={entry.data.pubDate.toISOString()}>
-                      {entry.data.pubDate.toLocaleDateString("zh-CN")}
-                    </time>
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </section>
-        ))}
-      </div>
+      <>
+        <nav class="tag-cloud" aria-label="常用主题">
+          {tagCloud.map((group) => (
+            <a
+              class={`tag-cloud__item tag-cloud__item--count-${Math.min(group.entries.length, 4)}`}
+              href={`#${group.id}`}
+            >
+              <span>#{group.name}</span>
+              <small>{group.entries.length} 篇</small>
+            </a>
+          ))}
+        </nav>
+        <div class="tag-directory">
+          {groups.map((group) => (
+            <section class="tag-group" id={group.id}>
+              <header class="tag-group__header">
+                <h2>#{group.name}</h2>
+                <span>{group.entries.length} 篇</span>
+              </header>
+              <ol class="tag-group__entries">
+                {group.entries.map((entry) => (
+                  <li>
+                    <a href={withBase(`${entry.collection}/${entry.id}/`)}>
+                      <span>{entry.data.title}</span>
+                      <time datetime={entry.data.pubDate.toISOString()}>
+                        {entry.data.pubDate.toLocaleDateString("zh-CN")}
+                      </time>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ))}
+        </div>
+      </>
     )
   }
 </BaseLayout>
