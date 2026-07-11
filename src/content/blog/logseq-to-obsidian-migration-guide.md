@@ -179,11 +179,11 @@ function splitPropertyValues(value) {
 
   for (let index = 0; index < value.length; index += 1) {
     const pair = value.slice(index, index + 2);
-    if (pair === '') {
+    if (pair === '[[') {
       linkDepth += 1;
       current += pair;
       index += 1;
-    } else if (pair === '') {
+    } else if (pair === ']]') {
       linkDepth = Math.max(0, linkDepth - 1);
       current += pair;
       index += 1;
@@ -201,7 +201,7 @@ function splitPropertyValues(value) {
 
 function unwrapPageLink(value) {
   const trimmed = value.trim();
-  if (trimmed.startsWith('') && trimmed.endsWith('')) {
+  if (trimmed.startsWith('[[') && trimmed.endsWith(']]')) {
     return trimmed.slice(2, -2).trim();
   }
   return trimmed;
@@ -708,11 +708,11 @@ const pageOptions = {
 
 test('converts leading Logseq properties into flat frontmatter', () => {
   const input = [
-    'tags:: Obsidian, Knowledge System, 中文标签',
+    'tags:: [[Obsidian]], Knowledge System, 中文标签',
     'alias:: Coding Agent, AI Agent',
     'description:: 迁移说明',
     'public:: true',
-    '- 正文 保留双链',
+    '- 正文 [[保留双链]]',
   ].join('\n');
 
   const result = transformMarkdown(input, pageOptions);
@@ -780,7 +780,7 @@ test('preserves shell arithmetic that is not a Logseq block ref', () => {
 
 test('rewrites Markdown asset links relative to the destination', () => {
   const input = [
-    '[missing image: image.png]',
+    '![image](../assets/image.png)',
     '[file](../assets/example.pdf)',
   ].join('\n');
 
@@ -2482,7 +2482,7 @@ function fixture() {
   }
   fs.writeFileSync(
     path.join(source, 'note.md'),
-    '---\ntitle: "note"\n---\n\n[missing image: x.png]\n',
+    '---\ntitle: "note"\n---\n\n![x](../../../90-Attachments/logseq-assets/x.png)\n',
   );
   const asset = path.join(root, '90-Attachments/logseq-assets/x.png');
   fs.mkdirSync(path.dirname(asset), { recursive: true });
@@ -2972,7 +2972,7 @@ test('normalizes and rewrites only managed attachment link destinations in the b
     '---',
     '',
     `ordinary text ${oldPrefix}plain.png`,
-    `[missing image: ${oldPrefix}x.png]`,
+    `![asset](${oldPrefix}x.png)`,
     '',
   ].join('\n');
   fs.writeFileSync(path.join(driftCase.source, 'note.md'), original);
@@ -3008,8 +3008,8 @@ test('normalizes and rewrites only managed attachment link destinations in the b
   });
   const moved = fs.readFileSync(path.join(applyCase.root, '10-Notes/note.md'), 'utf8');
   assert.equal(moved, original.replace(
-    `[missing image: ${oldPrefix}x.png]`,
-    `[missing image: ${newPrefix}x.png]`,
+    `![asset](${oldPrefix}x.png)`,
+    `![asset](${newPrefix}x.png)`,
   ));
 });
 
@@ -3030,14 +3030,14 @@ test('parses supported Markdown attachment destinations without changing their s
   const oldPrefix = '../../../90-Attachments/logseq-assets/';
   const newPrefix = '../90-Attachments/logseq-assets/';
   const links = [
-    `[missing image: ${oldPrefix}x.png]`,
-    `[missing image: ${oldPrefix}x(1].png)`,
-    `[missing image: (2].png)`,
-    `[missing image: ${oldPrefix}space file.png]`,
-    `[missing image: ${oldPrefix}percent space.png]`,
-    `[missing image: ${oldPrefix}hash#file.png]`,
-    `[missing image: ${oldPrefix}question?file.png]`,
-    `[missing image: ${oldPrefix}title.png]`,
+    `![normal](${oldPrefix}x.png)`,
+    `![plain-parens](${oldPrefix}x(1).png)`,
+    `![escaped-parens](${oldPrefix}x\\(2\\).png)`,
+    `![angle](<${oldPrefix}space file.png>)`,
+    `![percent-space](${oldPrefix}percent%20space.png)`,
+    `![percent-hash](${oldPrefix}hash%23file.png)`,
+    `![percent-question](${oldPrefix}question%3Ffile.png)`,
+    `![title](${oldPrefix}title.png "CommonMark title")`,
   ];
   const content = `---\ntitle: destinations\n---\n\n${links.join('\n')}\n`;
   fs.writeFileSync(path.join(f.source, 'note.md'), content);
@@ -3072,9 +3072,9 @@ test('parses quoted and parenthesized titles independently from the link destina
   const oldPrefix = '../../../90-Attachments/logseq-assets/';
   const newPrefix = '../90-Attachments/logseq-assets/';
   const links = [
-    `[missing image: ${oldPrefix}title.png]`,
-    `[missing image: ${oldPrefix}title.png]`,
-    `[missing image: ${oldPrefix}title.png (valid title])`,
+    `![title](${oldPrefix}title.png "valid title (")`,
+    `![title](${oldPrefix}title.png 'valid title (')`,
+    `![title](${oldPrefix}title.png (valid title))`,
   ];
 
   for (const link of links) {
@@ -3117,7 +3117,7 @@ test('ignores indented code and raw HTML blocks while parsing a real titled link
   fs.renameSync(path.join(assetRoot, 'x.png'), path.join(assetRoot, 'real.png'));
   const oldPrefix = '../../../90-Attachments/logseq-assets/';
   const newPrefix = '../90-Attachments/logseq-assets/';
-  const realLink = `[missing image: ${oldPrefix}real.png]`;
+  const realLink = `![real](${oldPrefix}real.png "real title (")`;
   const content = [
     '---',
     'title: block contexts',
@@ -3125,22 +3125,22 @@ test('ignores indented code and raw HTML blocks while parsing a real titled link
     '',
     'paragraph before code',
     '',
-    `    [missing image: ${oldPrefix}four-space.png]`,
+    `    ![four-space](${oldPrefix}four-space.png)`,
     '    still indented code',
     '',
-    `\t[missing image: ${oldPrefix}tab.png]`,
+    `\t![tab](${oldPrefix}tab.png)`,
     '',
     '<pre>',
-    `[missing image: ${oldPrefix}pre.png]`,
+    `![pre](${oldPrefix}pre.png)`,
     '</pre>',
     '<script type="text/plain">',
-    `[missing image: ${oldPrefix}script.png]`,
+    `![script](${oldPrefix}script.png)`,
     '</script>',
     '   <STYLE>',
-    `[missing image: ${oldPrefix}style.png]`,
+    `![style](${oldPrefix}style.png)`,
     '   </STYLE>',
     '<textarea>',
-    `[missing image: ${oldPrefix}textarea.png]`,
+    `![textarea](${oldPrefix}textarea.png)`,
     '</textarea>',
     realLink,
     '',
@@ -3177,9 +3177,9 @@ test('treats the start of a document as an indented-code block boundary', () => 
   fs.renameSync(path.join(assetRoot, 'x.png'), path.join(assetRoot, 'real.png'));
   const oldPrefix = '../../../90-Attachments/logseq-assets/';
   const newPrefix = '../90-Attachments/logseq-assets/';
-  const realLink = `[missing image: ${oldPrefix}real.png]`;
+  const realLink = `![real](${oldPrefix}real.png)`;
   const content = [
-    `    [missing image: ${oldPrefix}missing-indented.png]`,
+    `    ![indented](${oldPrefix}missing-indented.png)`,
     '',
     realLink,
     '',
@@ -3217,12 +3217,12 @@ test('treats the first body line after frontmatter as an indented-code boundary'
     const f = fixture();
     const assetRoot = path.join(f.root, '90-Attachments/logseq-assets');
     fs.renameSync(path.join(assetRoot, 'x.png'), path.join(assetRoot, 'real.png'));
-    const realLink = `[missing image: ${oldPrefix}real.png]`;
+    const realLink = `![real](${oldPrefix}real.png)`;
     const content = [
       '---',
       'title: initial body boundary',
       '---',
-      `${indentation}[missing image: ${oldPrefix}missing-body.png]`,
+      `${indentation}![indented](${oldPrefix}missing-body.png)`,
       '',
       realLink,
       '',
@@ -3262,37 +3262,38 @@ test('honors CommonMark containers, fences, and raw HTML block types', () => {
   fs.writeFileSync(path.join(assetRoot, 'real2.png'), 'real asset 2');
   const oldPrefix = '../../../90-Attachments/logseq-assets/';
   const newPrefix = '../90-Attachments/logseq-assets/';
-  const realListLink = `- [missing image: ${oldPrefix}real.png]`;
-  const realQuoteLink = `> [missing image: ${oldPrefix}real2.png]`;
+  const realListLink = `- ![real](${oldPrefix}real.png)`;
+  const realQuoteLink = `> ![real2](${oldPrefix}real2.png)`;
   const content = [
     '---',
     'title: block containers',
     '---',
     '',
     '<div>',
-    `[missing image: ${oldPrefix}div.png]`,
+    `![div](${oldPrefix}div.png)`,
     '</div>',
     '',
     '<table>',
-    `[missing image: ${oldPrefix}table.png]`,
+    `![table](${oldPrefix}table.png)`,
     '</table>',
     '',
     '<?processing',
-    `[missing image: ${oldPrefix}processing.png]`,
+    `![processing](${oldPrefix}processing.png)`,
     '?>',
     '<!DOCTYPE html [',
-    `[missing image: ${oldPrefix}declaration.png]`,
+    `![declaration](${oldPrefix}declaration.png)`,
     ']>',
-    '<[missing image: ${oldPrefix}cdata.png]`,
+    '<![CDATA[',
+    `![cdata](${oldPrefix}cdata.png)`,
     ']]>',
     '> ~~~',
-    `> [missing image: ${oldPrefix}quote-fence.png]`,
+    `> ![quote-fence](${oldPrefix}quote-fence.png)`,
     '> ~~~~',
     '- ```js',
-    `  [missing image: ${oldPrefix}list-fence.png]`,
+    `  ![list-fence](${oldPrefix}list-fence.png)`,
     '  ````',
     '```',
-    `[missing image: ${oldPrefix}top-fence.png]`,
+    `![top-fence](${oldPrefix}top-fence.png)`,
     '````',
     realListLink,
     realQuoteLink,
@@ -3334,7 +3335,7 @@ test('does not let a type 7 HTML tag interrupt an open paragraph', () => {
   fs.renameSync(path.join(assetRoot, 'x.png'), path.join(assetRoot, 'real.png'));
   const oldPrefix = '../../../90-Attachments/logseq-assets/';
   const newPrefix = '../90-Attachments/logseq-assets/';
-  const realLink = `[missing image: ${oldPrefix}real.png]`;
+  const realLink = `![real](${oldPrefix}real.png)`;
   const content = [
     '---',
     'title: type 7 paragraph interruption',
@@ -3345,7 +3346,7 @@ test('does not let a type 7 HTML tag interrupt an open paragraph', () => {
     realLink,
     '',
     '<span>',
-    `[missing image: ${oldPrefix}blocked.png]`,
+    `![blocked](${oldPrefix}blocked.png)`,
     '</span>',
     '',
   ].join('\n');
@@ -3387,7 +3388,7 @@ for (const [name, precedingBlock] of [
     fs.renameSync(path.join(assetRoot, 'x.png'), path.join(assetRoot, 'real.png'));
     const oldPrefix = '../../../90-Attachments/logseq-assets/';
     const newPrefix = '../90-Attachments/logseq-assets/';
-    const realLink = `[missing image: ${oldPrefix}real.png]`;
+    const realLink = `![real](${oldPrefix}real.png)`;
     const content = [
       '---',
       `title: type 7 after ${name}`,
@@ -3395,7 +3396,7 @@ for (const [name, precedingBlock] of [
       '',
       ...precedingBlock,
       '<span>',
-      `[missing image: ${oldPrefix}blocked-${name.replaceAll(' ',]}.png)`,
+      `![blocked](${oldPrefix}blocked-${name.replaceAll(' ', '-')}.png)`,
       '</span>',
       '',
       realLink,
@@ -3439,7 +3440,7 @@ test('ends unclosed container fences when their block container ends', () => {
     const f = fixture();
     const assetRoot = path.join(f.root, '90-Attachments/logseq-assets');
     fs.renameSync(path.join(assetRoot, 'x.png'), path.join(assetRoot, 'real.png'));
-    const realLink = `[missing image: ${oldPrefix}real.png]`;
+    const realLink = `![real](${oldPrefix}real.png)`;
     const content = [...prefixLines, realLink, ''].join('\n');
     fs.writeFileSync(path.join(f.source, 'note.md'), content);
 
@@ -3470,8 +3471,8 @@ test('ends unclosed container fences when their block container ends', () => {
 });
 
 for (const [name, fencedLines] of [
-  ['list', ['- ```md', '  - [missing image: list-literal.png]', '  ```']],
-  ['blockquote', ['> ```md', '> - [missing image: quote-literal.png]', '> ```']],
+  ['list', ['- ```md', '  - ![literal](../../../90-Attachments/logseq-assets/list-literal.png)', '  ```']],
+  ['blockquote', ['> ```md', '> - ![literal](../../../90-Attachments/logseq-assets/quote-literal.png)', '> ```']],
 ]) {
   test(`keeps nested markers literal inside an active ${name} fence`, () => {
     const f = fixture();
@@ -3479,7 +3480,7 @@ for (const [name, fencedLines] of [
     fs.renameSync(path.join(assetRoot, 'x.png'), path.join(assetRoot, 'real.png'));
     const oldPrefix = '../../../90-Attachments/logseq-assets/';
     const newPrefix = '../90-Attachments/logseq-assets/';
-    const realLink = `[missing image: ${oldPrefix}real.png]`;
+    const realLink = `![real](${oldPrefix}real.png)`;
     const content = [...fencedLines, '', realLink, ''].join('\n');
     fs.writeFileSync(path.join(f.source, 'note.md'), content);
 
@@ -3513,7 +3514,7 @@ for (const [name, fencedLines] of [
     'list then blockquote',
     [
       '- > ```md',
-      '  > - [missing image: list-quote-literal.png]',
+      '  > - ![literal](../../../90-Attachments/logseq-assets/list-quote-literal.png)',
       '  > ```',
     ],
   ],
@@ -3521,7 +3522,7 @@ for (const [name, fencedLines] of [
     'blockquote then list',
     [
       '> - ```md',
-      '>   - [missing image: quote-list-literal.png]',
+      '>   - ![literal](../../../90-Attachments/logseq-assets/quote-list-literal.png)',
       '>   ```',
     ],
   ],
@@ -3532,7 +3533,7 @@ for (const [name, fencedLines] of [
     fs.renameSync(path.join(assetRoot, 'x.png'), path.join(assetRoot, 'real.png'));
     const oldPrefix = '../../../90-Attachments/logseq-assets/';
     const newPrefix = '../90-Attachments/logseq-assets/';
-    const realLink = `[missing image: ${oldPrefix}real.png]`;
+    const realLink = `![real](${oldPrefix}real.png)`;
     const content = [...fencedLines, '', realLink, ''].join('\n');
     fs.writeFileSync(path.join(f.source, 'note.md'), content);
 
@@ -3567,11 +3568,11 @@ test('keeps a list fence active across an unindented blank line', () => {
   fs.renameSync(path.join(assetRoot, 'x.png'), path.join(assetRoot, 'real.png'));
   const oldPrefix = '../../../90-Attachments/logseq-assets/';
   const newPrefix = '../90-Attachments/logseq-assets/';
-  const realLink = `[missing image: ${oldPrefix}real.png]`;
+  const realLink = `![real](${oldPrefix}real.png)`;
   const content = [
     '- ```md',
     '',
-    `  [missing image: ${oldPrefix}blank-line-literal.png]`,
+    `  ![literal](${oldPrefix}blank-line-literal.png)`,
     realLink,
     '',
   ].join('\n');
@@ -3604,15 +3605,15 @@ test('keeps a list fence active across an unindented blank line', () => {
 for (const [name, htmlLines] of [
   [
     'blockquote type 1',
-    ['> <pre>', '> [missing image: quote-pre-literal.png]'],
+    ['> <pre>', '> ![literal](../../../90-Attachments/logseq-assets/quote-pre-literal.png)'],
   ],
   [
     'list type 1',
-    ['- <pre>', '  [missing image: list-pre-literal.png]'],
+    ['- <pre>', '  ![literal](../../../90-Attachments/logseq-assets/list-pre-literal.png)'],
   ],
   [
     'blockquote type 6',
-    ['> <div>', '> [missing image: quote-div-literal.png]'],
+    ['> <div>', '> ![literal](../../../90-Attachments/logseq-assets/quote-div-literal.png)'],
   ],
 ]) {
   test(`ends unclosed raw HTML when its ${name} container ends`, () => {
@@ -3621,7 +3622,7 @@ for (const [name, htmlLines] of [
     fs.renameSync(path.join(assetRoot, 'x.png'), path.join(assetRoot, 'real.png'));
     const oldPrefix = '../../../90-Attachments/logseq-assets/';
     const newPrefix = '../90-Attachments/logseq-assets/';
-    const realLink = `[missing image: ${oldPrefix}real.png]`;
+    const realLink = `![real](${oldPrefix}real.png)`;
     const content = [...htmlLines, realLink, ''].join('\n');
     fs.writeFileSync(path.join(f.source, 'note.md'), content);
 
@@ -3657,8 +3658,8 @@ test('continues tab and four-space list content across blank lines', () => {
   fs.writeFileSync(path.join(assetRoot, 'spaces.png'), 'spaces asset');
   const oldPrefix = '../../../90-Attachments/logseq-assets/';
   const newPrefix = '../90-Attachments/logseq-assets/';
-  const tabLink = `[missing image: ${oldPrefix}tab.png]`;
-  const spacesLink = `[missing image: ${oldPrefix}spaces.png]`;
+  const tabLink = `![tab](${oldPrefix}tab.png)`;
+  const spacesLink = `![spaces](${oldPrefix}spaces.png)`;
   const content = [
     '- parent item',
     '',
@@ -3668,7 +3669,7 @@ test('continues tab and four-space list content across blank lines', () => {
     `    ${spacesLink}`,
     'root paragraph ends the list',
     '',
-    `    [missing image: ${oldPrefix}missing-code.png]`,
+    `    ![code](${oldPrefix}missing-code.png)`,
     '',
   ].join('\n');
   fs.writeFileSync(path.join(f.source, 'note.md'), content);
@@ -3706,8 +3707,8 @@ test('continues nested list siblings and content after a blank line', () => {
   fs.writeFileSync(path.join(assetRoot, 'nested-content.png'), 'nested content asset');
   const oldPrefix = '../../../90-Attachments/logseq-assets/';
   const newPrefix = '../90-Attachments/logseq-assets/';
-  const siblingLink = `[missing image: ${oldPrefix}nested-list.png]`;
-  const continuationLink = `[missing image: ${oldPrefix}nested-content.png]`;
+  const siblingLink = `![nested-list](${oldPrefix}nested-list.png)`;
+  const continuationLink = `![nested-content](${oldPrefix}nested-content.png)`;
   const content = [
     '- root item',
     '\t- child item',
@@ -3718,7 +3719,7 @@ test('continues nested list siblings and content after a blank line', () => {
     `\t\t  ${continuationLink}`,
     'root paragraph ends every list',
     '',
-    `    [missing image: ${oldPrefix}missing-nested-code.png]`,
+    `    ![code](${oldPrefix}missing-nested-code.png)`,
     '',
   ].join('\n');
   fs.writeFileSync(path.join(f.source, 'note.md'), content);
@@ -3759,11 +3760,11 @@ for (const [name, codeIndent] of [
     fs.renameSync(path.join(assetRoot, 'x.png'), path.join(assetRoot, 'real.png'));
     const oldPrefix = '../../../90-Attachments/logseq-assets/';
     const newPrefix = '../90-Attachments/logseq-assets/';
-    const realLink = `[missing image: ${oldPrefix}real.png]`;
+    const realLink = `![real](${oldPrefix}real.png)`;
     const content = [
       '- parent item',
       '',
-      `${codeIndent}[missing image: ${oldPrefix}missing-code.png]`,
+      `${codeIndent}![code](${oldPrefix}missing-code.png)`,
       `    ${realLink}`,
       '',
     ].join('\n');
@@ -3800,7 +3801,7 @@ test('ignores attachment-like text outside real Markdown inline links', () => {
   fs.renameSync(path.join(assetRoot, 'x.png'), path.join(assetRoot, 'real.png'));
   const oldPrefix = '../../../90-Attachments/logseq-assets/';
   const newPrefix = '../90-Attachments/logseq-assets/';
-  const realLink = `[missing image: ${oldPrefix}real.png]`;
+  const realLink = `![x](${oldPrefix}real.png)`;
   const content = [
     '---',
     'title: scanner states',
@@ -3808,15 +3809,15 @@ test('ignores attachment-like text outside real Markdown inline links', () => {
     '',
     `inline code \`[inline](${oldPrefix}inline.png)\` remains literal`,
     `\\[literal](${oldPrefix}escaped-link.png)`,
-    `\\[missing image: ${oldPrefix}escaped-image.png]`,
+    `\\![literal](${oldPrefix}escaped-image.png)`,
     '<!--',
-    `[missing image: ${oldPrefix}comment.png]`,
+    `![comment](${oldPrefix}comment.png)`,
     '-->',
     '```markdown',
-    `[missing image: ${oldPrefix}fenced.png]`,
+    `![fenced](${oldPrefix}fenced.png)`,
     '```',
     '~~~markdown',
-    `[missing image: ${oldPrefix}tilde.png]`,
+    `![tilde](${oldPrefix}tilde.png)`,
     '~~~',
     realLink,
     '',
@@ -3844,7 +3845,7 @@ test('ignores attachment-like text outside real Markdown inline links', () => {
     expectedTotal: 6,
   });
   const moved = fs.readFileSync(path.join(f.root, '10-Notes/note.md'), 'utf8');
-  assert.equal(moved, content.replace(realLink, `[missing image: ${newPrefix}real.png]`));
+  assert.equal(moved, content.replace(realLink, `![x](${newPrefix}real.png)`));
 });
 
 test('rejects unsafe or unapproved attachment destinations', () => {
@@ -3867,7 +3868,7 @@ test('rejects unsafe or unapproved attachment destinations', () => {
     fs.writeFileSync(path.join(f.root, 'secret.txt'), 'must not be treated as an asset');
     fs.writeFileSync(
       path.join(f.source, 'note.md'),
-      `---\ntitle: ${label}\n---\n\n[missing image: ${destination}]\n`,
+      `---\ntitle: ${label}\n---\n\n![asset](${destination})\n`,
     );
     assert.throws(
       () => createBaseline({ ...f, expectedTotal: 6 }),
