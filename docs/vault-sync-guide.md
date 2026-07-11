@@ -1,5 +1,7 @@
 # Vault 同步边界
 
+当前同步器消费 `contracts/publishing/v1/` 定义的来源契约，并生成 Astro 公开副本。该目录是字段模型的唯一权威位置；本指南只说明当前同步实现和安全边界。
+
 ## 运行方式
 
 默认配置使用相对路径，不在仓库中保存本机绝对路径：
@@ -47,3 +49,5 @@ pnpm build
 - `blog/obsidian-local-markdown-knowledge-vault`
 
 最新报告位于 `reports/`：`sync-report.md`、`wikilink-warnings.md`、`asset-warnings.md`、`publish-manifest.json` 和 `publish-manifest.md`。当前报告显示 `publish_candidates: 4`、`synced: 4`、`errors: 0`；warning 来自用于说明边界的降级链接和缺失图片记录，发布前仍需逐项确认其合理性。
+
+JSON 和 Markdown manifest 必须记录 `contractVersion: v1` / `contract_version: v1`，用于确认本次结果由哪个契约版本生成。

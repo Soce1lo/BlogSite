@@ -26,6 +26,7 @@ pnpm dev
 7. UI 或主题变更要同时核对桌面和移动视口，不得引入横向溢出、重复标题或 GitHub Pages 子路径错误。
 8. 首页 Profile、NOW、长期主题和精选引用只在 `src/data/site-profile.ts` 中人工维护，不得从 Daily、任务列表或 git 状态自动生成。
 9. `publish_kind` 只允许 `thought`、`learned`、`built`、`revised`；修改映射时必须同步更新合成 Vault 测试、公开 schema 和 manifest。
+10. 发布字段、枚举或默认值变更必须先更新 `contracts/publishing/` 和 `tests/publishing-contract.test.ts`，再修改同步器、Astro schema、操作文档或 Vault 局部约定。
 
 ## 真实内容接入
 

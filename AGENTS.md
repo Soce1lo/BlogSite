@@ -21,6 +21,8 @@
 
 测试基于 `node:test`、`node:assert` 和 `tsx`。新增同步、manifest、组织字段或发布检查逻辑时，优先补充 `tests/vault-sync.test.ts` 或相邻 `*.test.mjs`/`*.test.ts`，并使用合成 fixture，不读取真实 Vault。路径检查要同时覆盖安全相对路径和真实本机/私有路径泄露。提交前至少运行 `pnpm test`、`pnpm check:publish` 和 `pnpm build`。
 
+发布字段模型以 `contracts/publishing/` 为唯一权威来源。调整字段、枚举、默认值或 manifest 版本时，必须先更新契约和 `tests/publishing-contract.test.ts`；其他指南、同步器和 Astro schema 只消费该契约。
+
 ## 提交与 Pull Request 规范
 
 当前历史使用简短英文动宾式提交，如 `Initialize BlogSite V1`；后续保持单一主题、清楚说明结果。PR 应包含变更摘要、验证命令结果、影响的页面或脚本；涉及 UI 时附截图，涉及同步或发布边界时说明隐私影响和回滚方式。

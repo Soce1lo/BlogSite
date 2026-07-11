@@ -1,5 +1,9 @@
 # 发布指南
 
+## 契约权威位置
+
+发布字段、允许值、默认行为和兼容规则以 `contracts/publishing/v1/contract.md` 与 `contracts/publishing/v1/schema.json` 为唯一权威来源。本指南只描述执行流程；出现不一致时先修正契约及其测试，再更新本指南。
+
 ## Agent 发布 Runbook
 
 按以下顺序执行。MUST 表示必须完成；DO NOT 表示不得绕过。
@@ -46,6 +50,8 @@ src/content/projects/
 ```
 
 ## Frontmatter
+
+下面是当前 Astro 发布适配器的输出格式，不是 Vault 来源契约：
 
 每篇 Markdown 内容需要满足以下结构：
 
