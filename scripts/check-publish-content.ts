@@ -3,6 +3,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import matter from "gray-matter";
 import publishConfig from "../publish.config";
+import { splitFencedCodeSegments } from "./utils/markdown";
 import { isDailySourcePath, toPosixPath, walkFiles } from "./utils/path";
 
 export interface PublishIssue {
@@ -108,7 +109,11 @@ export async function checkPublishContent(
       }
     }
 
-    if (/!?\[\[[^\]]+\]\]/u.test(parsed.content)) {
+    const proseSegments = splitFencedCodeSegments(parsed.content)
+      .filter((segment) => !segment.fencedCode)
+      .map((segment) => segment.content);
+
+    if (proseSegments.some((segment) => /!?\[\[[^\]]+\]\]/u.test(segment))) {
       addIssue(errors, relativePath, "residual-wikilink", "仍包含 Obsidian 双链");
     }
     if (isFileUrl(source)) {
@@ -180,11 +185,13 @@ export async function checkPublishContent(
       seenSlugs.set(slug, relativePath);
     }
 
-    for (const reference of imageReferences(parsed.content)) {
-      const imagePath = resolveImageReference(reference, absolutePath, publicPath);
-      if (!imagePath) continue;
-      if (!(await fileExists(imagePath))) {
-        addIssue(warnings, relativePath, "missing-image", `图片不存在: ${reference}`);
+    for (const proseSegment of proseSegments) {
+      for (const reference of imageReferences(proseSegment)) {
+        const imagePath = resolveImageReference(reference, absolutePath, publicPath);
+        if (!imagePath) continue;
+        if (!(await fileExists(imagePath))) {
+          addIssue(warnings, relativePath, "missing-image", `图片不存在: ${reference}`);
+        }
       }
     }
   }

@@ -93,6 +93,59 @@ test("双链只为发布目标生成链接并记录降级 warning", async () => 
   );
 });
 
+test("归一化保留代码围栏内容并只转换正文 Markdown", async () => {
+  const assetRequests: string[] = [];
+  const markdown = [
+    "[[正文链接]]",
+    "~~~js",
+    'const wikilink = "[[代码链接]]";',
+    'const embed = "![[code.png]]";',
+    'const image = "![code](code.png)";',
+    "~~~",
+    "```md",
+    "[[反引号围栏中的链接]]",
+    "![反引号围栏中的图片](backtick.png)",
+    "```",
+    "![正文图片](body.png)",
+  ].join("\n");
+
+  const result = await normalizeMarkdown({
+    markdown,
+    index: createVaultIndex([], []),
+    outputPath: "src/content/blog/fenced-code-example.md",
+    assetHandler: async (request) => {
+      assetRequests.push(request.reference);
+      return {
+        markdown: `[asset: ${request.reference}]`,
+        warnings: [],
+      };
+    },
+  });
+
+  assert.equal(
+    result.markdown,
+    [
+      "正文链接",
+      "~~~js",
+      'const wikilink = "[[代码链接]]";',
+      'const embed = "![[code.png]]";',
+      'const image = "![code](code.png)";',
+      "~~~",
+      "```md",
+      "[[反引号围栏中的链接]]",
+      "![反引号围栏中的图片](backtick.png)",
+      "```",
+      "[asset: body.png]",
+    ].join("\n"),
+  );
+  assert.deepEqual(assetRequests, ["body.png"]);
+  assert.deepEqual(
+    result.wikilinkWarnings.map((warning) => warning.target),
+    ["正文链接"],
+  );
+  assert.deepEqual(result.assetWarnings, []);
+});
+
 test("同步筛选内容、复制图片、清理旧托管副本且不修改源 Vault", async (t) => {
   const root = await mkdtemp(path.join(tmpdir(), "blogsite-sync-"));
   t.after(() => rm(root, { recursive: true, force: true }));
@@ -555,6 +608,39 @@ publish_status: private
   const result = await checkPublishContent({ contentPath, publicPath });
 
   assert.deepEqual(result.errors, []);
+});
+
+test("发布检查忽略代码围栏中的双链和图片示例", async (t) => {
+  const root = await mkdtemp(path.join(tmpdir(), "blogsite-check-fenced-markdown-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const contentPath = path.join(root, "content");
+  const publicPath = path.join(root, "public");
+
+  await writeText(
+    path.join(contentPath, "blog", "fenced-markdown.md"),
+    `---
+title: "围栏中的 Markdown 示例"
+description: "用于验证代码示例不会被当作公开正文。"
+pubDate: 2026-06-01
+draft: false
+category: "测试"
+tags: []
+visibility: public
+sourceVaultPath: "Notes/Fenced Markdown.md"
+---
+
+~~~md
+[[代码中的双链]]
+![[代码中的嵌入图片.png]]
+![代码中的 Markdown 图片](missing.png)
+~~~
+`,
+  );
+
+  const result = await checkPublishContent({ contentPath, publicPath });
+
+  assert.deepEqual(result.errors, []);
+  assert.deepEqual(result.warnings, []);
 });
 
 test("发布检查允许安全相对说明路径、站内路径和可解析图片路径", async (t) => {
