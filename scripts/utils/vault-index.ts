@@ -85,7 +85,8 @@ export type CandidateSkipReason =
   | "missing-date"
   | "daily"
   | "invalid-slug"
-  | "invalid-publish-kind";
+  | "invalid-publish-kind"
+  | "invalid-series-order";
 
 export type CandidateEvaluation =
   | { entry: PublishIndexEntry; reason?: never }
@@ -140,16 +141,14 @@ export function evaluatePublishCandidate(document: VaultDocument): CandidateEval
   }
   const series = getString(document.data, "publish_series");
   const rawSeriesOrder = document.data.publish_series_order;
-  const parsedSeriesOrder =
-    typeof rawSeriesOrder === "number"
-      ? rawSeriesOrder
-      : typeof rawSeriesOrder === "string" && rawSeriesOrder.trim()
-        ? Number(rawSeriesOrder)
-        : undefined;
-  const seriesOrder =
-    typeof parsedSeriesOrder === "number" && Number.isFinite(parsedSeriesOrder)
-      ? parsedSeriesOrder
-      : undefined;
+  const hasSeriesOrder = Object.hasOwn(document.data, "publish_series_order");
+  if (
+    hasSeriesOrder &&
+    (typeof rawSeriesOrder !== "number" || !Number.isFinite(rawSeriesOrder) || !series)
+  ) {
+    return { reason: "invalid-series-order" };
+  }
+  const seriesOrder = hasSeriesOrder ? (rawSeriesOrder as number) : undefined;
   const topic = getString(document.data, "publish_topic");
 
   return {

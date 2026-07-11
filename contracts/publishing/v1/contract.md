@@ -16,7 +16,7 @@ V1 描述知识来源如何成为 BlogSite 发布候选。它不规定 Vault 目
 
 - 缺少 `publish_category` 时，当前 Astro 适配器生成 `未分类`。
 - 缺少 `publish_kind` 时，blog、notes、projects 分别映射为 thought、learned、built。
-- `publish_series_order` 只有在 `publish_series` 存在时生效。
+- `publish_series_order` 必须是有限 number，且必须同时存在 `publish_series`；否则发布候选无效。
 - topic、series 和 kind 只表达公开语义，不改变 Vault 目录或知识层级。
 
 ## Privacy and ownership

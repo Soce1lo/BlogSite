@@ -410,6 +410,68 @@ publish_kind: speculative
   );
 });
 
+test("同步将非法 publish_series_order 计入 errors 且不生成副本", async (t) => {
+  const root = await mkdtemp(path.join(tmpdir(), "blogsite-series-order-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+
+  const vaultPath = path.join(root, "vault");
+  const contentOutputPath = path.join(root, "content");
+  const imageOutputPath = path.join(root, "public", "images");
+  const reportsPath = path.join(root, "reports");
+
+  await writeText(
+    path.join(vaultPath, "Quoted.md"),
+    `---
+title: "带引号顺序"
+description: "字符串顺序不得进入公开输出。"
+created: 2026-07-11
+publish_target: blog
+publish_status: published
+publish_slug: quoted-series-order
+publish_visibility: public
+publish_series: "Series"
+publish_series_order: "2"
+---
+
+不得同步的正文。
+`,
+  );
+  await writeText(
+    path.join(vaultPath, "Missing Series.md"),
+    `---
+title: "缺少系列"
+description: "没有 series 的顺序不得进入公开输出。"
+created: 2026-07-11
+publish_target: notes
+publish_status: published
+publish_slug: missing-series
+publish_visibility: public
+publish_series_order: 2
+---
+
+不得同步的正文。
+`,
+  );
+
+  const summary = await syncFromVault({
+    vaultPath,
+    contentOutputPath,
+    imageOutputPath,
+    reportsPath,
+    excludeVaultDirs: [".git", ".obsidian", "80-Archive", "_system", "90-Attachments"],
+    routes: { blog: "/blog", notes: "/notes", projects: "/projects" },
+  });
+
+  assert.equal(summary.synced, 0);
+  assert.equal(summary.errors, 2);
+  await assert.rejects(
+    readFile(path.join(contentOutputPath, "blog", "quoted-series-order.md")),
+  );
+  await assert.rejects(
+    readFile(path.join(contentOutputPath, "notes", "missing-series.md")),
+  );
+});
+
 test("同步拒绝把输出目录放进 Vault", async (t) => {
   const root = await mkdtemp(path.join(tmpdir(), "blogsite-path-"));
   t.after(() => rm(root, { recursive: true, force: true }));

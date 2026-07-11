@@ -193,33 +193,13 @@ contracts/
 
 ## 发布协议 V1
 
-### 作者负责字段
+当前已实现 V1 的作者字段、必填与可选关系、枚举、默认行为、字段依赖和示例，统一以 [`contracts/publishing/v1/`](../../../contracts/publishing/v1/) 中的 `contract.md`、`schema.json` 和 `examples/` 为准。本架构文档只保留系统分层、责任边界和未来迁移设计，不再复制当前契约模型。
 
-V1 继续支持现有 flat 字段：
+在责任边界上，V1 元数据只描述公开分类、路由候选、授权状态和展示语义，不代表 Vault 目录，也不得由 BlogSite 自动改写。稳定公开身份仍是未来迁移问题，不应把当前 URL 候选误当作永久身份。
 
-- `title`
-- `description`
-- `created`
-- `updated`
-- `tags`
-- `publish_status`
-- `publish_visibility`
-- `publish_slug`
-- `publish_target`
-- `publish_category`
-- `publish_kind`
-- `publish_topic`
-- `publish_series`
-- `publish_series_order`
+### 未来建议字段
 
-字段语义：
-
-- `publish_target` 是 V1 内容分类和路由提示，不代表 Vault 目录。
-- `publish_kind` 表达 `thought`、`learned`、`built`、`revised` 等公开输出语义。
-- `publish_slug` 是稳定 URL 候选，不是永久内容身份。
-- `publish_status` 和 `publish_visibility` 只能由用户明确授权改变。
-
-### 建议新增字段
+以下字段仅是未来协议演进建议，不是当前 V1 schema、来源适配器或发布流程已经实现或要求的字段：
 
 - `publish_contract: v1`：声明来源内容遵守的协议版本。
 - `publish_id`：与文件名、路径、标题和 slug 无关的稳定公开身份。
@@ -228,16 +208,7 @@ V1 继续支持现有 flat 字段：
 
 ### 发布适配器生成字段
 
-以下字段属于当前 Astro 输出，不作为 Vault 全局知识模型要求：
-
-- `pubDate`
-- `updatedDate`
-- `draft`
-- `managedBy`
-- `sourcePublishStatus`
-- `sourceVaultPath`
-- `outputKind`
-- Astro collection 和 layout 专用字段
+当前 Astro 输出字段属于发布适配器实现，不是 Vault 全局知识模型或 V1 来源字段。其精确约束由 Astro content schema 与同步器负责，架构层只要求它们可从权威契约记录确定性生成，并保留来源、授权状态和托管 ownership。
 
 ## 变更归属
 

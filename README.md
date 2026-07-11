@@ -20,7 +20,7 @@
 - 跨集合成长输出：按 `updatedDate ?? pubDate` 排序并按年月组织思考、学习、构建与修订。
 - 人工维护的公开 Profile：集中管理身份、NOW、长期主题和精选内容，不从私人 Daily 自动推导状态。
 - 真实 Vault 只读同步：生成公开 Markdown、公开图片和报告，不写回 Vault。
-- 输出语义合同：Vault 可用 `publish_kind` 指定 `thought`、`learned`、`built` 或 `revised`，缺省时按集合稳定映射。
+- 版本化发布契约：Vault 的公开元数据能力、允许值和缺省行为统一以 [`contracts/publishing/v1/`](contracts/publishing/v1/) 为准。
 - 发布边界检查：拦截残留双链、本机绝对路径、`file://`、Daily 来源、重复 slug、不可信发布状态和缺失必需 frontmatter。
 - 发布 manifest：生成 `reports/publish-manifest.json` 和 `reports/publish-manifest.md`，用于对账来源、URL、状态和 warning。
 - GitHub Pages 部署：push 到 `main` 后由 Actions 构建并部署；CI 不执行 Vault 同步。

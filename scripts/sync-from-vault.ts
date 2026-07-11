@@ -312,6 +312,7 @@ export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> 
         break;
       case "invalid-slug":
       case "invalid-publish-kind":
+      case "invalid-series-order":
       case "missing-date":
         summary.errors += 1;
         break;
