@@ -667,10 +667,11 @@ Run:
 ```bash
 sed -n '1,220p' "$preview_root/reports/publish-manifest.md"
 sed -n '1,120p' "$preview_root/reports/sync-report.md"
-rg -n "/Users/|/home/|file://|KnowledgeVault" "$preview_root/content" "$preview_root/reports"
+rg -n '/Users/|/home/|file://|(?:/|\\)KnowledgeVault(?:/|\\)' "$preview_root/content" "$preview_root/reports"
+rg -n 'KnowledgeVault' "$preview_root/content" "$preview_root/reports"
 ```
 
-Expected: manifest lists only four authorized public sources; `errors: 0`; the final `rg` has no output. Warnings must correspond to known Wikilink degradation or missing assets, not private content.
+Expected: manifest lists only four authorized public sources; `errors: 0`; the first `rg` hard-blocking scan has no output. The second `rg` is a manual review and may list only authorized public article or series names; it must not expose `sourceVaultPath`, a local directory or unauthorized body content. Warnings must correspond to known Wikilink degradation or missing assets, not private content.
 
 - [ ] **Step 5: 执行 formal sync**
 
