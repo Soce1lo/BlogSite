@@ -14,6 +14,7 @@ visibility: public
 sourceVaultPath: 60-Publish/Obsidian 入门：本地 Markdown、链接网络与我的知识库实践.md
 managedBy: vault-sync
 sourcePublishStatus: published
+outputKind: thought
 series: KnowledgeVault 实践
 seriesOrder: 30
 topic: Obsidian

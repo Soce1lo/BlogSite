@@ -1,7 +1,8 @@
 {
-  "generatedAt": "2026-07-07T06:41:23.065Z",
+  "contractVersion": "v1",
+  "generatedAt": "2026-07-11T06:51:42.726Z",
   "summary": {
-    "scannedVaultFiles": 648,
+    "scannedVaultFiles": 663,
     "publishCandidates": 4,
     "synced": 4,
     "warnings": 73,
@@ -16,6 +17,7 @@
       "title": "Obsidian 入门：本地 Markdown、链接网络与我的知识库实践",
       "draft": false,
       "visibility": "public",
+      "outputKind": "thought",
       "series": "KnowledgeVault 实践",
       "seriesOrder": 30,
       "topic": "Obsidian",
@@ -29,6 +31,7 @@
       "title": "从 Logseq 到 Obsidian：具体迁移指导",
       "draft": false,
       "visibility": "public",
+      "outputKind": "thought",
       "warnings": [
         "wikilink: target-not-found",
         "wikilink: target-not-found",
@@ -113,6 +116,7 @@
       "title": "从 Logseq 到 Obsidian：迁移回顾",
       "draft": false,
       "visibility": "public",
+      "outputKind": "thought",
       "warnings": []
     },
     {
@@ -123,6 +127,7 @@
       "title": "在 Obsidian Vault 中引入 LLM Wiki：从独立派生层开始",
       "draft": false,
       "visibility": "public",
+      "outputKind": "thought",
       "series": "KnowledgeVault 实践",
       "seriesOrder": 20,
       "topic": "LLM Wiki",

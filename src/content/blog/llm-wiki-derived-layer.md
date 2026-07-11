@@ -14,6 +14,7 @@ visibility: public
 sourceVaultPath: 60-Publish/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层开始.md
 managedBy: vault-sync
 sourcePublishStatus: published
+outputKind: thought
 series: KnowledgeVault 实践
 seriesOrder: 20
 topic: LLM Wiki

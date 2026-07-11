@@ -15,6 +15,7 @@ visibility: public
 sourceVaultPath: 60-Publish/从 Logseq 到 Obsidian：具体迁移指导.md
 managedBy: vault-sync
 sourcePublishStatus: published
+outputKind: thought
 ---
 # 从 Logseq 到 Obsidian：具体迁移指导
 
