@@ -76,8 +76,7 @@ sourceVaultPath: "relative/path/example.md"
 - `sourceVaultPath` 只能是相对路径，不能包含本机绝对路径。
 - `draft: true` 的内容不生成生产详情页，也不进入列表或 RSS。
 - `visibility: unlisted` 的非草稿内容生成详情页，但不进入首页、列表和 RSS。
-- `outputKind` 可取 `thought`、`learned`、`built`、`revised`；缺省时分别按 blog、notes、projects 映射为 thought、learned、built。
-- Vault 发布稿可使用对应的 flat 字段 `publish_kind`；非法值会让候选同步失败并计入 error。
+- `outputKind` 是当前 Astro 适配器生成的公开展示字段；对应 Vault 来源字段的允许值、默认映射与校验规则以 `contracts/publishing/v1/` 为准。
 - 不要提交私人内容、完整 Vault、真实私有附件或 `.env.local`。
 
 ## 发布前验证

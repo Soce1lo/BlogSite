@@ -35,7 +35,7 @@ pnpm build
 4. 任何本机绝对路径都不得进入公开内容、报告或版本控制。
 5. 未明确标记为可发布的内容不得同步。
 
-`publish_kind` 是可选的公开输出语义，允许值为 `thought`、`learned`、`built`、`revised`。缺省值按 `publish_target` 映射；非法值会阻止该候选同步。同步后的 `outputKind` 只用于公开展示，不改变 Vault 的目录或内容层级。
+同步器按照 `contracts/publishing/v1/` 中的允许值、默认行为和校验规则消费 `publish_kind`，并生成用于公开展示的 `outputKind`；该输出不改变 Vault 的目录或内容层级。
 
 同步器拒绝把内容、图片或报告输出目录放到 Vault 内部。自动测试还会比较合成 Vault 同步前后的完整文件哈希。
 
