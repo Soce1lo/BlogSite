@@ -60,6 +60,7 @@ category: "分类"
 tags:
   - 示例标签
 visibility: public
+outputKind: thought
 sourceVaultPath: "relative/path/example.md"
 ---
 ```
@@ -69,6 +70,8 @@ sourceVaultPath: "relative/path/example.md"
 - `sourceVaultPath` 只能是相对路径，不能包含本机绝对路径。
 - `draft: true` 的内容不生成生产详情页，也不进入列表或 RSS。
 - `visibility: unlisted` 的非草稿内容生成详情页，但不进入首页、列表和 RSS。
+- `outputKind` 可取 `thought`、`learned`、`built`、`revised`；缺省时分别按 blog、notes、projects 映射为 thought、learned、built。
+- Vault 发布稿可使用对应的 flat 字段 `publish_kind`；非法值会让候选同步失败并计入 error。
 - 不要提交私人内容、完整 Vault、真实私有附件或 `.env.local`。
 
 ## 发布前验证
@@ -84,9 +87,9 @@ pnpm build
 
 ## 主题发布验证
 
-当前站点使用 Tone-inspired 阅读主题适配。主题或布局变更发布前，除常规命令外，还应在本地或线上核对：
+当前站点使用 Soce1lo Growth Output Log 的 Trace 首页与 Ink & Signal 阅读主题。主题或布局变更发布前，除常规命令外，还应在本地或线上核对：
 
-- 首页包含搜索入口和明暗主题切换。
+- 首页包含身份、NOW、Output Log、长期主题、档案入口、搜索入口和明暗主题切换。
 - 长文详情页包含阅读进度条和 `content-toc` 目录。
 - 目录链接能跳转到对应 heading，滚动后目录高亮正常。
 - 移动宽度下 `document.documentElement.scrollWidth` 不大于视口宽度。
