@@ -3,6 +3,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import matter from "gray-matter";
 import publishConfig from "../publish.config";
+import { PUBLISH_CONTRACT_VERSION } from "./contracts/publishing-v1";
 import { buildAssetCatalog, createAssetHandler } from "./copy-assets";
 import {
   normalizeMarkdown,
@@ -81,6 +82,7 @@ interface PublishManifestEntry {
 }
 
 interface PublishManifest {
+  contractVersion: typeof PUBLISH_CONTRACT_VERSION;
   generatedAt: string;
   summary: PublishManifestSummary;
   entries: PublishManifestEntry[];
@@ -197,6 +199,7 @@ function createManifestMarkdown(manifest: PublishManifest): string {
 
   return `# Publish Manifest
 
+- contract_version: ${manifest.contractVersion}
 - generated_at: ${manifest.generatedAt}
 - scanned_vault_files: ${manifest.summary.scannedVaultFiles}
 - publish_candidates: ${manifest.summary.publishCandidates}
@@ -400,6 +403,7 @@ export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> 
 
   summary.warnings = wikilinkWarnings.length + assetWarnings.length;
   const publishManifest: PublishManifest = {
+    contractVersion: PUBLISH_CONTRACT_VERSION,
     generatedAt: new Date().toISOString(),
     summary: createManifestSummary(summary),
     entries: manifestEntries,

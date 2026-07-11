@@ -298,6 +298,7 @@ sourceVaultPath: "examples/manual.md"
   const assetReport = await readFile(path.join(reportsPath, "asset-warnings.md"), "utf8");
   const manifest = JSON.parse(publishManifestJson);
   assert.match(syncReport, /synced: 2/);
+  assert.equal(manifest.contractVersion, "v1");
   assert.equal(typeof manifest.generatedAt, "string");
   assert.equal(manifest.summary.scannedVaultFiles, summary.scannedVaultFiles);
   assert.equal(manifest.summary.synced, 2);
@@ -326,6 +327,7 @@ sourceVaultPath: "examples/manual.md"
   assert.match(publishManifestMarkdown, /Articles\/Article\.md/);
   assert.match(publishManifestMarkdown, /\/blog\/public-article\//);
   assert.match(publishManifestMarkdown, /revised/);
+  assert.match(publishManifestMarkdown, /contract_version: v1/);
   assert.match(wikilinkReport, /target-not-published/);
   assert.match(wikilinkReport, /target-not-found/);
   assert.match(assetReport, /missing-asset/);
