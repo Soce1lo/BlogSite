@@ -1,14 +1,50 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-07-11T23:54:45.924Z",
+  "generatedAt": "2026-07-12T06:50:14.150Z",
   "summary": {
-    "scannedVaultFiles": 665,
-    "publishCandidates": 4,
-    "synced": 4,
+    "scannedVaultFiles": 668,
+    "publishCandidates": 7,
+    "synced": 7,
     "warnings": 0,
     "errors": 0
   },
   "entries": [
+    {
+      "sourceVaultPath": "60-Publish/C语言专业级基础知识汇总.md",
+      "collection": "notes",
+      "slug": "c-language-professional-foundations",
+      "url": "/notes/c-language-professional-foundations/",
+      "title": "C语言专业级基础知识汇总",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "C",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/C语言专业编程技巧清单.md",
+      "collection": "notes",
+      "slug": "c-professional-programming-checklist",
+      "url": "/notes/c-professional-programming-checklist/",
+      "title": "C语言专业编程技巧清单",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "C",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/C语言编程题常用代码模板.md",
+      "collection": "notes",
+      "slug": "c-programming-exam-templates",
+      "url": "/notes/c-programming-exam-templates/",
+      "title": "C语言编程题常用代码模板",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "C",
+      "warnings": []
+    },
     {
       "sourceVaultPath": "60-Publish/Obsidian 入门：本地 Markdown、链接网络与我的知识库实践.md",
       "collection": "blog",
