@@ -1,14 +1,28 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-07-12T06:50:14.150Z",
+  "generatedAt": "2026-07-21T15:54:43.269Z",
   "summary": {
-    "scannedVaultFiles": 668,
-    "publishCandidates": 7,
-    "synced": 7,
+    "scannedVaultFiles": 789,
+    "publishCandidates": 9,
+    "synced": 9,
     "warnings": 0,
     "errors": 0
   },
   "entries": [
+    {
+      "sourceVaultPath": "60-Publish/C 语言设计模式学习计划.md",
+      "collection": "projects",
+      "slug": "c-design-patterns-learning",
+      "url": "/projects/c-design-patterns-learning/",
+      "title": "C 语言设计模式学习计划",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "built",
+      "series": "C 语言学习实践",
+      "seriesOrder": 20,
+      "topic": "Design Patterns",
+      "warnings": []
+    },
     {
       "sourceVaultPath": "60-Publish/C语言专业级基础知识汇总.md",
       "collection": "notes",
@@ -43,6 +57,20 @@
       "visibility": "public",
       "outputKind": "learned",
       "topic": "C",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/LeetCode C 语言训练计划.md",
+      "collection": "projects",
+      "slug": "leetcode-c-language-training",
+      "url": "/projects/leetcode-c-language-training/",
+      "title": "LeetCode C 语言训练计划",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "built",
+      "series": "C 语言学习实践",
+      "seriesOrder": 10,
+      "topic": "Algorithms",
       "warnings": []
     },
     {
