@@ -1,7 +1,7 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-07-23T12:21:11.612Z
+- generated_at: 2026-07-23T12:24:18.869Z
 - scanned_vault_files: 801
 - publish_candidates: 11
 - synced: 11

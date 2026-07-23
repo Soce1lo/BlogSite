@@ -22,7 +22,7 @@ topic: Design Patterns
 
 ## 项目目标
 
-这个项目以[卡码网设计模式编程课](https://kamacoder.com/course.php?course_id=14)的 23 种模式为概念主线，但不再要求使用 C 等权重完整实现全部题目。它是 [LeetCode C 语言训练计划](/projects/leetcode-c-language-training/) 之后的低优先级副线，计划在 2026-09-15 前完成一次范围明确的闭环。
+这个项目以[卡码网设计模式编程课](https://kamacoder.com/course.php?course_id=14)的 23 种模式为概念主线，但不再要求使用 C 等权重完整实现全部题目。它是 [LeetCode C 语言训练计划](../leetcode-c-language-training/) 之后的低优先级副线，计划在 2026-09-15 前完成一次范围明确的闭环。
 
 我希望完成四个层次的学习：
 
@@ -46,7 +46,7 @@ GoF 设计模式的常见讲解通常以类、继承、接口和虚方法为主�
 
 ## 优先级与截止日期
 
-- **P1：[LeetCode C 语言训练计划](/projects/leetcode-c-language-training/)**——当前 C 学习主线；
+- **P1：[LeetCode C 语言训练计划](../leetcode-c-language-training/)**——当前 C 学习主线；
 - **P2：本项目**——每周只使用 LeetCode 之外的 1–2 个剩余学习时段，不设置固定完成题数；
 - **闭环日期：2026-09-15**——完成 23 种模式的概念判断、9 种重点模式的 C 验证和一次综合取舍记录；
 - 如果进度落后，优先减少非重点模式的整理深度，不挤占 LeetCode 时间，也不降低重点实现的验证门槛。
