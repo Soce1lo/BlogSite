@@ -1,10 +1,10 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-07-21T15:54:43.269Z",
+  "generatedAt": "2026-07-23T08:51:12.243Z",
   "summary": {
-    "scannedVaultFiles": 789,
-    "publishCandidates": 9,
-    "synced": 9,
+    "scannedVaultFiles": 801,
+    "publishCandidates": 11,
+    "synced": 11,
     "warnings": 0,
     "errors": 0
   },
@@ -60,6 +60,18 @@
       "warnings": []
     },
     {
+      "sourceVaultPath": "60-Publish/I2C 协议基础.md",
+      "collection": "notes",
+      "slug": "i2c-protocol-basics",
+      "url": "/notes/i2c-protocol-basics/",
+      "title": "I2C 协议基础",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "I2C",
+      "warnings": []
+    },
+    {
       "sourceVaultPath": "60-Publish/LeetCode C 语言训练计划.md",
       "collection": "projects",
       "slug": "leetcode-c-language-training",
@@ -85,6 +97,18 @@
       "series": "KnowledgeVault 实践",
       "seriesOrder": 30,
       "topic": "Obsidian",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/SPI 协议基础.md",
+      "collection": "notes",
+      "slug": "spi-protocol-basics",
+      "url": "/notes/spi-protocol-basics/",
+      "title": "SPI 协议基础",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "SPI",
       "warnings": []
     },
     {
