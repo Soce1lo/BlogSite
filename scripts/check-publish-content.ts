@@ -46,6 +46,14 @@ function imageReferences(markdown: string): string[] {
   );
 }
 
+function siteRootContentLinks(markdown: string): string[] {
+  return [
+    ...markdown.matchAll(
+      /(?<!!)\[[^\]]*\]\(\s*<?(\/(?:blog|notes|projects)\/[^)\s>]+)>?(?:\s+["'][^"']*["'])?\s*\)/gu,
+    ),
+  ].map((match) => match[1]);
+}
+
 export function isFileUrl(value: string): boolean {
   return /file:\/\//iu.test(value);
 }
@@ -115,6 +123,16 @@ export async function checkPublishContent(
 
     if (proseSegments.some((segment) => /!?\[\[[^\]]+\]\]/u.test(segment))) {
       addIssue(errors, relativePath, "residual-wikilink", "仍包含 Obsidian 双链");
+    }
+    for (const proseSegment of proseSegments) {
+      for (const reference of siteRootContentLinks(proseSegment)) {
+        addIssue(
+          errors,
+          relativePath,
+          "site-root-content-link",
+          `站内内容链接必须使用相对路径: ${reference}`,
+        );
+      }
     }
     if (isFileUrl(source)) {
       addIssue(errors, relativePath, "file-url", "包含 file:// URL");

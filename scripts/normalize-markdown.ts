@@ -87,6 +87,36 @@ function wikilinkLabel(target: string, alias?: string): string {
   return path.posix.basename(target.replaceAll("\\", "/")).replace(/\.md$/i, "");
 }
 
+function calloutLabel(type: string, title?: string): string {
+  if (title?.trim()) {
+    return title.trim();
+  }
+
+  const labels: Record<string, string> = {
+    summary: "摘要",
+    note: "说明",
+    info: "信息",
+    tip: "提示",
+    warning: "注意",
+    caution: "注意",
+    danger: "警告",
+  };
+  return labels[type.toLowerCase()] ?? type;
+}
+
+function relativePublishedUrl(outputPath: string, targetUrl: string): string {
+  const normalizedOutputPath = outputPath
+    .replaceAll("\\", "/")
+    .replace(/^src\/content\//u, "")
+    .replace(/\.mdx?$/iu, "")
+    .replace(/^\/+|\/+$/gu, "");
+  const normalizedTargetPath = targetUrl
+    .split(/[?#]/u, 1)[0]
+    .replace(/^\/+|\/+$/gu, "");
+  const relativePath = path.posix.relative(normalizedOutputPath, normalizedTargetPath);
+  return `${relativePath || "."}/`;
+}
+
 export async function normalizeMarkdown(
   options: NormalizeMarkdownOptions,
 ): Promise<NormalizeMarkdownResult> {
@@ -137,6 +167,12 @@ export async function normalizeMarkdown(
 
   markdown = await replaceOutsideFencedCode(
     markdown,
+    /^>[ \t]*\[!([A-Za-z0-9_-]+)\](?:[+-])?(?:[ \t]+([^\r\n]+))?[ \t]*$/gmu,
+    async (match) => `> **${calloutLabel(match[1], match[2])}**\n>`,
+  );
+
+  markdown = await replaceOutsideFencedCode(
+    markdown,
     /(?<!!)\[\[([^\]]+)\]\]/g,
     async (match) => {
       const { target, alias, anchor } = splitWikilink(match[1]);
@@ -167,7 +203,7 @@ export async function normalizeMarkdown(
             : "heading-anchor-dropped",
         });
       }
-      return `[${label}](${publishedTarget.url})`;
+      return `[${label}](${relativePublishedUrl(options.outputPath, publishedTarget.url ?? "")})`;
     },
   );
 

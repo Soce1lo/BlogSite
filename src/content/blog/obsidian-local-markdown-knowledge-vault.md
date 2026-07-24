@@ -2,7 +2,7 @@
 title: Obsidian 入门：本地 Markdown、链接网络与我的知识库实践
 description: 一篇笔记式 Obsidian 介绍：从官方中文帮助出发，理解本地 Markdown、双向链接、属性和模板，再看我的 KnowledgeVault 如何落地。
 pubDate: '2026-07-07'
-updatedDate: '2026-07-07'
+updatedDate: '2026-07-23'
 draft: false
 category: Knowledge Management
 tags:
@@ -74,7 +74,7 @@ Obsidian 的核心单位是 Vault。按照官方帮助的解释，Vault 本质�
 40-Resources  外部资料和学习材料
 50-MOCs       内容地图
 60-Publish    准备公开发布的文章
-70-LLM-Wiki   仅供 agent 使用的派生 wiki
+70-LLM-Wiki   Agent 派生层与人工审视入口
 80-Archive    历史迁移归档
 90-Attachments 附件
 99-Templates  模板
@@ -94,11 +94,11 @@ Obsidian 的核心单位是 Vault。按照官方帮助的解释，Vault 本质�
 
 ## LLM Wiki 的角色
 
-最近我在 Vault 里加了一个 `70-LLM-Wiki/`。它不是 Obsidian 正式知识面，而是 agent-only 的派生层。它的任务是保存来源摘要、概念页、综合分析、索引和日志，让 LLM 的整理过程有迹可循。
+最近我在 Vault 里加了一个 `70-LLM-Wiki/`。它不是 Obsidian 正式知识面，而是 agent-only 的派生层：`raw/` 保存人工指定的输入，`wiki/` 保存 source、concept、entity 和 synthesis 工作稿，`reviews/` 集中承载人工审视，`reports/` 保存检查证据。
 
-本次写作就是一次全流程验证：先把 Obsidian 中文帮助文档记录为 LLM Wiki 的 raw source，再生成 source page、concept page 和 synthesis page，最后把 synthesis 改写成这篇公开稿。公开稿不会直接复制 LLM Wiki 页面，而是经过人工规则约束后进入 `60-Publish/`。
+本次写作就是一次全流程验证：先把 Obsidian 中文帮助文档记录为 LLM Wiki 的 raw source，再生成 source page、concept page 和 synthesis page，随后在集中审视入口判断哪些内容值得保留。只有用户进一步明确授权时，工作稿才会被重新组织成正式笔记或公开稿；公开稿不会直接复制 LLM Wiki 页面。
 
-这个边界很重要。LLM 可以帮助整理和联想，但正式知识库不能被生成内容自动污染。能够公开发布的内容，必须经过来源确认、frontmatter 标记、同步预演、发布检查和线上验证。
+这个边界很重要。LLM 可以帮助整理和联想，但正式知识库不能被生成内容自动污染。工作稿先经过保留、删除、压缩和证据缺口审查；能够公开发布的内容，还必须经过来源确认、隐私检查、明确授权、同步预演、发布检查和线上验证。
 
 ## 我的使用建议
 

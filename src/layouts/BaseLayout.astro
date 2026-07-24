@@ -28,6 +28,10 @@ const searchItems = buildSearchItems(searchEntries).map((item) => ({
   href: withBase(item.path),
 }));
 const searchJson = serializeForInlineJson(searchItems);
+const isCurrentSection = (section: string): boolean => {
+  const sectionPath = withBase(`${section}/`);
+  return Astro.url.pathname === sectionPath || Astro.url.pathname.startsWith(sectionPath);
+};
 ---
 
 <!doctype html>
@@ -62,11 +66,26 @@ const searchJson = serializeForInlineJson(searchItems);
         </div>
         <div class="site-navigation">
           <nav aria-label="主导航">
-            <a href={withBase("blog/")}>思考</a>
-            <a href={withBase("notes/")}>学习</a>
-            <a href={withBase("projects/")}>项目</a>
-            <a href={withBase("tags/")}>主题</a>
-            <a href={withBase("about/")}>关于</a>
+            <a
+              href={withBase("blog/")}
+              aria-current={isCurrentSection("blog") ? "page" : undefined}
+            >思考</a>
+            <a
+              href={withBase("notes/")}
+              aria-current={isCurrentSection("notes") ? "page" : undefined}
+            >学习</a>
+            <a
+              href={withBase("projects/")}
+              aria-current={isCurrentSection("projects") ? "page" : undefined}
+            >项目</a>
+            <a
+              href={withBase("tags/")}
+              aria-current={isCurrentSection("tags") ? "page" : undefined}
+            >主题</a>
+            <a
+              href={withBase("about/")}
+              aria-current={isCurrentSection("about") ? "page" : undefined}
+            >关于</a>
           </nav>
           <div class="site-actions">
             <button class="control-button" type="button" data-search-open aria-label="打开站内搜索">

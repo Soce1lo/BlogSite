@@ -88,7 +88,7 @@ pnpm build
 
 `check:publish` 会检查残留双链、本机绝对路径、`file://`、必需 frontmatter、重复 slug、缺失图片、Daily 来源和同步状态来源。严重风险返回非零退出码；缺失图片只输出 warning。
 
-`check:publish` 允许文章正文中用于说明的安全相对路径、站内根路径、Markdown 锚点和查询片段，例如 `_system/migration/report.md`、`../examples/demo.md`、`scripts/example.mjs`、`/images/slug/file.png` 和 `/blog/some-slug/`。它仍会拒绝 `file://`、`/Users/...`、`/home/...`、Windows 盘符路径、真实 Vault 绝对路径、Daily 来源、残留双链和不可信发布状态。
+`check:publish` 允许文章正文中用于说明的安全相对路径、站内路由文本、Markdown 锚点、查询片段和 `/images/...` 公开资源路径，例如 `_system/migration/report.md`、`../examples/demo.md`、`scripts/example.mjs`、`/blog/some-slug/`、`#local-anchor` 和 `/images/slug/file.png`。指向 `/blog/`、`/notes/` 或 `/projects/` 的可点击 Markdown 链接必须使用相对路径，以免绕过 GitHub Pages 的 `/BlogSite/` 子路径。检查器仍会拒绝 `file://`、`/Users/...`、`/home/...`、Windows 盘符路径、真实 Vault 绝对路径、Daily 来源、残留双链和不可信发布状态。
 
 ## 主题发布验证
 

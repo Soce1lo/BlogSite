@@ -2,7 +2,7 @@
 
 ## Summary
 
-- scanned_vault_files: 801
+- scanned_vault_files: 803
 - publish_candidates: 11
 - synced: 11
 - skipped_private: 0

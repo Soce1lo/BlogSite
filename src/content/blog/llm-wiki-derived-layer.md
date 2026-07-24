@@ -1,8 +1,8 @@
 ---
-title: 在 Obsidian Vault 中引入 LLM Wiki：从独立派生层开始
-description: 一次把 LLM Wiki 方法落地到个人 Obsidian Vault 的实践记录：先建立独立生成层，再通过人工确认进入正式笔记和 BlogSite。
+title: 在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视
+description: 一次把 LLM Wiki 落地到个人 Obsidian Vault 并持续重构的实践：分离原始输入、Agent 工作稿、人工审视与正式输出。
 pubDate: '2026-07-07'
-updatedDate: '2026-07-07'
+updatedDate: '2026-07-23'
 draft: false
 category: Knowledge Management
 tags:
@@ -11,7 +11,7 @@ tags:
   - knowledge-management
   - agent
 visibility: public
-sourceVaultPath: 60-Publish/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层开始.md
+sourceVaultPath: 60-Publish/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: thought
@@ -19,11 +19,11 @@ series: KnowledgeVault 实践
 seriesOrder: 20
 topic: LLM Wiki
 ---
-# 在 Obsidian Vault 中引入 LLM Wiki：从独立派生层开始
+# 在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视
 
-我最近准备把 Andrej Karpathy 提到的 LLM Wiki 模式引入自己的 Obsidian Vault。这个想法很直接：不要让大模型每次提问时都重新从原始材料里临时检索和拼接，而是让它持续维护一个中间层 wiki。新材料进入时，agent 负责摘要、交叉引用、更新索引、标注矛盾；人负责选择来源、判断方向和决定哪些内容值得留下。
+我把 LLM Wiki 引入自己的 Obsidian Vault，最初的想法很直接：不要让大模型每次提问时都重新从原始材料里临时检索和拼接，而是让它持续维护一个中间层 wiki。新材料进入时，Agent 负责整理来源、建立概念、形成综合分析；人负责选择输入、判断方向和决定哪些内容值得留下。
 
-这个模式对空白知识库很自然。但我的 Vault 不是空白系统。它已经从 Logseq 迁移完成，有 Daily、Inbox、Notes、Projects、Resources、MOCs 和 Publish 区，也有明确的迁移档案和发布边界。因此我没有直接让 LLM 接管正式笔记，而是先把它作为一个 agent-only 的独立派生层落地。
+第一版解决了“生成内容不能直接污染正式知识库”的问题，却留下了另一个更实际的问题：source、concept、synthesis、索引和正式输出散在不同位置，人没有一个可以集中审视 Agent 输出的界面。随着 I2C、SPI 和 Obsidian 等主题进入这条链路，我又对它做了一次重构：保留独立派生层，同时增加专门的人工审视层。
 
 ## 为什么不直接放进正式图谱
 
@@ -41,7 +41,7 @@ topic: LLM Wiki
 
 ## 落地结构
 
-当前最小结构是：
+当前结构是：
 
 ```text
 70-LLM-Wiki/
@@ -58,71 +58,77 @@ topic: LLM Wiki
 │   ├── concepts/
 │   ├── entities/
 │   └── synthesis/
+├── reviews/
+│   ├── index.md
+│   ├── _审查包模板.md
+│   └── 主题审查包.md
 └── reports/
     └── lint/
 ```
 
-这里有三个核心层：
+现在有四层职责：
 
-`raw/` 保存输入。它可以是一篇文章、一个链接摘要、一段访谈、一份计划，或者一次对话中确认下来的设计。raw source 是输入事实，默认不改写。
+`raw/` 保存人工指定的输入。它可以是一篇文章、一个来源清单、一段访谈或一次确认下来的设计。raw source 创建后不由 Agent 静默改写；需要修订时，新建版本或追加更正说明。
 
-`wiki/` 保存 LLM 维护的页面，包括 source 摘要、概念页、实体页、综合分析、索引和日志。这里是 agent 可以工作的主要区域。
+`wiki/` 保存 Agent 维护的工作稿，包括 source 摘要、概念页、实体页、综合分析、内容索引和追加式日志。
 
-`reports/` 保存检查报告，比如孤页、重复概念、缺少来源、潜在隐私风险和可以 promote 的候选内容。
+`reviews/` 是唯一的人工审视入口。这里不复制工作稿全文，而是按主题汇总待审材料、核心结论、证据缺口、建议删除或压缩的部分、可能的正式去向和人工决定。
 
-这里没有继续在二级目录里使用 `00/10/90` 前缀。顶层的 `70-LLM-Wiki/` 已经承担了 Vault 排序语义；内部目录更接近 Karpathy 原始模式里的 raw sources、wiki、schema 三层。
+`reports/` 保存结构和内容健康检查，例如孤页、失效链接、重复材料、来源缺口和潜在隐私风险。
 
-## 第一篇输入
+## 为什么必须增加人工审视层
 
-这次我把“LLM Wiki 引入计划”本身作为第一篇输入。它记录了几个约束：
+第一版把 review 状态放在每篇工作稿的 YAML 和 `wiki/index.md` 表格里。机器可以读取这些状态，但人仍然要在多个目录之间来回跳转，而且“这份工作稿是否值得保留”和“它是否可以进入正式笔记或公开稿”被混成了一个问题。
 
-- LLM Wiki 先作为独立派生层，不直接进入正式 Vault。
-- 结构贴近公开实践：`raw/`、`wiki/`、`reports/`。
-- 每次 agent 工作前必须读取 schema、index 和 log。
-- 正式内容仍要人工确认后 promote。
-- 公开发布只通过 `60-Publish/` 和 BlogSite 同步链路进行。
+重构后的 `reviews/index.md` 只服务于人的判断。每个主题可以建立一份短审查包，统一回答七个问题：
 
-执行后的最小闭环是：
+- 这份材料要解决什么？
+- Agent 输出的核心结论是什么？
+- 哪些内容建议保留？
+- 哪些内容建议删除或压缩？
+- 证据和不确定性在哪里？
+- 最终适合保留成什么形式？
+- 人工作出了什么决定？
+
+人可以直接删除或改写工作稿里的无用段落。这本身就是有效反馈，Agent 不应该在后续更新中无理由恢复。只有 `raw/` 中的原始输入保持不可变。
+
+## YAML 不再承担过程管理
+
+重构前，LLM Wiki 为了表达页面类别、可见性、来源和 review 状态，在 frontmatter 中加入了大量专用字段。它们既重复了目录语义，也让这层内容偏离 Vault 的统一约定。
+
+现在 LLM Wiki 内容页与其他 Vault 笔记使用同一套收缩型扁平 YAML：保留标题、创建时间、更新时间、类型和状态五个核心字段，只在确有查询用途时保留非空可选字段。
+
+页面种类交给路径表达，来源和证据边界写进正文，人工决定写进 `reviews/`。原有的 LLM 专用过程字段、来源字段和普通页面里的发布占位都被删除。这样做的目的不是少写几行 YAML，而是让 frontmatter 只承担稳定查询，不再伪装成一套工作流数据库。
+
+## 两道审查门
+
+这次重构最重要的变化，是把两个经常混在一起的问题拆开。
+
+第一道是保留性审查：这份 Agent 工作稿是否有价值？哪些内容应该保留、删除、压缩或继续补证据？它可以只停留在 LLM Wiki，不需要进入正式知识库。
+
+第二道是正式材料审查：只有用户进一步明确要求 promote 或 publish 时，才检查目标读者、单一主线、事实与推断边界、来源可追溯性、私人上下文和目标目录契约。没有明确授权，就只继续修改工作稿。
+
+因此当前流程更接近：
 
 ```text
-plan -> raw source -> source page -> concept page -> synthesis page -> index/log
+人工指定输入
+  -> raw source
+  -> source / concept / entity / synthesis 工作稿
+  -> reviews 人工审视
+      -> 保留、删除、压缩或继续补证据
+      -> 明确授权后，改写为正式笔记或公开稿
 ```
 
-这个闭环很小，但它验证了后续工作方式：agent 不只是回答问题，而是把回答沉淀进一个可追踪的派生知识层。
+`wiki/index.md` 现在只负责内容导航，`reviews/index.md` 负责人工判断，`wiki/log.md` 只追加操作历史。三者不再互相冒充。
 
-## Agent 的工作边界
+## 这套流程实际跑出了什么
 
-我给 LLM Wiki 单独写了 `AGENTS.md` 和 `SCHEMA.md`。规则很硬：
+这套结构已经不只是目录设计。I2C 和 SPI 主题经历了 raw、source、concept、synthesis、人工 review 和 promote，最终形成了正式知识笔记；但它们的板级波形、具体器件 datasheet 和实测结论仍被明确标成证据缺口。Obsidian 主题则从官方帮助来源经过派生工作稿，改写成公开文章。
 
-- 默认只写 `70-LLM-Wiki/`。
-- 这个目录在 Obsidian 中隐藏，只作为 agent-only 工作层。
-- 不直接改写 Daily、Notes、Projects、Resources 和 MOCs。
-- 不修改 Logseq raw archive。
-- ingest 后必须更新 `wiki/index.md` 和 `wiki/log.md`。
-- 单次计划改动超过 10 个 wiki 页面时，先列清单再等待确认。
-- promote 到正式 Vault 必须单独授权。
+这些结果也暴露出重复：入口型 source page 可能太薄，concept 与 synthesis 可能重复调试清单，已经形成正式输出的工作稿也未必需要永久保留。现在这些问题不再藏在 Agent 专用状态里，而是直接列在人可以阅读和修改的主题审查包中。
 
-这个边界比很多公开示例更保守，但适合一个已经有历史、隐私和发布链路的个人 Vault。
+## 当前边界
 
-## 如何进入正式知识库
+`70-LLM-Wiki/` 仍然纳入 git，但不属于 Obsidian 正式知识面，并在本机界面中隐藏。Agent 可以维护派生层，不能自动改写 Daily、正式笔记或公开稿，也不能自动发布。
 
-LLM Wiki 的内容不会自动变成正式笔记。后续只有三种出口：
-
-第一，继续留在 `70-LLM-Wiki/`，作为 agent 的工作记忆和派生材料。
-
-第二，人工确认后 promote 到 `10-Notes/` 或 `50-MOCs/`，成为正式知识笔记或主题地图。
-
-第三，改写成 `60-Publish/` 里的公开文章，再通过 BlogSite 发布。
-
-这次发布走的是第三种路径。公开文章不是直接复制 LLM Wiki 页面，而是把本次设计和执行过程整理成面向读者的实践记录。
-
-## 下一步
-
-我会先用 2-3 个低敏来源继续试运行单来源 ingest，观察几个问题：
-
-- source page 是否足够短，能不能帮助后续 query 快速定位。
-- concept page 是否会重复膨胀。
-- synthesis page 是否真的值得长期保留。
-- lint 是否能发现孤页、无来源结论和可 promote 候选。
-
-如果这些环节稳定，再考虑是否把少数经过人工确认的结果 promote 到正式笔记，而不是让整个 LLM Wiki 进入 Obsidian 可见图谱。当前阶段，我更愿意先让它独立运行：少一点炫技，多一点可回滚、可审计。
+我现在更关心的不是让 LLM Wiki 生成更多内容，而是让无用内容更容易被看见、删除和压缩。一个可靠的知识工作流，不只要能持续生产，还要让人始终拥有清晰的审视入口和最终决定权。

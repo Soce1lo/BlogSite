@@ -74,12 +74,12 @@ test("双链只为发布目标生成链接并记录降级 warning", async () => 
   assert.equal(
     result.markdown,
     [
-      "[公开页面](/notes/public-note/)",
-      "[显示名](/notes/public-note/)",
+      "[公开页面](../../notes/public-note/)",
+      "[显示名](../../notes/public-note/)",
       "私密页面",
       "缺失别名",
-      "[公开页面](/notes/public-note/)",
-      "[公开页面](/notes/public-note/)",
+      "[公开页面](../../notes/public-note/)",
+      "[公开页面](../../notes/public-note/)",
     ].join("\n"),
   );
   assert.deepEqual(
@@ -144,6 +144,43 @@ test("归一化保留代码围栏内容并只转换正文 Markdown", async () =>
     ["正文链接"],
   );
   assert.deepEqual(result.assetWarnings, []);
+});
+
+test("归一化把 Obsidian callout 转为可移植引用且保留围栏示例", async () => {
+  const markdown = [
+    "> [!summary] 结论",
+    "> 这是一段公开摘要。",
+    "",
+    "> [!warning]",
+    "> 这是一段风险提示。",
+    "",
+    "```md",
+    "> [!summary] 代码示例",
+    "```",
+  ].join("\n");
+
+  const result = await normalizeMarkdown({
+    markdown,
+    index: createVaultIndex([], []),
+    outputPath: "notes/callout-example.md",
+  });
+
+  assert.equal(
+    result.markdown,
+    [
+      "> **结论**",
+      ">",
+      "> 这是一段公开摘要。",
+      "",
+      "> **注意**",
+      ">",
+      "> 这是一段风险提示。",
+      "",
+      "```md",
+      "> [!summary] 代码示例",
+      "```",
+    ].join("\n"),
+  );
 });
 
 test("同步筛选内容、复制图片、清理旧托管副本且不修改源 Vault", async (t) => {
@@ -316,7 +353,7 @@ sourceVaultPath: "examples/manual.md"
   assert.equal(parsedArticle.data.seriesOrder, 10);
   assert.equal(parsedArticle.data.topic, "Knowledge Management");
   assert.equal(parsedArticle.data.outputKind, "revised");
-  assert.match(article, /\[笔记别名\]\(\/notes\/public-note\/\)/);
+  assert.match(article, /\[笔记别名\]\(\.\.\/\.\.\/notes\/public-note\/\)/);
   assert.match(article, /私密页面/);
   assert.doesNotMatch(article, /\[私密页面\]\(/);
   assert.doesNotMatch(article, /\[\[/);
@@ -680,6 +717,50 @@ node scripts/example.mjs --input ../examples/demo.md
 
   assert.deepEqual(result.errors, []);
   assert.deepEqual(result.warnings, []);
+});
+
+test("发布检查拒绝绕过 Pages base path 的站内根路径链接", async (t) => {
+  const root = await mkdtemp(path.join(tmpdir(), "blogsite-check-root-links-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const contentPath = path.join(root, "content");
+  const publicPath = path.join(root, "public");
+
+  await writeText(
+    path.join(contentPath, "notes", "root-link.md"),
+    `---
+title: "根路径链接"
+description: "用于验证 GitHub Pages 子路径门禁。"
+pubDate: 2026-07-24
+draft: false
+category: "测试"
+tags: []
+visibility: public
+sourceVaultPath: "60-Publish/Root Link.md"
+managedBy: vault-sync
+sourcePublishStatus: published
+---
+
+[错误链接](/notes/other-note/)
+[正确链接](../other-note/)
+
+\`\`\`md
+[代码示例](/blog/example/)
+\`\`\`
+`,
+  );
+
+  const result = await checkPublishContent({ contentPath, publicPath });
+
+  assert.deepEqual(
+    result.errors.filter((issue) => issue.code === "site-root-content-link"),
+    [
+      {
+        file: "notes/root-link.md",
+        code: "site-root-content-link",
+        message: "站内内容链接必须使用相对路径: /notes/other-note/",
+      },
+    ],
+  );
 });
 
 test("发布检查拒绝本机绝对路径、sourceVaultPath 绝对路径和 file URL", async (t) => {

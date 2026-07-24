@@ -1,8 +1,8 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-07-23T12:24:18.869Z",
+  "generatedAt": "2026-07-24T16:09:21.921Z",
   "summary": {
-    "scannedVaultFiles": 801,
+    "scannedVaultFiles": 803,
     "publishCandidates": 11,
     "synced": 11,
     "warnings": 0,
@@ -134,11 +134,11 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层开始.md",
+      "sourceVaultPath": "60-Publish/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视.md",
       "collection": "blog",
       "slug": "llm-wiki-derived-layer",
       "url": "/blog/llm-wiki-derived-layer/",
-      "title": "在 Obsidian Vault 中引入 LLM Wiki：从独立派生层开始",
+      "title": "在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视",
       "draft": false,
       "visibility": "public",
       "outputKind": "thought",

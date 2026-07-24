@@ -231,6 +231,8 @@ test("全站对外品牌与导航语义统一为 Soce1lo 成长输出", async ()
   assert.match(layout, />成长输出日志</);
   assert.match(layout, />思考</);
   assert.match(layout, />学习</);
+  assert.match(layout, /const isCurrentSection\s*=/);
+  assert.match(layout, /aria-current=\{isCurrentSection\("blog"\) \? "page" : undefined\}/);
   assert.match(layout, /siteProfile\.boundary/);
   assert.match(blogIndex, /<h1>思考<\/h1>/);
   assert.match(notesIndex, /<h1>学习<\/h1>/);
@@ -326,6 +328,16 @@ test("基础布局提供 Tone 风格的搜索面板和主题切换入口", async
   assert.match(layout, /data-theme-toggle/);
   assert.match(css, /\.search-panel/);
   assert.match(css, /\[data-theme="dark"\]/);
+});
+
+test("导航状态、搜索按钮和手机导航保持紧凑且可辨识", async () => {
+  const css = await readProjectFile("src/styles/global.css");
+  const controlButton = extractCssBlock(css, ".control-button {");
+  const mobile = extractCssBlock(css, "@media (max-width: 30rem)");
+
+  assert.match(css, /\.site-navigation > nav a\[aria-current="page"\]/);
+  assert.match(controlButton, /white-space:\s*nowrap;/);
+  assert.match(mobile, /grid-template-columns:\s*repeat\(5,\s*minmax\(0,\s*1fr\)\);/);
 });
 
 test("搜索对话框恢复触发焦点并在可见控件间循环 Tab", async () => {

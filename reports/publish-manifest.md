@@ -1,8 +1,8 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-07-23T12:24:18.869Z
-- scanned_vault_files: 801
+- generated_at: 2026-07-24T16:09:21.921Z
+- scanned_vault_files: 803
 - publish_candidates: 11
 - synced: 11
 - warnings: 0
@@ -20,4 +20,4 @@
 | 60-Publish/SPI 协议基础.md | notes | spi-protocol-basics | /notes/spi-protocol-basics/ | published | learned | 0 |
 | 60-Publish/从 Logseq 到 Obsidian：具体迁移指导.md | blog | logseq-to-obsidian-migration-guide | /blog/logseq-to-obsidian-migration-guide/ | published | thought | 0 |
 | 60-Publish/从 Logseq 到 Obsidian：迁移回顾.md | blog | logseq-to-obsidian-migration | /blog/logseq-to-obsidian-migration/ | published | thought | 0 |
-| 60-Publish/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层开始.md | blog | llm-wiki-derived-layer | /blog/llm-wiki-derived-layer/ | published | thought | 0 |
+| 60-Publish/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视.md | blog | llm-wiki-derived-layer | /blog/llm-wiki-derived-layer/ | published | thought | 0 |

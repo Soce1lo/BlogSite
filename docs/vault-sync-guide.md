@@ -22,10 +22,11 @@ pnpm build
 
 1. 只读扫描 Markdown，跳过配置中的排除目录和 Daily 目录。
 2. 建立发布目标索引，只收录满足发布条件且 `publish_kind` 合法的内容。
-3. 将已发布目标双链转为网页链接；未发布或不存在目标转为纯文本并记录 warning。
+3. 将已发布目标双链转为适配 GitHub Pages 子路径的相对网页链接；未发布或不存在目标转为纯文本并记录 warning。
 4. 将本地图片复制到 `public/images/{publish_slug}/`；缺失图片转为文本并记录 warning。
-5. 只清理带 `managedBy: vault-sync` 的旧副本，保留手工内容。
-6. 写入同步报告、双链 warning、资源 warning、发布 manifest JSON 和发布 manifest Markdown，不粘贴正文。
+5. 将 Obsidian callout 标记转换为可移植的标准 Markdown 引用，避免公开页面显示 `[!summary]` 等内部语法。
+6. 只清理带 `managedBy: vault-sync` 的旧副本，保留手工内容。
+7. 写入同步报告、双链 warning、资源 warning、发布 manifest JSON 和发布 manifest Markdown，不粘贴正文。
 
 ## 安全边界
 
