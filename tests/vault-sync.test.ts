@@ -433,6 +433,37 @@ sourceVaultPath: "examples/manual.md"
   assert.deepEqual(checkResult.errors, []);
 });
 
+test("同步报告为缺少 publish_slug 的合成 fixture 提供安全修复提示", async (t) => {
+  const root = await mkdtemp(path.join(tmpdir(), "blogsite-missing-slug-report-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+
+  const vaultPath = path.resolve("tests/fixtures/vault");
+  const reportsPath = path.join(root, "reports");
+  const summary = await syncFromVault({
+    vaultPath,
+    contentOutputPath: path.join(root, "content"),
+    imageOutputPath: path.join(root, "public", "images"),
+    reportsPath,
+    excludeVaultDirs: [],
+    routes: { blog: "/blog", notes: "/notes", projects: "/projects" },
+  });
+
+  assert.equal(summary.synced, 1);
+  assert.equal(summary.skippedMissingSlug, 1);
+
+  const syncReport = await readFile(path.join(reportsPath, "sync-report.md"), "utf8");
+  assert.match(
+    syncReport,
+    /source: `Missing Publish Slug\.md`; reason: `missing-slug`;/,
+  );
+  assert.match(
+    syncReport,
+    /fix: 在 frontmatter 中添加 `publish_slug: <unique-kebab-case>`/,
+  );
+  assert.equal(syncReport.includes(vaultPath), false);
+  assert.doesNotMatch(syncReport, /\/Users\/|\/home\/|[A-Za-z]:\\/u);
+});
+
 test("同步拒绝非法 publish_kind 且为缺省 kind 使用集合映射", async (t) => {
   const root = await mkdtemp(path.join(tmpdir(), "blogsite-output-kind-"));
   t.after(() => rm(root, { recursive: true, force: true }));

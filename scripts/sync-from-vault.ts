@@ -58,6 +58,12 @@ interface Candidate {
   entry: PublishIndexEntry;
 }
 
+interface SkippedContentEntry {
+  sourceVaultPath: string;
+  reason: "missing-slug";
+  fix: string;
+}
+
 interface PublishManifestSummary {
   scannedVaultFiles: number;
   publishCandidates: number;
@@ -132,6 +138,7 @@ function syncReport(
   summary: SyncSummary,
   wikilinkWarnings: WikilinkWarning[],
   assetWarnings: AssetWarning[],
+  skippedContent: SkippedContentEntry[],
 ): string {
   const unpublishedLinks = wikilinkWarnings.filter((warning) =>
     warning.reason.startsWith("target-"),
@@ -140,6 +147,12 @@ function syncReport(
   const missingImages = assetWarnings.filter(
     (warning) => warning.reason === "missing-asset",
   ).length;
+  const skippedContentDetails = skippedContent.length
+    ? skippedContent.map(
+        (entry) =>
+          `- source: \`${shortInline(entry.sourceVaultPath)}\`; reason: \`${entry.reason}\`; fix: ${entry.fix}`,
+      )
+    : ["暂无记录。"];
   return `# Sync Report
 
 ## Summary
@@ -160,6 +173,10 @@ function syncReport(
 - blog: ${summary.outputs.blog}
 - notes: ${summary.outputs.notes}
 - projects: ${summary.outputs.projects}
+
+## Skipped Content
+
+${skippedContentDetails.join("\n")}
 
 ## Warnings
 
@@ -281,6 +298,7 @@ export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> 
   }
 
   const candidates: Candidate[] = [];
+  const skippedContent: SkippedContentEntry[] = [];
   for (const document of documents) {
     const evaluation = evaluatePublishCandidate(document);
     if (evaluation.entry) {
@@ -300,6 +318,11 @@ export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> 
         break;
       case "missing-slug":
         summary.skippedMissingSlug += 1;
+        skippedContent.push({
+          sourceVaultPath: document.sourceVaultPath,
+          reason: "missing-slug",
+          fix: "在 frontmatter 中添加 `publish_slug: <unique-kebab-case>`。",
+        });
         break;
       case "missing-title":
         summary.skippedMissingTitle += 1;
@@ -421,7 +444,7 @@ export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> 
   );
   await writeFile(
     path.join(reportsPath, "sync-report.md"),
-    syncReport(summary, wikilinkWarnings, assetWarnings),
+    syncReport(summary, wikilinkWarnings, assetWarnings, skippedContent),
     "utf8",
   );
   await writeFile(
