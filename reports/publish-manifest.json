@@ -1,10 +1,10 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-07-26T12:30:29.719Z",
+  "generatedAt": "2026-07-26T17:11:33.639Z",
   "summary": {
-    "scannedVaultFiles": 798,
-    "publishCandidates": 11,
-    "synced": 11,
+    "scannedVaultFiles": 795,
+    "publishCandidates": 12,
+    "synced": 12,
     "warnings": 16,
     "errors": 0
   },
@@ -128,6 +128,18 @@
       "series": "KnowledgeVault 实践",
       "seriesOrder": 30,
       "topic": "Obsidian",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/买电动牙刷时，我如何把营销声量还原成实际价值.md",
+      "collection": "blog",
+      "slug": "electric-toothbrush-value-first-buying",
+      "url": "/blog/electric-toothbrush-value-first-buying/",
+      "title": "买电动牙刷时，我如何把营销声量还原成实际价值",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "thought",
+      "topic": "消费决策",
       "warnings": []
     },
     {

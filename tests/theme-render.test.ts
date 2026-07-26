@@ -7,6 +7,7 @@ import test from "node:test";
 import { promisify } from "node:util";
 import type { SiteEntry } from "../src/lib/content";
 import { buildSearchItems, serializeForInlineJson } from "../src/lib/search";
+import { prefixBaseInHtmlImageSources } from "../src/lib/site";
 import { buildTagGroups, tagId } from "../src/lib/tags";
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
@@ -316,6 +317,23 @@ test("文章详情构建产物只暴露一个 canonical H1", async () => {
   assert.equal(
     [...html.matchAll(/<h1(?:\s[^>]*)?>从 Logseq 到 Obsidian：迁移回顾<\/h1>/g)].length,
     1,
+  );
+});
+
+test("文章正文公开图片继承 GitHub Pages base path", () => {
+  const html = [
+    '<p><img src="/images/article/picture.jpg" alt="公开图片"></p>',
+    '<p><img src="relative.jpg" alt="相对图片"></p>',
+    '<p><img src="https://example.com/external.jpg" alt="外部图片"></p>',
+  ].join("");
+
+  assert.equal(
+    prefixBaseInHtmlImageSources(html, "/BlogSite"),
+    [
+      '<p><img src="/BlogSite/images/article/picture.jpg" alt="公开图片"></p>',
+      '<p><img src="relative.jpg" alt="相对图片"></p>',
+      '<p><img src="https://example.com/external.jpg" alt="外部图片"></p>',
+    ].join(""),
   );
 });
 

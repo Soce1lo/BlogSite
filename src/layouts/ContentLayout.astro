@@ -1,6 +1,6 @@
 ---
 import type { SiteEntry } from "../lib/content";
-import { withBase } from "../lib/site";
+import { prefixBaseInHtmlImageSources, withBase } from "../lib/site";
 import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
@@ -16,7 +16,9 @@ interface Props {
 const { entry, sectionLabel, headings = [] } = Astro.props;
 const sectionHref = withBase(`${entry.collection}/`);
 const tocHeadings = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
-const bodyHtml = stripLeadingDuplicateH1(await Astro.slots.render("default"), entry.data.title);
+const bodyHtml = prefixBaseInHtmlImageSources(
+  stripLeadingDuplicateH1(await Astro.slots.render("default"), entry.data.title),
+);
 
 function stripLeadingDuplicateH1(html: string, title: string): string {
   const leadingH1Pattern = /^\s*<h1(?:\s[^>]*)?>([\s\S]*?)<\/h1>\s*/i;

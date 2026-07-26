@@ -2,11 +2,11 @@
 
 ## Summary
 
-- scanned_vault_files: 798
-- publish_candidates: 11
-- synced: 11
+- scanned_vault_files: 795
+- publish_candidates: 12
+- synced: 12
 - skipped_private: 0
-- skipped_missing_slug: 1
+- skipped_missing_slug: 0
 - skipped_missing_title: 0
 - skipped_missing_description: 0
 - skipped_daily: 0
@@ -15,13 +15,13 @@
 
 ## Outputs
 
-- blog: 4
+- blog: 5
 - notes: 5
 - projects: 2
 
 ## Skipped Content
 
-- source: `99-Templates/publishable-note.md`; reason: `missing-slug`; fix: 在 frontmatter 中添加 `publish_slug: <unique-kebab-case>`。
+暂无记录。
 
 ## Warnings
 
