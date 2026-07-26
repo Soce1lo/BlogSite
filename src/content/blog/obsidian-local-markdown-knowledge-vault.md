@@ -2,7 +2,7 @@
 title: Obsidian 入门：本地 Markdown、链接网络与我的知识库实践
 description: 一篇笔记式 Obsidian 介绍：从官方中文帮助出发，理解本地 Markdown、双向链接、属性和模板，再看我的 KnowledgeVault 如何落地。
 pubDate: '2026-07-07'
-updatedDate: '2026-07-23'
+updatedDate: '2026-07-26'
 draft: false
 category: Knowledge Management
 tags:
@@ -73,7 +73,7 @@ Obsidian 的核心单位是 Vault。按照官方帮助的解释，Vault 本质�
 30-Areas      持续关注领域
 40-Resources  外部资料和学习材料
 50-MOCs       内容地图
-60-Publish    准备公开发布的文章
+60-Publish    公开原生文章和必要的公开改写稿
 70-LLM-Wiki   Agent 派生层与人工审视入口
 80-Archive    历史迁移归档
 90-Attachments 附件
@@ -88,7 +88,7 @@ Obsidian 的核心单位是 Vault。按照官方帮助的解释，Vault 本质�
 
 这个 Vault 有一段很重的 Logseq 迁移历史。迁移已经结束，脚本、报告和批次记录都放进 `80-Archive/`。这些内容是历史档案，不是日常写作入口，也不进入普通发布检查。
 
-真正准备公开的文章放在 `60-Publish/`。发布到 BlogSite 时，同步器只读取明确标记为可发布的源文，生成 Astro 站点里的公开副本，再运行发布检查和构建。这样可以把私人 Vault、迁移档案和公开博客隔离开。
+发布资格由源文中的明确元数据和人工授权决定，不由目录决定。正文可以直接公开的正式笔记和项目保留在原目录；`60-Publish/` 只保存以公开表达为本体的文章，以及确实需要匿名化、删减或重组的公开稿。同步器读取这些已授权源文，生成 Astro 站点里的公开副本，再运行发布检查和构建。
 
 这篇文章本身也是这个流程的一次验证：源文在 `60-Publish/`，状态是 published，同步后会进入 BlogSite 的 blog 集合。
 

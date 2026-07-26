@@ -2,7 +2,7 @@
 title: SPI 协议基础
 description: 面向嵌入式工程师的 SPI 物理层、CPOL/CPHA、Linux spidev、学习路径与调试方法。
 pubDate: '2026-07-21'
-updatedDate: '2026-07-23'
+updatedDate: '2026-07-26'
 draft: false
 category: Embedded Systems
 tags:
@@ -10,7 +10,7 @@ tags:
   - embedded
   - protocol
 visibility: public
-sourceVaultPath: 60-Publish/SPI 协议基础.md
+sourceVaultPath: 10-Notes/SPI 协议基础.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: learned

@@ -1,14 +1,93 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-07-24T16:09:21.921Z",
+  "generatedAt": "2026-07-26T12:30:29.719Z",
   "summary": {
-    "scannedVaultFiles": 803,
+    "scannedVaultFiles": 798,
     "publishCandidates": 11,
     "synced": 11,
-    "warnings": 0,
+    "warnings": 16,
     "errors": 0
   },
   "entries": [
+    {
+      "sourceVaultPath": "10-Notes/C语言专业级基础知识汇总.md",
+      "collection": "notes",
+      "slug": "c-language-professional-foundations",
+      "url": "/notes/c-language-professional-foundations/",
+      "title": "C语言专业级基础知识汇总",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "C",
+      "warnings": [
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published"
+      ]
+    },
+    {
+      "sourceVaultPath": "10-Notes/C语言专业编程技巧清单.md",
+      "collection": "notes",
+      "slug": "c-professional-programming-checklist",
+      "url": "/notes/c-professional-programming-checklist/",
+      "title": "C语言专业编程技巧清单",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "C",
+      "warnings": [
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published"
+      ]
+    },
+    {
+      "sourceVaultPath": "10-Notes/C语言编程题常用代码模板.md",
+      "collection": "notes",
+      "slug": "c-programming-exam-templates",
+      "url": "/notes/c-programming-exam-templates/",
+      "title": "C语言编程题常用代码模板",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "C",
+      "warnings": [
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published"
+      ]
+    },
+    {
+      "sourceVaultPath": "10-Notes/I2C 协议基础.md",
+      "collection": "notes",
+      "slug": "i2c-protocol-basics",
+      "url": "/notes/i2c-protocol-basics/",
+      "title": "I2C 协议基础",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "I2C",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "10-Notes/SPI 协议基础.md",
+      "collection": "notes",
+      "slug": "spi-protocol-basics",
+      "url": "/notes/spi-protocol-basics/",
+      "title": "SPI 协议基础",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "SPI",
+      "warnings": []
+    },
     {
       "sourceVaultPath": "60-Publish/C 语言设计模式学习计划.md",
       "collection": "projects",
@@ -21,54 +100,6 @@
       "series": "C 语言学习实践",
       "seriesOrder": 20,
       "topic": "Design Patterns",
-      "warnings": []
-    },
-    {
-      "sourceVaultPath": "60-Publish/C语言专业级基础知识汇总.md",
-      "collection": "notes",
-      "slug": "c-language-professional-foundations",
-      "url": "/notes/c-language-professional-foundations/",
-      "title": "C语言专业级基础知识汇总",
-      "draft": false,
-      "visibility": "public",
-      "outputKind": "learned",
-      "topic": "C",
-      "warnings": []
-    },
-    {
-      "sourceVaultPath": "60-Publish/C语言专业编程技巧清单.md",
-      "collection": "notes",
-      "slug": "c-professional-programming-checklist",
-      "url": "/notes/c-professional-programming-checklist/",
-      "title": "C语言专业编程技巧清单",
-      "draft": false,
-      "visibility": "public",
-      "outputKind": "learned",
-      "topic": "C",
-      "warnings": []
-    },
-    {
-      "sourceVaultPath": "60-Publish/C语言编程题常用代码模板.md",
-      "collection": "notes",
-      "slug": "c-programming-exam-templates",
-      "url": "/notes/c-programming-exam-templates/",
-      "title": "C语言编程题常用代码模板",
-      "draft": false,
-      "visibility": "public",
-      "outputKind": "learned",
-      "topic": "C",
-      "warnings": []
-    },
-    {
-      "sourceVaultPath": "60-Publish/I2C 协议基础.md",
-      "collection": "notes",
-      "slug": "i2c-protocol-basics",
-      "url": "/notes/i2c-protocol-basics/",
-      "title": "I2C 协议基础",
-      "draft": false,
-      "visibility": "public",
-      "outputKind": "learned",
-      "topic": "I2C",
       "warnings": []
     },
     {
@@ -97,18 +128,6 @@
       "series": "KnowledgeVault 实践",
       "seriesOrder": 30,
       "topic": "Obsidian",
-      "warnings": []
-    },
-    {
-      "sourceVaultPath": "60-Publish/SPI 协议基础.md",
-      "collection": "notes",
-      "slug": "spi-protocol-basics",
-      "url": "/notes/spi-protocol-basics/",
-      "title": "SPI 协议基础",
-      "draft": false,
-      "visibility": "public",
-      "outputKind": "learned",
-      "topic": "SPI",
       "warnings": []
     },
     {

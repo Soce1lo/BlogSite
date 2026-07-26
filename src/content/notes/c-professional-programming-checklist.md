@@ -2,7 +2,7 @@
 title: C语言专业编程技巧清单
 description: 从高质量 C 编程资料中提炼的专业编程技巧，面向考试复习和工程代码审查。
 pubDate: '2026-07-10'
-updatedDate: '2026-07-12'
+updatedDate: '2026-07-26'
 draft: false
 category: Programming
 tags:
@@ -10,7 +10,7 @@ tags:
   - 编程技巧
   - 编程考试
 visibility: public
-sourceVaultPath: 60-Publish/C语言专业编程技巧清单.md
+sourceVaultPath: 10-Notes/C语言专业编程技巧清单.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: learned
@@ -273,6 +273,6 @@ scanf("%31s", word);
 ## 相关笔记
 
 - C语言专业级编程考试复习
-- C语言编程题常用代码模板
-- C语言专业级基础知识汇总
+- [C语言编程题常用代码模板](../c-programming-exam-templates/)
+- [C语言专业级基础知识汇总](../c-language-professional-foundations/)
 - C语言专业级考试参考资料

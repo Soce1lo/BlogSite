@@ -2,7 +2,7 @@
 title: C语言编程题常用代码模板
 description: 面向专业级 C 编程考试的可复用代码骨架，覆盖输入输出、常用算法、数据结构、内存安全和边界约定。
 pubDate: '2026-07-09'
-updatedDate: '2026-07-12'
+updatedDate: '2026-07-26'
 draft: false
 category: Programming
 tags:
@@ -10,7 +10,7 @@ tags:
   - 算法
   - 编程考试
 visibility: public
-sourceVaultPath: 60-Publish/C语言编程题常用代码模板.md
+sourceVaultPath: 10-Notes/C语言编程题常用代码模板.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: learned
@@ -26,7 +26,7 @@ topic: C
 - 数组容量、队列容量和图的边数应从题目上限推导，不凭经验随便开。
 - 中间结果可能溢出时，先提升操作数类型，再进行运算。
 - 比较器不要用 `return a - b;`，该表达式可能溢出。
-- 模板应配合 C语言专业编程技巧清单 使用：保持函数小、控制流直、资源清理路径清楚。
+- 模板应配合 [C语言专业编程技巧清单](../c-professional-programming-checklist/) 使用：保持函数小、控制流直、资源清理路径清楚。
 
 ## 最小机考骨架
 
@@ -911,8 +911,8 @@ if (isdigit(ch)) {
 
 ## 相关笔记
 
-- C语言专业级基础知识汇总
-- C语言专业编程技巧清单
+- [C语言专业级基础知识汇总](../c-language-professional-foundations/)
+- [C语言专业编程技巧清单](../c-professional-programming-checklist/)
 - C语言专业级编程考试复习
 - 数组
 - 链表

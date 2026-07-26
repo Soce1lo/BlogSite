@@ -2,7 +2,7 @@
 title: C语言专业级基础知识汇总
 description: 面向有 C 工作经验者的考试复习笔记，聚焦类型系统、对象模型、未定义行为、内存、标准库和编译工具链。
 pubDate: '2026-07-09'
-updatedDate: '2026-07-12'
+updatedDate: '2026-07-26'
 draft: false
 category: Programming
 tags:
@@ -10,7 +10,7 @@ tags:
   - 编程语言
   - 编程考试
 visibility: public
-sourceVaultPath: 60-Publish/C语言专业级基础知识汇总.md
+sourceVaultPath: 10-Notes/C语言专业级基础知识汇总.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: learned
@@ -764,7 +764,7 @@ C23 对语言和库做了多项更新，但考试环境通常不会仅凭“当�
 
 ## 编程技巧入口
 
-语言规则告诉你“什么代码有定义”，但考试时更需要一套稳定的写法来降低失误率。C语言专业编程技巧清单 从 Princeton、NASA、Power of Ten、Modern C、comp.lang.c FAQ、Harvard CS61 和 Linux kernel coding style 中提炼出可执行习惯：
+语言规则告诉你“什么代码有定义”，但考试时更需要一套稳定的写法来降低失误率。[C语言专业编程技巧清单](../c-professional-programming-checklist/) 从 Princeton、NASA、Power of Ten、Modern C、comp.lang.c FAQ、Harvard CS61 和 Linux kernel coding style 中提炼出可执行习惯：
 
 - 让代码可机械检查，而不是只靠人工目测。
 - 保持控制流和函数边界简单。
@@ -792,8 +792,8 @@ C23 对语言和库做了多项更新，但考试环境通常不会仅凭“当�
 
 ## 相关笔记
 
-- C语言编程题常用代码模板
-- C语言专业编程技巧清单
+- [C语言编程题常用代码模板](../c-programming-exam-templates/)
+- [C语言专业编程技巧清单](../c-professional-programming-checklist/)
 - C语言专业级编程考试复习
 - C语言专业级考试参考资料
 - 变量声明

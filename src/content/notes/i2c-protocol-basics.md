@@ -2,7 +2,7 @@
 title: I2C 协议基础
 description: 面向嵌入式工程师的 I2C 物理层、事务格式、实现选择、学习路径与调试方法。
 pubDate: '2026-07-21'
-updatedDate: '2026-07-23'
+updatedDate: '2026-07-26'
 draft: false
 category: Embedded Systems
 tags:
@@ -10,7 +10,7 @@ tags:
   - embedded
   - protocol
 visibility: public
-sourceVaultPath: 60-Publish/I2C 协议基础.md
+sourceVaultPath: 10-Notes/I2C 协议基础.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: learned
