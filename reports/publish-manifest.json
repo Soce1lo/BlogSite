@@ -1,10 +1,10 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-07-26T17:11:33.639Z",
+  "generatedAt": "2026-07-27T16:51:47.347Z",
   "summary": {
-    "scannedVaultFiles": 795,
-    "publishCandidates": 12,
-    "synced": 12,
+    "scannedVaultFiles": 800,
+    "publishCandidates": 13,
+    "synced": 13,
     "warnings": 16,
     "errors": 0
   },
@@ -176,6 +176,20 @@
       "series": "KnowledgeVault 实践",
       "seriesOrder": 20,
       "topic": "LLM Wiki",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/用 Obsidian 管理任务：Daily、看板与项目进度的职责分离.md",
+      "collection": "blog",
+      "slug": "obsidian-task-management-workflow",
+      "url": "/blog/obsidian-task-management-workflow/",
+      "title": "用 Obsidian 管理任务：Daily、看板与项目进度的职责分离",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "built",
+      "series": "KnowledgeVault 实践",
+      "seriesOrder": 40,
+      "topic": "Obsidian",
       "warnings": []
     }
   ]
