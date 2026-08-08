@@ -1,5 +1,5 @@
 import type { SiteEntry } from "./content";
-import { isPublicEntry } from "./content";
+import { getPublishedDate, isPublicEntry, sortNewestFirst } from "./content";
 import { defaultOutputKind, type OutputKind } from "./output-kind";
 
 export interface PublicEntryRef {
@@ -24,15 +24,11 @@ export interface OutputGroup {
 
 export interface ResolvedThread extends ThreadDefinition {
   entries: SiteEntry[];
-  latestDate: Date;
+  latestPublishedDate: Date;
 }
 
 export function getOutputKind(entry: SiteEntry): OutputKind {
   return entry.data.outputKind ?? defaultOutputKind(entry.collection);
-}
-
-export function getOutputDate(entry: SiteEntry): Date {
-  return entry.data.updatedDate ?? entry.data.pubDate;
 }
 
 export function getPrimaryTopic(entry: SiteEntry): string {
@@ -40,7 +36,7 @@ export function getPrimaryTopic(entry: SiteEntry): string {
 }
 
 function compareOutputs(a: SiteEntry, b: SiteEntry): number {
-  const dateDifference = getOutputDate(b).valueOf() - getOutputDate(a).valueOf();
+  const dateDifference = sortNewestFirst(a, b);
   if (dateDifference !== 0) {
     return dateDifference;
   }
@@ -49,7 +45,7 @@ function compareOutputs(a: SiteEntry, b: SiteEntry): number {
 }
 
 function outputMonthKey(entry: SiteEntry): string {
-  return getOutputDate(entry).toISOString().slice(0, 7);
+  return getPublishedDate(entry).toISOString().slice(0, 7);
 }
 
 function outputMonthLabel(key: string): string {
@@ -109,7 +105,7 @@ export function resolveThreads(
       {
         ...definition,
         entries: matchingEntries,
-        latestDate: getOutputDate(matchingEntries[0]),
+        latestPublishedDate: getPublishedDate(matchingEntries[0]),
       },
     ];
   });

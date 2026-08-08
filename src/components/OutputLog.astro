@@ -1,6 +1,7 @@
 ---
 import type { OutputGroup } from "../lib/output";
-import { getOutputDate, getOutputKind, getPrimaryTopic } from "../lib/output";
+import { getPublishedDate } from "../lib/content";
+import { getOutputKind, getPrimaryTopic } from "../lib/output";
 import type { OutputKind } from "../lib/output-kind";
 import { withBase } from "../lib/site";
 
@@ -24,14 +25,14 @@ const kindLabels: Record<OutputKind, string> = {
         <p class="output-log__month">{group.label}</p>
         <ol class="output-log__entries">
           {group.entries.map((entry) => {
-            const outputDate = getOutputDate(entry);
+            const publishedDate = getPublishedDate(entry);
             return (
               <li class="output-log__item">
                 <span class="output-log__marker" aria-hidden="true" />
                 <article>
                   <p class="output-log__meta">
-                    <time datetime={outputDate.toISOString()}>
-                      {outputDate.toLocaleDateString("zh-CN", {
+                    <time datetime={publishedDate.toISOString()}>
+                      {publishedDate.toLocaleDateString("zh-CN", {
                         month: "2-digit",
                         day: "2-digit",
                       })}

@@ -256,6 +256,8 @@ test("RSS 聚合三个公开集合并排除 starter 内容", async () => {
   assert.match(rssPage, /getCollection\("notes"\)/);
   assert.match(rssPage, /getCollection\("projects"\)/);
   assert.match(rssPage, /entry\.collection/);
+  assert.match(rssPage, /\.sort\(sortNewestFirst\)/);
+  assert.match(rssPage, /pubDate: getPublishedDate\(entry\)/);
 
   for (const starter of [
     "src/content/blog/welcome-to-blogsite.md",
@@ -295,8 +297,10 @@ test("首页与 About 呈现 Soce1lo 的成长输出结构和公开管道", asyn
   assert.doesNotMatch(home, /homeStats|公开内容计数|collection-index/);
   assert.match(outputLog, /class="output-log"/);
   assert.match(outputLog, /class="output-log__marker"/);
+  assert.match(outputLog, /getPublishedDate/);
   assert.match(outputLog, /getOutputKind/);
   assert.match(longThreads, /class="long-threads"/);
+  assert.match(longThreads, /最近发布于/);
 
   assert.match(about, /关于 Soce1lo/);
   assert.match(about, /长期建设者/);

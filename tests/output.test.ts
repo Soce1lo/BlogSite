@@ -1,9 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { SiteEntry } from "../src/lib/content";
+import { getPublishedDate, type SiteEntry } from "../src/lib/content";
 import {
   buildOutputGroups,
-  getOutputDate,
   getOutputKind,
   getPrimaryTopic,
   resolveFeaturedEntries,
@@ -59,9 +58,9 @@ test("输出类型使用显式值并按集合提供稳定缺省值", () => {
   );
 });
 
-test("最近输出按更新时间排序、限制数量并按年月分组", () => {
+test("最近输出按首次发布时间排序，修订时间不改变位置", () => {
   const older = makeEntry("blog", "older", "2026-06-20");
-  const revised = makeEntry("notes", "revised", "2026-06-10", {
+  const revised = makeEntry("notes", "revised", "2026-07-05", {
     updatedDate: "2026-07-09",
   });
   const newest = makeEntry("projects", "newest", "2026-07-10");
@@ -70,7 +69,7 @@ test("最近输出按更新时间排序、限制数量并按年月分组", () =>
     visibility: "unlisted",
   });
 
-  assert.equal(getOutputDate(revised).toISOString().slice(0, 10), "2026-07-09");
+  assert.equal(getPublishedDate(revised).toISOString().slice(0, 10), "2026-07-05");
   const groups = buildOutputGroups([older, revised, newest, draft, unlisted], 2);
 
   assert.deepEqual(groups.map((group) => group.key), ["2026-07"]);
@@ -98,6 +97,7 @@ test("长期主题按 series、topic 或 tag 关联公开输出并隐藏空主�
   const entries = [
     makeEntry("blog", "series-match", "2026-07-01", {
       series: "KnowledgeVault 实践",
+      updatedDate: "2026-08-08",
     }),
     makeEntry("notes", "topic-match", "2026-07-03", { topic: "Obsidian" }),
     makeEntry("projects", "tag-match", "2026-07-02", {
@@ -117,7 +117,10 @@ test("长期主题按 series、topic 或 tag 关联公开输出并隐藏空主�
     "tag-match",
     "series-match",
   ]);
-  assert.equal(threads[0].latestDate.toISOString().slice(0, 10), "2026-07-03");
+  assert.equal(
+    threads[0].latestPublishedDate.toISOString().slice(0, 10),
+    "2026-07-03",
+  );
 });
 
 test("精选输出保持配置顺序并拒绝缺失或非公开引用", () => {

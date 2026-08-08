@@ -1,7 +1,7 @@
 ---
 title: C语言编程题常用代码模板
 description: 面向专业级 C 编程考试的可复用代码骨架，覆盖输入输出、常用算法、数据结构、内存安全和边界约定。
-pubDate: '2026-07-09'
+pubDate: '2026-07-12'
 updatedDate: '2026-07-26'
 draft: false
 category: Programming

@@ -1,7 +1,10 @@
 import rss from "@astrojs/rss";
 import { getCollection } from "astro:content";
-import { isPublicEntry } from "../lib/content";
-import { getOutputDate } from "../lib/output";
+import {
+  getPublishedDate,
+  isPublicEntry,
+  sortNewestFirst,
+} from "../lib/content";
 import { withBase } from "../lib/site";
 
 export async function GET(context) {
@@ -12,7 +15,7 @@ export async function GET(context) {
   ]);
   const entries = [...blog, ...notes, ...projects]
     .filter(isPublicEntry)
-    .sort((a, b) => getOutputDate(b).valueOf() - getOutputDate(a).valueOf());
+    .sort(sortNewestFirst);
 
   return rss({
     title: "Soce1lo",
@@ -22,7 +25,7 @@ export async function GET(context) {
     items: entries.map((entry) => ({
       title: entry.data.title,
       description: entry.data.description,
-      pubDate: getOutputDate(entry),
+      pubDate: getPublishedDate(entry),
       link: withBase(`${entry.collection}/${entry.id}/`),
       categories: entry.data.tags,
     })),

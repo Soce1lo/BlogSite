@@ -82,16 +82,12 @@ export function toPublishedFrontmatter(
   document: VaultDocument,
   entry: PublishIndexEntry,
 ): PublishedFrontmatter {
-  const pubDate = normalizeDate(document.data.created);
-  if (!pubDate) {
-    throw new Error(`缺少有效 created: ${document.sourceVaultPath}`);
-  }
   const updatedDate = normalizeDate(document.data.updated);
 
   return {
     title: entry.title,
     description: getString(document.data, "description"),
-    pubDate,
+    pubDate: entry.publishedDate,
     ...(updatedDate ? { updatedDate } : {}),
     draft: entry.publishStatus === "draft",
     category: getString(document.data, "publish_category") || "未分类",

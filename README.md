@@ -17,7 +17,7 @@
 ## 当前能力
 
 - 三类内容集合：`blog`、`notes`、`projects`。
-- 跨集合成长输出：按 `updatedDate ?? pubDate` 排序并按年月组织思考、学习、构建与修订。
+- 跨集合成长输出：按首次发布时间 `pubDate` 排序并按年月组织思考、学习、构建与修订；`updatedDate` 只记录修订，不改变时间线位置。
 - 人工维护的公开 Profile：集中管理身份、NOW、长期主题和精选内容，不从私人 Daily 自动推导状态。
 - 真实 Vault 只读同步：生成公开 Markdown、公开图片和报告，不写回 Vault。
 - 版本化发布契约：Vault 的公开元数据能力、允许值和缺省行为统一以 [`contracts/publishing/v1/`](contracts/publishing/v1/) 为准。

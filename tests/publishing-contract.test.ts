@@ -28,6 +28,7 @@ function makeDocument(
       publish_status: "published",
       publish_slug: `${publishTarget}-entry`,
       publish_visibility: "public",
+      publish_date: "2026-07-11",
       ...overrides,
     },
     content: "Synthetic content.",
@@ -40,6 +41,10 @@ test("V1 schema 与当前发布候选枚举保持一致", async () => {
   );
 
   assert.equal(schema["x-contract-version"], PUBLISH_CONTRACT_VERSION);
+  assert.deepEqual(schema["x-authoring-required-by-publish-status"], {
+    draft: [],
+    published: ["publish_date"],
+  });
   assert.deepEqual(schema.required, [
     "title",
     "description",
@@ -53,6 +58,7 @@ test("V1 schema 与当前发布候选枚举保持一致", async () => {
   assert.deepEqual(schema.properties.publish_status.enum, ["draft", "published"]);
   assert.deepEqual(schema.properties.publish_visibility.enum, ["public", "unlisted"]);
   assert.deepEqual(schema.properties.publish_kind.enum, [...OUTPUT_KINDS]);
+  assert.deepEqual(schema.properties.publish_date.type, ["string", "number"]);
   assert.equal(schema.properties.publish_series_order.type, "number");
   assert.deepEqual(schema.dependentRequired.publish_series_order, ["publish_series"]);
 });
@@ -69,8 +75,57 @@ test("V1 缺省输出语义和分类由当前适配器稳定生成", () => {
     const evaluation = evaluatePublishCandidate(document);
     assert.ok(evaluation.entry);
     assert.equal(evaluation.entry.outputKind, expectedKinds[publishTarget]);
-    assert.equal(toPublishedFrontmatter(document, evaluation.entry).category, "未分类");
+    assert.equal(evaluation.entry.publishedDate, "2026-07-11");
+    const frontmatter = toPublishedFrontmatter(document, evaluation.entry);
+    assert.equal(frontmatter.pubDate, "2026-07-11");
+    assert.equal(frontmatter.category, "未分类");
   }
+});
+
+test("V1 使用显式首次发布日期并为旧内容回退到 created", () => {
+  const explicit = makeDocument("blog", {
+    created: "2026-07-01",
+    publish_date: "2026-07-11",
+  });
+  const explicitEvaluation = evaluatePublishCandidate(explicit);
+  assert.ok(explicitEvaluation.entry);
+  assert.equal(explicitEvaluation.entry.publishedDate, "2026-07-11");
+  assert.equal(
+    toPublishedFrontmatter(explicit, explicitEvaluation.entry).pubDate,
+    "2026-07-11",
+  );
+
+  const legacy = makeDocument("notes", { created: "2026-07-02" });
+  delete legacy.data.publish_date;
+  const legacyEvaluation = evaluatePublishCandidate(legacy);
+  assert.ok(legacyEvaluation.entry);
+  assert.equal(legacyEvaluation.entry.publishedDate, "2026-07-02");
+});
+
+test("V1 草稿可以省略首次发布日期", () => {
+  const draft = makeDocument("notes", { publish_status: "draft" });
+  delete draft.data.publish_date;
+
+  const evaluation = evaluatePublishCandidate(draft);
+  assert.ok(evaluation.entry);
+  assert.equal(evaluation.entry.publishStatus, "draft");
+  assert.equal(evaluation.entry.publishedDate, "2026-07-11");
+});
+
+test("V1 拒绝无效或早于创建日的首次发布日期", () => {
+  assert.deepEqual(
+    evaluatePublishCandidate(makeDocument("blog", { publish_date: "not-a-date" })),
+    { reason: "invalid-publish-date" },
+  );
+  assert.deepEqual(
+    evaluatePublishCandidate(
+      makeDocument("blog", {
+        created: "2026-07-11",
+        publish_date: "2026-07-10",
+      }),
+    ),
+    { reason: "invalid-publish-date" },
+  );
 });
 
 test("V1 拒绝不符合 schema 的 publish_series_order", () => {

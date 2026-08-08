@@ -1,7 +1,7 @@
 ---
 title: C语言专业级基础知识汇总
 description: 面向有 C 工作经验者的考试复习笔记，聚焦类型系统、对象模型、未定义行为、内存、标准库和编译工具链。
-pubDate: '2026-07-09'
+pubDate: '2026-07-12'
 updatedDate: '2026-07-26'
 draft: false
 category: Programming

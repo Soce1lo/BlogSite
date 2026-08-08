@@ -1,7 +1,7 @@
 ---
 title: 从 Logseq 到 Obsidian：迁移回顾
 description: 回顾一次 Logseq 到 Obsidian 的真实知识库迁移：边界、批次、验证、踩坑和最终闭环。
-pubDate: '2026-06-20'
+pubDate: '2026-07-01'
 updatedDate: '2026-08-08'
 draft: false
 category: Knowledge Management

@@ -53,6 +53,7 @@ test("双链只为发布目标生成链接并记录降级 warning", async () => 
       publishTarget: "notes",
       publishSlug: "public-note",
       publishStatus: "published",
+      publishedDate: "2026-06-01",
       visibility: "public",
       outputKind: "learned",
     },
@@ -199,6 +200,7 @@ title: "公开文章"
 description: "用于验证同步的合成文章。"
 created: 2026-06-01
 updated: 2026-06-02
+publish_date: 2026-06-15
 tags: [test, sync]
 aliases: []
 publish_target: blog
@@ -347,6 +349,7 @@ sourceVaultPath: "examples/manual.md"
   const parsedArticle = matter(article);
   assert.equal(parsedArticle.data.draft, false);
   assert.equal(parsedArticle.data.sourcePublishStatus, "published");
+  assert.equal(parsedArticle.data.pubDate, "2026-06-15");
   assert.equal(parsedArticle.data.managedBy, "vault-sync");
   assert.equal(parsedArticle.data.sourceVaultPath, "Articles/Article.md");
   assert.equal(parsedArticle.data.series, "从 Logseq 到 Obsidian");
@@ -402,6 +405,7 @@ sourceVaultPath: "examples/manual.md"
       url: "/blog/public-article/",
       title: "公开文章",
       draft: false,
+      publishedDate: "2026-06-15",
       visibility: "public",
       series: "从 Logseq 到 Obsidian",
       seriesOrder: 10,

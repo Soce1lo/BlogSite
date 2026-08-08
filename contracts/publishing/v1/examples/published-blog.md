@@ -3,6 +3,7 @@ title: "V1 已发布博客示例"
 description: "覆盖 V1 可选组织字段和显式输出语义。"
 created: 2026-07-11
 updated: 2026-07-11
+publish_date: 2026-07-12
 tags: [example, publishing]
 aliases: []
 publish_target: blog

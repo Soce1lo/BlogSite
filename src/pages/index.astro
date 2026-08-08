@@ -4,10 +4,9 @@ import LongThreads from "../components/LongThreads.astro";
 import OutputLog from "../components/OutputLog.astro";
 import { siteProfile } from "../data/site-profile";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import type { SiteEntry } from "../lib/content";
+import { getPublishedDate, type SiteEntry } from "../lib/content";
 import {
   buildOutputGroups,
-  getOutputDate,
   getOutputKind,
   getPrimaryTopic,
   resolveFeaturedEntries,
@@ -91,8 +90,8 @@ const kindLabels = {
                 <p class="selected-list__meta">
                   <span>{kindLabels[getOutputKind(entry)]}</span>
                   <span>{getPrimaryTopic(entry)}</span>
-                  <time datetime={getOutputDate(entry).toISOString()}>
-                    {getOutputDate(entry).toLocaleDateString("zh-CN")}
+                  <time datetime={getPublishedDate(entry).toISOString()}>
+                    {getPublishedDate(entry).toLocaleDateString("zh-CN")}
                   </time>
                 </p>
                 <h3>{entry.data.title}</h3>

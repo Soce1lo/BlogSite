@@ -79,6 +79,7 @@ interface PublishManifestEntry {
   url: string;
   title: string;
   draft: boolean;
+  publishedDate: string;
   visibility: PublishIndexEntry["visibility"];
   outputKind: PublishIndexEntry["outputKind"];
   series?: string;
@@ -209,6 +210,7 @@ function createManifestMarkdown(manifest: PublishManifest): string {
       entry.slug,
       entry.url,
       entry.draft ? "draft" : "published",
+      entry.publishedDate,
       entry.outputKind,
       String(entry.warnings.length),
     ].map((value) => value.replaceAll("|", "\\|")).join(" | "),
@@ -224,9 +226,9 @@ function createManifestMarkdown(manifest: PublishManifest): string {
 - warnings: ${manifest.summary.warnings}
 - errors: ${manifest.summary.errors}
 
-| Source | Collection | Slug | URL | Status | Kind | Warnings |
-| --- | --- | --- | --- | --- | --- | --- |
-${rows.length ? rows.map((row) => `| ${row} |`).join("\n") : "| 暂无 | - | - | - | - | - | - |"}
+| Source | Collection | Slug | URL | Status | First published | Kind | Warnings |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+${rows.length ? rows.map((row) => `| ${row} |`).join("\n") : "| 暂无 | - | - | - | - | - | - | - |"}
 `;
 }
 
@@ -335,6 +337,7 @@ export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> 
         break;
       case "invalid-slug":
       case "invalid-publish-kind":
+      case "invalid-publish-date":
       case "invalid-series-order":
       case "missing-date":
         summary.errors += 1;
@@ -409,6 +412,7 @@ export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> 
         url: entry.url ?? `/${entry.publishTarget}/${entry.publishSlug}/`,
         title: entry.title,
         draft: entry.publishStatus === "draft",
+        publishedDate: entry.publishedDate,
         visibility: entry.visibility,
         outputKind: entry.outputKind,
         ...(entry.series ? { series: entry.series } : {}),

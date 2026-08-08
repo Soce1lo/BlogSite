@@ -1,7 +1,7 @@
 ---
 title: C 语言设计模式学习计划
 description: 在 LeetCode C 主线之外理解 GoF 23 种模式，选择 9 种与 C 和嵌入式更相关的模式重点实作，并在 2026-09-15 前完成闭环。
-pubDate: '2026-07-19'
+pubDate: '2026-07-21'
 updatedDate: '2026-07-23'
 draft: false
 category: Programming

@@ -5,6 +5,10 @@
   "description": "Vault 中可进入 BlogSite 同步候选集的 flat frontmatter。",
   "type": "object",
   "x-contract-version": "v1",
+  "x-authoring-required-by-publish-status": {
+    "draft": [],
+    "published": ["publish_date"]
+  },
   "required": [
     "title",
     "description",
@@ -19,6 +23,7 @@
     "description": { "type": "string", "minLength": 1 },
     "created": { "type": ["string", "number"], "minLength": 1 },
     "updated": { "type": ["string", "number"], "minLength": 1 },
+    "publish_date": { "type": ["string", "number"], "minLength": 1 },
     "tags": {
       "type": "array",
       "items": { "type": "string", "minLength": 1 },

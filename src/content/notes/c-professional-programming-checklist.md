@@ -1,7 +1,7 @@
 ---
 title: C语言专业编程技巧清单
 description: 从高质量 C 编程资料中提炼的专业编程技巧，面向考试复习和工程代码审查。
-pubDate: '2026-07-10'
+pubDate: '2026-07-12'
 updatedDate: '2026-07-26'
 draft: false
 category: Programming

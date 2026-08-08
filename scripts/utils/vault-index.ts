@@ -7,6 +7,7 @@ import {
 import {
   getString,
   getStringArray,
+  normalizeDate,
   readPublishTarget,
   type VaultDocument,
 } from "./frontmatter";
@@ -24,6 +25,7 @@ export interface PublishIndexEntry {
   publishTarget: PublishTarget;
   publishSlug: string;
   publishStatus: PublishStatus;
+  publishedDate: string;
   visibility: PublishVisibility;
   outputKind: OutputKind;
   series?: string;
@@ -86,6 +88,7 @@ export type CandidateSkipReason =
   | "daily"
   | "invalid-slug"
   | "invalid-publish-kind"
+  | "invalid-publish-date"
   | "invalid-series-order";
 
 export type CandidateEvaluation =
@@ -136,8 +139,16 @@ export function evaluatePublishCandidate(document: VaultDocument): CandidateEval
   if (!getString(document.data, "description")) {
     return { reason: "missing-description" };
   }
-  if (!document.data.created) {
+  const createdDate = normalizeDate(document.data.created);
+  if (!createdDate) {
     return { reason: "missing-date" };
+  }
+  const hasPublishDate = Object.hasOwn(document.data, "publish_date");
+  const publishedDate = hasPublishDate
+    ? normalizeDate(document.data.publish_date)
+    : createdDate;
+  if (!publishedDate || publishedDate < createdDate) {
+    return { reason: "invalid-publish-date" };
   }
   const series = getString(document.data, "publish_series");
   const rawSeriesOrder = document.data.publish_series_order;
@@ -159,6 +170,7 @@ export function evaluatePublishCandidate(document: VaultDocument): CandidateEval
       publishTarget,
       publishSlug,
       publishStatus: rawStatus as PublishStatus,
+      publishedDate,
       visibility: rawVisibility as PublishVisibility,
       outputKind,
       ...(series ? { series } : {}),

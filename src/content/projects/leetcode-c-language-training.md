@@ -1,7 +1,7 @@
 ---
 title: LeetCode C 语言训练计划
 description: 一条以最多 3 道当前题为工作集的 C11 长期训练主线：不追每周题数，重视独立思考、内存所有权、官方样例与真实验证。
-pubDate: '2026-07-17'
+pubDate: '2026-07-21'
 updatedDate: '2026-07-23'
 draft: false
 category: Programming

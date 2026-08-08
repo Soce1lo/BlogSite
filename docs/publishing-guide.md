@@ -10,7 +10,7 @@
 
 1. MUST 先运行 `git status --short --branch`，确认当前分支、未提交改动和是否有用户正在编辑的文件。
 2. MUST 读取 `docs/publishing-guide.md`、`docs/vault-sync-guide.md` 和 `docs/codex-maintenance-guide.md`，再开始真实发布。
-3. MUST 对真实 Vault 只做只读候选扫描。遇到源文仍是 `publish_status: draft` 时，必须得到显式授权后才能把源文改为 `published`；不要替用户改发布状态。
+3. MUST 先在真实 Vault 运行其当前合同与 frontmatter 检查，再做只读候选扫描。当前来源为 `publish_status: published` 时必须具有 `publish_date`；`draft` 可以省略，但必须得到显式授权后才能改为 `published`，且转换时记录首次发布日期。
 4. MUST 先做临时目录 preview sync，不直接写入正式公开副本。示例：
 
 ```bash
@@ -74,6 +74,8 @@ sourceVaultPath: "relative/path/example.md"
 约束：
 
 - `sourceVaultPath` 只能是相对路径，不能包含本机绝对路径。
+- `pubDate` 由 Vault 的 `publish_date` 映射，表示首次发布时间，是首页时间线、内容列表和 RSS 的排序依据；发布后更新正文时不得覆盖它。当前 `published` 来源必须提供该字段；V1 旧内容缺失时才由适配器暂时回退到 `created`。
+- `updatedDate` 只表示最近修订时间，可在详情页独立展示，但不改变内容在时间线中的位置。
 - `draft: true` 的内容不生成生产详情页，也不进入列表或 RSS。
 - `visibility: unlisted` 的非草稿内容生成详情页，但不进入首页、列表和 RSS。
 - `outputKind` 是当前 Astro 适配器生成的公开展示字段；对应 Vault 来源字段的允许值、默认映射与校验规则以 `contracts/publishing/v1/` 为准。
