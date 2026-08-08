@@ -2,7 +2,7 @@
 title: 从 Logseq 到 Obsidian：迁移回顾
 description: 回顾一次 Logseq 到 Obsidian 的真实知识库迁移：边界、批次、验证、踩坑和最终闭环。
 pubDate: '2026-06-20'
-updatedDate: '2026-07-05'
+updatedDate: '2026-08-08'
 draft: false
 category: Knowledge Management
 tags:
@@ -15,6 +15,9 @@ sourceVaultPath: 60-Publish/从 Logseq 到 Obsidian：迁移回顾.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: thought
+series: KnowledgeVault 实践
+seriesOrder: 20
+topic: Obsidian
 ---
 # 从 Logseq 到 Obsidian：迁移回顾
 
@@ -25,6 +28,8 @@ outputKind: thought
 所以这次我没有追求“一键导入”，而是把迁移拆成一组可以检查、可以提交、也可以推倒重来的小批次。后面又补了一轮分类，把“数据已经搬进来”推进到“这些笔记可以在新 Vault 里继续使用”。
 
 这篇只做迁移回顾：为什么这样迁、哪里容易出错、最后怎样闭环。具体命令和完整脚本我拆到另一篇《从 Logseq 到 Obsidian：具体迁移指导》里，避免把一次性迁移工具混进日常写作检查。
+
+专题入口：[Obsidian 个人知识管理专题](../obsidian-personal-knowledge-management-skill/)。
 
 补充说明：这篇记录的是迁移当时的工程过程。迁移闭环后，我又把原始 Logseq graph 从当前 `master` 工作树移除，只保留迁移脚本、测试、报告和基线作为历史归档。复现 Phase 2 时需要使用仓库外 raw snapshot。
 

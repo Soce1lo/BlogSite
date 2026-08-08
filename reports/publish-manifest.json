@@ -1,10 +1,10 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-07-27T16:51:47.347Z",
+  "generatedAt": "2026-08-08T02:25:17.260Z",
   "summary": {
-    "scannedVaultFiles": 800,
-    "publishCandidates": 13,
-    "synced": 13,
+    "scannedVaultFiles": 793,
+    "publishCandidates": 14,
+    "synced": 14,
     "warnings": 16,
     "errors": 0
   },
@@ -126,7 +126,7 @@
       "visibility": "public",
       "outputKind": "thought",
       "series": "KnowledgeVault 实践",
-      "seriesOrder": 30,
+      "seriesOrder": 40,
       "topic": "Obsidian",
       "warnings": []
     },
@@ -151,6 +151,9 @@
       "draft": false,
       "visibility": "public",
       "outputKind": "thought",
+      "series": "KnowledgeVault 实践",
+      "seriesOrder": 30,
+      "topic": "Obsidian",
       "warnings": []
     },
     {
@@ -162,6 +165,9 @@
       "draft": false,
       "visibility": "public",
       "outputKind": "thought",
+      "series": "KnowledgeVault 实践",
+      "seriesOrder": 20,
+      "topic": "Obsidian",
       "warnings": []
     },
     {
@@ -174,8 +180,22 @@
       "visibility": "public",
       "outputKind": "thought",
       "series": "KnowledgeVault 实践",
-      "seriesOrder": 20,
+      "seriesOrder": 50,
       "topic": "LLM Wiki",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/把个人知识流变成可审计的 Skill：从 Logseq 迁移到 Daily-first，再到安全发布.md",
+      "collection": "blog",
+      "slug": "obsidian-personal-knowledge-management-skill",
+      "url": "/blog/obsidian-personal-knowledge-management-skill/",
+      "title": "把个人知识流变成可审计的 Skill：从 Logseq 迁移到 Daily-first，再到安全发布",
+      "draft": false,
+      "visibility": "public",
+      "outputKind": "built",
+      "series": "KnowledgeVault 实践",
+      "seriesOrder": 10,
+      "topic": "Obsidian",
       "warnings": []
     },
     {
@@ -188,7 +208,7 @@
       "visibility": "public",
       "outputKind": "built",
       "series": "KnowledgeVault 实践",
-      "seriesOrder": 40,
+      "seriesOrder": 60,
       "topic": "Obsidian",
       "warnings": []
     }

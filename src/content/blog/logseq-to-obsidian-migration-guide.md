@@ -2,7 +2,7 @@
 title: 从 Logseq 到 Obsidian：具体迁移指导
 description: 把 Logseq graph 迁到 Obsidian 的可执行步骤、检查边界和完整脚本。迁移脚本只用于一次性迁移，不进入日常写作 gate。
 pubDate: '2026-07-03'
-updatedDate: '2026-07-05'
+updatedDate: '2026-08-08'
 draft: false
 category: Knowledge Management
 tags:
@@ -16,10 +16,15 @@ sourceVaultPath: 60-Publish/从 Logseq 到 Obsidian：具体迁移指导.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: thought
+series: KnowledgeVault 实践
+seriesOrder: 30
+topic: Obsidian
 ---
 # 从 Logseq 到 Obsidian：具体迁移指导
 
 这篇是《从 Logseq 到 Obsidian：迁移回顾》的配套操作稿，只保留可执行步骤、检查边界和完整脚本。它面向一次性迁移，不面向日常写作。
+
+专题入口：[Obsidian 个人知识管理专题](../obsidian-personal-knowledge-management-skill/)。
 
 最重要的边界是：迁移脚本只能用于迁移窗口内的验收，或者之后手动回看迁移档案。不要把 `logseq-migrate.mjs verify`、`classify-logseq-pages.mjs verify`、迁移测试，或任何依赖 `80-Archive/logseq-migration/reports/` 基线的命令接入日常写作 gate。迁移完成后，日常写作检查应该只关心发布文章自己的 frontmatter、链接、附件和正文质量，不应要求旧 Logseq 页面仍等于迁移闭环时的内容 hash。
 

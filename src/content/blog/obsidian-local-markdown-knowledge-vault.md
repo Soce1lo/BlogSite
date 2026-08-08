@@ -2,7 +2,7 @@
 title: Obsidian 入门：本地 Markdown、链接网络与我的知识库实践
 description: 一篇笔记式 Obsidian 介绍：从官方中文帮助出发，理解本地 Markdown、双向链接、属性和模板，再看我的 KnowledgeVault 如何落地。
 pubDate: '2026-07-07'
-updatedDate: '2026-07-26'
+updatedDate: '2026-08-08'
 draft: false
 category: Knowledge Management
 tags:
@@ -16,7 +16,7 @@ managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: thought
 series: KnowledgeVault 实践
-seriesOrder: 30
+seriesOrder: 40
 topic: Obsidian
 ---
 # Obsidian 入门：本地 Markdown、链接网络与我的知识库实践
@@ -24,6 +24,8 @@ topic: Obsidian
 如果只把 Obsidian 当成“另一个 Markdown 编辑器”，很容易错过它真正有意思的地方。它当然能写 Markdown，但更重要的是，它把一组普通文件组织成一个可以长期生长的本地知识库：笔记留在自己的文件夹里，关系由链接和元数据慢慢织出来，界面和插件只是服务于这套文件系统。
 
 这篇是一次笔记式介绍。我主要参考了 Obsidian 的中文帮助文档，并结合当前这个 KnowledgeVault 的真实使用方式，梳理三个问题：Obsidian 的设计思想是什么，最基本的用法是什么，以及我现在怎样把它接进写作、迁移、发布和 LLM Wiki 流程。
+
+专题入口：[Obsidian 个人知识管理专题](../obsidian-personal-knowledge-management-skill/)。
 
 ## 先理解 Vault
 

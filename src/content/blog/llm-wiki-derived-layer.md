@@ -2,7 +2,7 @@
 title: 在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视
 description: 一次把 LLM Wiki 落地到个人 Obsidian Vault 并持续重构的实践：分离原始输入、Agent 工作稿、人工审视与正式输出。
 pubDate: '2026-07-07'
-updatedDate: '2026-07-23'
+updatedDate: '2026-08-08'
 draft: false
 category: Knowledge Management
 tags:
@@ -16,7 +16,7 @@ managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: thought
 series: KnowledgeVault 实践
-seriesOrder: 20
+seriesOrder: 50
 topic: LLM Wiki
 ---
 # 在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视
@@ -24,6 +24,8 @@ topic: LLM Wiki
 我把 LLM Wiki 引入自己的 Obsidian Vault，最初的想法很直接：不要让大模型每次提问时都重新从原始材料里临时检索和拼接，而是让它持续维护一个中间层 wiki。新材料进入时，Agent 负责整理来源、建立概念、形成综合分析；人负责选择输入、判断方向和决定哪些内容值得留下。
 
 第一版解决了“生成内容不能直接污染正式知识库”的问题，却留下了另一个更实际的问题：source、concept、synthesis、索引和正式输出散在不同位置，人没有一个可以集中审视 Agent 输出的界面。随着 I2C、SPI 和 Obsidian 等主题进入这条链路，我又对它做了一次重构：保留独立派生层，同时增加专门的人工审视层。
+
+专题入口：[Obsidian 个人知识管理专题](../obsidian-personal-knowledge-management-skill/)。
 
 ## 为什么不直接放进正式图谱
 

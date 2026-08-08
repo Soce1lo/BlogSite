@@ -4,7 +4,7 @@ description: >-
   一套 Daily-first 的 Obsidian 任务工作流：任务留在上下文中，Tasks 负责解析，看板负责电脑端操作，Bases
   负责项目状态，Weekly 负责复盘。
 pubDate: '2026-07-28'
-updatedDate: '2026-07-28'
+updatedDate: '2026-08-08'
 draft: false
 category: Knowledge Management
 tags:
@@ -17,7 +17,7 @@ managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: built
 series: KnowledgeVault 实践
-seriesOrder: 40
+seriesOrder: 60
 topic: Obsidian
 ---
 # 用 Obsidian 管理任务：Daily、看板与项目进度的职责分离
@@ -36,6 +36,8 @@ topic: Obsidian
 - Weekly 负责复盘和下一周期选择。
 
 这套方法的关键不是安装了哪些插件，而是让任务、视图和项目进度不再互相冒充。
+
+专题入口：[Obsidian 个人知识管理专题](../obsidian-personal-knowledge-management-skill/)。
 
 ## 任务应该留在上下文中
 

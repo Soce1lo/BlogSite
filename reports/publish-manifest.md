@@ -1,10 +1,10 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-07-27T16:51:47.347Z
-- scanned_vault_files: 800
-- publish_candidates: 13
-- synced: 13
+- generated_at: 2026-08-08T02:25:17.260Z
+- scanned_vault_files: 793
+- publish_candidates: 14
+- synced: 14
 - warnings: 16
 - errors: 0
 
@@ -22,4 +22,5 @@
 | 60-Publish/从 Logseq 到 Obsidian：具体迁移指导.md | blog | logseq-to-obsidian-migration-guide | /blog/logseq-to-obsidian-migration-guide/ | published | thought | 0 |
 | 60-Publish/从 Logseq 到 Obsidian：迁移回顾.md | blog | logseq-to-obsidian-migration | /blog/logseq-to-obsidian-migration/ | published | thought | 0 |
 | 60-Publish/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视.md | blog | llm-wiki-derived-layer | /blog/llm-wiki-derived-layer/ | published | thought | 0 |
+| 60-Publish/把个人知识流变成可审计的 Skill：从 Logseq 迁移到 Daily-first，再到安全发布.md | blog | obsidian-personal-knowledge-management-skill | /blog/obsidian-personal-knowledge-management-skill/ | published | built | 0 |
 | 60-Publish/用 Obsidian 管理任务：Daily、看板与项目进度的职责分离.md | blog | obsidian-task-management-workflow | /blog/obsidian-task-management-workflow/ | published | built | 0 |

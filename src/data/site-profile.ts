@@ -38,7 +38,7 @@ export const siteProfile = {
     },
   ],
   featured: [
-    { collection: "blog", id: "logseq-to-obsidian-migration" },
+    { collection: "blog", id: "obsidian-personal-knowledge-management-skill" },
     { collection: "blog", id: "llm-wiki-derived-layer" },
     { collection: "blog", id: "obsidian-local-markdown-knowledge-vault" },
   ],
