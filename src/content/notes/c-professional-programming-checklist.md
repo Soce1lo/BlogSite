@@ -10,7 +10,7 @@ tags:
   - 编程技巧
   - 编程考试
 visibility: public
-sourceVaultPath: 10-Notes/C语言专业编程技巧清单.md
+sourceVaultPath: 10-Notes/编程语言/C/C语言专业编程技巧清单.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: learned

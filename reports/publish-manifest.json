@@ -1,16 +1,42 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-08-08T03:35:10.474Z",
+  "generatedAt": "2026-08-10T09:26:45.681Z",
   "summary": {
-    "scannedVaultFiles": 793,
-    "publishCandidates": 14,
-    "synced": 14,
+    "scannedVaultFiles": 799,
+    "publishCandidates": 15,
+    "synced": 15,
     "warnings": 16,
     "errors": 0
   },
   "entries": [
     {
-      "sourceVaultPath": "10-Notes/C语言专业级基础知识汇总.md",
+      "sourceVaultPath": "10-Notes/嵌入式与视觉/I2C 协议基础.md",
+      "collection": "notes",
+      "slug": "i2c-protocol-basics",
+      "url": "/notes/i2c-protocol-basics/",
+      "title": "I2C 协议基础",
+      "draft": false,
+      "publishedDate": "2026-07-23",
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "I2C",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "10-Notes/嵌入式与视觉/SPI 协议基础.md",
+      "collection": "notes",
+      "slug": "spi-protocol-basics",
+      "url": "/notes/spi-protocol-basics/",
+      "title": "SPI 协议基础",
+      "draft": false,
+      "publishedDate": "2026-07-23",
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "SPI",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "10-Notes/编程语言/C/C语言专业级基础知识汇总.md",
       "collection": "notes",
       "slug": "c-language-professional-foundations",
       "url": "/notes/c-language-professional-foundations/",
@@ -30,7 +56,7 @@
       ]
     },
     {
-      "sourceVaultPath": "10-Notes/C语言专业编程技巧清单.md",
+      "sourceVaultPath": "10-Notes/编程语言/C/C语言专业编程技巧清单.md",
       "collection": "notes",
       "slug": "c-professional-programming-checklist",
       "url": "/notes/c-professional-programming-checklist/",
@@ -47,7 +73,7 @@
       ]
     },
     {
-      "sourceVaultPath": "10-Notes/C语言编程题常用代码模板.md",
+      "sourceVaultPath": "10-Notes/编程语言/C/C语言编程题常用代码模板.md",
       "collection": "notes",
       "slug": "c-programming-exam-templates",
       "url": "/notes/c-programming-exam-templates/",
@@ -66,32 +92,6 @@
         "wikilink: target-not-published",
         "wikilink: target-not-published"
       ]
-    },
-    {
-      "sourceVaultPath": "10-Notes/I2C 协议基础.md",
-      "collection": "notes",
-      "slug": "i2c-protocol-basics",
-      "url": "/notes/i2c-protocol-basics/",
-      "title": "I2C 协议基础",
-      "draft": false,
-      "publishedDate": "2026-07-23",
-      "visibility": "public",
-      "outputKind": "learned",
-      "topic": "I2C",
-      "warnings": []
-    },
-    {
-      "sourceVaultPath": "10-Notes/SPI 协议基础.md",
-      "collection": "notes",
-      "slug": "spi-protocol-basics",
-      "url": "/notes/spi-protocol-basics/",
-      "title": "SPI 协议基础",
-      "draft": false,
-      "publishedDate": "2026-07-23",
-      "visibility": "public",
-      "outputKind": "learned",
-      "topic": "SPI",
-      "warnings": []
     },
     {
       "sourceVaultPath": "60-Publish/C 语言设计模式学习计划.md",
@@ -179,6 +179,19 @@
       "series": "KnowledgeVault 实践",
       "seriesOrder": 20,
       "topic": "Obsidian",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/从远程访问 NAS 到多设备互联：我的家庭组网方案.md",
+      "collection": "blog",
+      "slug": "multi-device-home-network",
+      "url": "/blog/multi-device-home-network/",
+      "title": "从远程访问 NAS 到多设备互联：我的家庭组网方案",
+      "draft": false,
+      "publishedDate": "2026-08-10",
+      "visibility": "public",
+      "outputKind": "built",
+      "topic": "家庭网络",
       "warnings": []
     },
     {

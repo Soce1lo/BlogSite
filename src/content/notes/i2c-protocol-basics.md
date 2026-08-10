@@ -10,7 +10,7 @@ tags:
   - embedded
   - protocol
 visibility: public
-sourceVaultPath: 10-Notes/I2C 协议基础.md
+sourceVaultPath: 10-Notes/嵌入式与视觉/I2C 协议基础.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: learned

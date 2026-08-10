@@ -10,7 +10,7 @@ tags:
   - embedded
   - protocol
 visibility: public
-sourceVaultPath: 10-Notes/SPI 协议基础.md
+sourceVaultPath: 10-Notes/嵌入式与视觉/SPI 协议基础.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: learned
