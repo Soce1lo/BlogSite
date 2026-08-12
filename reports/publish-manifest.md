@@ -1,10 +1,10 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-08-10T09:26:45.681Z
-- scanned_vault_files: 799
-- publish_candidates: 15
-- synced: 15
+- generated_at: 2026-08-12T16:37:45.508Z
+- scanned_vault_files: 814
+- publish_candidates: 16
+- synced: 16
 - warnings: 16
 - errors: 0
 
@@ -18,6 +18,7 @@
 | 60-Publish/C 语言设计模式学习计划.md | projects | c-design-patterns-learning | /projects/c-design-patterns-learning/ | published | 2026-07-21 | built | 0 |
 | 60-Publish/LeetCode C 语言训练计划.md | projects | leetcode-c-language-training | /projects/leetcode-c-language-training/ | published | 2026-07-21 | built | 0 |
 | 60-Publish/Obsidian 入门：本地 Markdown、链接网络与我的知识库实践.md | blog | obsidian-local-markdown-knowledge-vault | /blog/obsidian-local-markdown-knowledge-vault/ | published | 2026-07-07 | thought | 0 |
+| 60-Publish/STM32 嵌入式部件全景速通计划.md | projects | stm32-embedded-components-survey | /projects/stm32-embedded-components-survey/ | published | 2026-08-13 | built | 0 |
 | 60-Publish/买电动牙刷时，我如何把营销声量还原成实际价值.md | blog | electric-toothbrush-value-first-buying | /blog/electric-toothbrush-value-first-buying/ | published | 2026-07-27 | thought | 0 |
 | 60-Publish/从 Logseq 到 Obsidian：具体迁移指导.md | blog | logseq-to-obsidian-migration-guide | /blog/logseq-to-obsidian-migration-guide/ | published | 2026-07-03 | thought | 0 |
 | 60-Publish/从 Logseq 到 Obsidian：迁移回顾.md | blog | logseq-to-obsidian-migration | /blog/logseq-to-obsidian-migration/ | published | 2026-07-01 | thought | 0 |
