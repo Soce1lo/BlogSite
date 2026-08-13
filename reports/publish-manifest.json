@@ -1,10 +1,10 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-08-12T16:37:45.508Z",
+  "generatedAt": "2026-08-13T00:43:02.791Z",
   "summary": {
-    "scannedVaultFiles": 814,
-    "publishCandidates": 16,
-    "synced": 16,
+    "scannedVaultFiles": 816,
+    "publishCandidates": 17,
+    "synced": 17,
     "warnings": 16,
     "errors": 0
   },
@@ -192,6 +192,19 @@
       "series": "KnowledgeVault 实践",
       "seriesOrder": 20,
       "topic": "Obsidian",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/从 PT 下载到 Jellyfin 入库：一套不破坏做种的动漫整理工作流.md",
+      "collection": "blog",
+      "slug": "pt-download-to-jellyfin-workflow",
+      "url": "/blog/pt-download-to-jellyfin-workflow/",
+      "title": "从 PT 下载到 Jellyfin 入库：一套不破坏做种的动漫整理工作流",
+      "draft": false,
+      "publishedDate": "2026-08-13",
+      "visibility": "public",
+      "outputKind": "built",
+      "topic": "家庭影音自动化",
       "warnings": []
     },
     {

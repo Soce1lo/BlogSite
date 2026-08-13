@@ -1,10 +1,10 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-08-12T16:37:45.508Z
-- scanned_vault_files: 814
-- publish_candidates: 16
-- synced: 16
+- generated_at: 2026-08-13T00:43:02.791Z
+- scanned_vault_files: 816
+- publish_candidates: 17
+- synced: 17
 - warnings: 16
 - errors: 0
 
@@ -22,6 +22,7 @@
 | 60-Publish/买电动牙刷时，我如何把营销声量还原成实际价值.md | blog | electric-toothbrush-value-first-buying | /blog/electric-toothbrush-value-first-buying/ | published | 2026-07-27 | thought | 0 |
 | 60-Publish/从 Logseq 到 Obsidian：具体迁移指导.md | blog | logseq-to-obsidian-migration-guide | /blog/logseq-to-obsidian-migration-guide/ | published | 2026-07-03 | thought | 0 |
 | 60-Publish/从 Logseq 到 Obsidian：迁移回顾.md | blog | logseq-to-obsidian-migration | /blog/logseq-to-obsidian-migration/ | published | 2026-07-01 | thought | 0 |
+| 60-Publish/从 PT 下载到 Jellyfin 入库：一套不破坏做种的动漫整理工作流.md | blog | pt-download-to-jellyfin-workflow | /blog/pt-download-to-jellyfin-workflow/ | published | 2026-08-13 | built | 0 |
 | 60-Publish/从远程访问 NAS 到多设备互联：我的家庭组网方案.md | blog | multi-device-home-network | /blog/multi-device-home-network/ | published | 2026-08-10 | built | 0 |
 | 60-Publish/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视.md | blog | llm-wiki-derived-layer | /blog/llm-wiki-derived-layer/ | published | 2026-07-07 | thought | 0 |
 | 60-Publish/把个人知识流变成可审计的 Skill：从 Logseq 迁移到 Daily-first，再到安全发布.md | blog | obsidian-personal-knowledge-management-skill | /blog/obsidian-personal-knowledge-management-skill/ | published | 2026-08-08 | built | 0 |
