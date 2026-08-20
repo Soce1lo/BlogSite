@@ -4,7 +4,7 @@ description: >-
   面向公司 Skill 大赛，复盘我如何把 Logseq 迁移、Obsidian 日常知识流、LLM
   派生层与公开发布整理成一套可配置、可验证、可安全移植的个人知识管理 Skill。
 pubDate: '2026-08-08'
-updatedDate: '2026-08-08'
+updatedDate: '2026-08-20'
 draft: false
 category: Knowledge Management
 tags:
@@ -32,7 +32,7 @@ topic: Obsidian
 
 ## 专题阅读地图
 
-这篇是专题总入口，其余五篇记录了工作流从迁移到日常运行的不同切面：
+这篇是专题总入口，其余六篇记录了工作流从迁移到日常运行的不同切面：
 
 | 顺序 | 文章 | 解决的问题 |
 | ---: | --- | --- |
@@ -42,6 +42,7 @@ topic: Obsidian
 | 4 | [Obsidian 入门：本地 Markdown、链接网络与我的知识库实践](../obsidian-local-markdown-knowledge-vault/) | 为什么以本地 Markdown 和链接网络作为知识底座 |
 | 5 | [在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视](../llm-wiki-derived-layer/) | 怎样让模型参与整理，又不污染正式知识面 |
 | 6 | [用 Obsidian 管理任务：Daily、看板与项目进度的职责分离](../obsidian-task-management-workflow/) | 怎样把行动、上下文和项目进度留在同一套文本系统中 |
+| 7 | [把 Daily 还给思考：一次 Obsidian 知识系统重构](../daily-first-knowledge-system-refactor/) | 怎样把 Daily 重新收敛为低负担的原始思考入口 |
 
 ## 我真正要移植的是什么
 

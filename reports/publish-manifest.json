@@ -1,10 +1,10 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-08-13T00:43:02.791Z",
+  "generatedAt": "2026-08-20T14:01:49.434Z",
   "summary": {
-    "scannedVaultFiles": 816,
-    "publishCandidates": 17,
-    "synced": 17,
+    "scannedVaultFiles": 820,
+    "publishCandidates": 18,
+    "synced": 18,
     "warnings": 16,
     "errors": 0
   },
@@ -233,6 +233,21 @@
       "series": "KnowledgeVault 实践",
       "seriesOrder": 50,
       "topic": "LLM Wiki",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/把 Daily 还给思考：一次 Obsidian 知识系统重构.md",
+      "collection": "blog",
+      "slug": "daily-first-knowledge-system-refactor",
+      "url": "/blog/daily-first-knowledge-system-refactor/",
+      "title": "把 Daily 还给思考：一次 Obsidian 知识系统重构",
+      "draft": false,
+      "publishedDate": "2026-08-20",
+      "visibility": "public",
+      "outputKind": "thought",
+      "series": "KnowledgeVault 实践",
+      "seriesOrder": 70,
+      "topic": "Obsidian",
       "warnings": []
     },
     {

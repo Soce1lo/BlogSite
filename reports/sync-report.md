@@ -2,9 +2,9 @@
 
 ## Summary
 
-- scanned_vault_files: 816
-- publish_candidates: 17
-- synced: 17
+- scanned_vault_files: 820
+- publish_candidates: 18
+- synced: 18
 - skipped_private: 0
 - skipped_missing_slug: 0
 - skipped_missing_title: 0
@@ -15,7 +15,7 @@
 
 ## Outputs
 
-- blog: 9
+- blog: 10
 - notes: 5
 - projects: 3
 
