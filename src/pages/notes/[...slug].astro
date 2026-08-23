@@ -2,20 +2,41 @@
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import ContentLayout from "../../layouts/ContentLayout.astro";
 import { isGeneratedEntry } from "../../lib/content";
+import { resolveSeriesNavigation, type SeriesNavigation } from "../../lib/series";
 
 export async function getStaticPaths() {
-  const entries = (await getCollection("notes")).filter(isGeneratedEntry);
-  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+  const [blogEntries, noteEntries, projectEntries] = await Promise.all([
+    getCollection("blog"),
+    getCollection("notes"),
+    getCollection("projects"),
+  ]);
+  const entries = noteEntries.filter(isGeneratedEntry);
+  const allEntries = [
+    ...blogEntries.filter(isGeneratedEntry),
+    ...entries,
+    ...projectEntries.filter(isGeneratedEntry),
+  ];
+
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry, seriesNavigation: resolveSeriesNavigation(entry, allEntries) },
+  }));
 }
 
 interface Props {
   entry: CollectionEntry<"notes">;
+  seriesNavigation?: SeriesNavigation;
 }
 
-const { entry } = Astro.props;
+const { entry, seriesNavigation } = Astro.props;
 const { Content, headings } = await render(entry);
 ---
 
-<ContentLayout entry={entry} sectionLabel="学习" headings={headings}>
+<ContentLayout
+  entry={entry}
+  sectionLabel="学习"
+  headings={headings}
+  seriesNavigation={seriesNavigation}
+>
   <Content />
 </ContentLayout>

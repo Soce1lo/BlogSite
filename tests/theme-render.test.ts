@@ -404,7 +404,37 @@ test("内容详情页使用 render headings 生成文章目录 rail", async () =
   ]) {
     const page = await readProjectFile(route);
     assert.match(page, /const \{ Content, headings \} = await render\(entry\);/);
-    assert.match(page, /<ContentLayout entry=\{entry\} sectionLabel="[^"]+" headings=\{headings\}>/);
+    assert.match(page, /<ContentLayout[\s\S]*entry=\{entry\}/);
+    assert.match(page, /sectionLabel="[^"]+"/);
+    assert.match(page, /headings=\{headings\}/);
+  }
+});
+
+test("文章详情页自动渲染系列目录和上一篇下一篇导航", async () => {
+  const component = await readProjectFile("src/components/SeriesNavigation.astro");
+  const layout = await readProjectFile("src/layouts/ContentLayout.astro");
+  const css = await readProjectFile("src/styles/global.css");
+
+  assert.match(component, /class="series-navigation"/);
+  assert.match(component, /seriesOrder/);
+  assert.match(component, /aria-current="page"/);
+  assert.match(component, /上一篇/);
+  assert.match(component, /下一篇/);
+  assert.match(component, /withBase\(/);
+  assert.match(component, /entry\.collection/);
+  assert.match(layout, /seriesNavigation\?: SeriesNavigation/);
+  assert.match(layout, /SeriesNavigationComponent/);
+  assert.match(css, /\.series-navigation/);
+  assert.match(css, /\.series-navigation__pager/);
+
+  for (const route of [
+    "src/pages/blog/[...slug].astro",
+    "src/pages/notes/[...slug].astro",
+    "src/pages/projects/[...slug].astro",
+  ]) {
+    const page = await readProjectFile(route);
+    assert.match(page, /resolveSeriesNavigation/);
+    assert.match(page, /seriesNavigation=/);
   }
 });
 

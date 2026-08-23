@@ -1,0 +1,83 @@
+---
+import type { SiteEntry } from "../lib/content";
+import type { SeriesNavigation as SeriesNavigationData } from "../lib/series";
+import { withBase } from "../lib/site";
+
+interface Props {
+  navigation: SeriesNavigationData;
+  currentEntry: SiteEntry;
+}
+
+const { navigation, currentEntry } = Astro.props;
+
+function entryHref(entry: SiteEntry): string {
+  return withBase(`${entry.collection}/${entry.id}/`);
+}
+
+function entryOrder(entry: SiteEntry, index: number): string {
+  return `#${entry.data.seriesOrder ?? index + 1}`;
+}
+
+function isCurrentEntry(entry: SiteEntry): boolean {
+  return entry.collection === currentEntry.collection && entry.id === currentEntry.id;
+}
+---
+
+<aside class="series-navigation" aria-labelledby="series-navigation-title">
+  <div class="series-navigation__header">
+    <div>
+      <p class="eyebrow">专题目录</p>
+      <h2 id="series-navigation-title">{navigation.name}</h2>
+    </div>
+    <span class="series-navigation__count">{navigation.entries.length} 篇</span>
+  </div>
+
+  <nav aria-label={`${navigation.name}目录`}>
+    <ol class="series-navigation__list">
+      {navigation.entries.map((seriesEntry, index) => {
+        const current = isCurrentEntry(seriesEntry);
+        const itemClass = `series-navigation__item${current ? " is-current" : ""}`;
+        return (
+          <li class={itemClass}>
+            {current ? (
+              <span class="series-navigation__item-link" aria-current="page">
+                <span class="series-navigation__order">{entryOrder(seriesEntry, index)}</span>
+                <span class="series-navigation__title">{seriesEntry.data.title}</span>
+              </span>
+            ) : (
+              <a class="series-navigation__item-link" href={entryHref(seriesEntry)}>
+                <span class="series-navigation__order">{entryOrder(seriesEntry, index)}</span>
+                <span class="series-navigation__title">{seriesEntry.data.title}</span>
+              </a>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  </nav>
+
+  <nav class="series-navigation__pager" aria-label="专题文章切换">
+    {navigation.previous ? (
+      <a class="series-navigation__pager-link" href={entryHref(navigation.previous)}>
+        <span class="series-navigation__pager-label">上一篇</span>
+        <strong>{navigation.previous.data.title}</strong>
+      </a>
+    ) : (
+      <span class="series-navigation__pager-placeholder">
+        <span class="series-navigation__pager-label">上一篇</span>
+        <strong>已经是第一篇</strong>
+      </span>
+    )}
+    {navigation.next ? (
+      <a class="series-navigation__pager-link" href={entryHref(navigation.next)}>
+        <span class="series-navigation__pager-label">下一篇</span>
+        <strong>{navigation.next.data.title}</strong>
+      </a>
+    ) : (
+      <span class="series-navigation__pager-placeholder">
+        <span class="series-navigation__pager-label">下一篇</span>
+        <strong>已经是最后一篇</strong>
+      </span>
+    )}
+  </nav>
+</aside>

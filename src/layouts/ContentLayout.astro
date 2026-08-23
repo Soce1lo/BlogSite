@@ -1,7 +1,9 @@
 ---
 import type { SiteEntry } from "../lib/content";
 import { prefixBaseInHtmlImageSources, withBase } from "../lib/site";
+import type { SeriesNavigation } from "../lib/series";
 import BaseLayout from "./BaseLayout.astro";
+import SeriesNavigationComponent from "../components/SeriesNavigation.astro";
 
 interface Props {
   entry: SiteEntry;
@@ -11,9 +13,10 @@ interface Props {
     slug: string;
     text: string;
   }>;
+  seriesNavigation?: SeriesNavigation;
 }
 
-const { entry, sectionLabel, headings = [] } = Astro.props;
+const { entry, sectionLabel, headings = [], seriesNavigation } = Astro.props;
 const sectionHref = withBase(`${entry.collection}/`);
 const tocHeadings = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
 const bodyHtml = prefixBaseInHtmlImageSources(
@@ -78,6 +81,9 @@ function normalizeHtmlText(value: string): string {
             )
           }
         </div>
+        {seriesNavigation && (
+          <SeriesNavigationComponent navigation={seriesNavigation} currentEntry={entry} />
+        )}
       </header>
       {
         tocHeadings.length > 1 && (
