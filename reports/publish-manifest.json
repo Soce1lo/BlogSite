@@ -1,11 +1,11 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-08-20T14:01:49.434Z",
+  "generatedAt": "2026-08-23T17:04:57.351Z",
   "summary": {
-    "scannedVaultFiles": 820,
-    "publishCandidates": 18,
-    "synced": 18,
-    "warnings": 16,
+    "scannedVaultFiles": 827,
+    "publishCandidates": 19,
+    "synced": 19,
+    "warnings": 21,
     "errors": 0
   },
   "entries": [
@@ -34,6 +34,27 @@
       "outputKind": "learned",
       "topic": "SPI",
       "warnings": []
+    },
+    {
+      "sourceVaultPath": "10-Notes/系统与工具/知识管理/我的个人笔记如何分类：从个人信息管理研究到知识图谱.md",
+      "collection": "blog",
+      "slug": "personal-note-classification-knowledge-graph",
+      "url": "/blog/personal-note-classification-knowledge-graph/",
+      "title": "我的个人笔记如何分类：从个人信息管理研究到知识图谱",
+      "draft": false,
+      "publishedDate": "2026-08-24",
+      "visibility": "public",
+      "outputKind": "learned",
+      "series": "KnowledgeVault 实践",
+      "seriesOrder": 80,
+      "topic": "Obsidian",
+      "warnings": [
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published"
+      ]
     },
     {
       "sourceVaultPath": "10-Notes/编程语言/C/C语言专业级基础知识汇总.md",

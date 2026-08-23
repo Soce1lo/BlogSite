@@ -1,17 +1,18 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-08-20T14:01:49.434Z
-- scanned_vault_files: 820
-- publish_candidates: 18
-- synced: 18
-- warnings: 16
+- generated_at: 2026-08-23T17:04:57.351Z
+- scanned_vault_files: 827
+- publish_candidates: 19
+- synced: 19
+- warnings: 21
 - errors: 0
 
 | Source | Collection | Slug | URL | Status | First published | Kind | Warnings |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 10-Notes/嵌入式与视觉/I2C 协议基础.md | notes | i2c-protocol-basics | /notes/i2c-protocol-basics/ | published | 2026-07-23 | learned | 0 |
 | 10-Notes/嵌入式与视觉/SPI 协议基础.md | notes | spi-protocol-basics | /notes/spi-protocol-basics/ | published | 2026-07-23 | learned | 0 |
+| 10-Notes/系统与工具/知识管理/我的个人笔记如何分类：从个人信息管理研究到知识图谱.md | blog | personal-note-classification-knowledge-graph | /blog/personal-note-classification-knowledge-graph/ | published | 2026-08-24 | learned | 5 |
 | 10-Notes/编程语言/C/C语言专业级基础知识汇总.md | notes | c-language-professional-foundations | /notes/c-language-professional-foundations/ | published | 2026-07-12 | learned | 6 |
 | 10-Notes/编程语言/C/C语言专业编程技巧清单.md | notes | c-professional-programming-checklist | /notes/c-professional-programming-checklist/ | published | 2026-07-12 | learned | 3 |
 | 10-Notes/编程语言/C/C语言编程题常用代码模板.md | notes | c-programming-exam-templates | /notes/c-programming-exam-templates/ | published | 2026-07-12 | learned | 7 |

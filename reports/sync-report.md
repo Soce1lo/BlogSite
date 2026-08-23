@@ -2,20 +2,20 @@
 
 ## Summary
 
-- scanned_vault_files: 820
-- publish_candidates: 18
-- synced: 18
+- scanned_vault_files: 827
+- publish_candidates: 19
+- synced: 19
 - skipped_private: 0
 - skipped_missing_slug: 0
 - skipped_missing_title: 0
 - skipped_missing_description: 0
 - skipped_daily: 0
-- warnings: 16
+- warnings: 21
 - errors: 0
 
 ## Outputs
 
-- blog: 10
+- blog: 11
 - notes: 5
 - projects: 3
 
@@ -25,7 +25,7 @@
 
 ## Warnings
 
-- unpublished_wikilinks_converted_to_text: 16
+- unpublished_wikilinks_converted_to_text: 21
 - missing_images: 0
 - anchors_dropped: 0
 

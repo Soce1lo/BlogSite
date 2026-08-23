@@ -1,5 +1,10 @@
 # Wikilink Warnings
 
+- file: `blog/personal-note-classification-knowledge-graph.md`; link: `[[知识管道]]`; target: `知识管道`; action: converted-to-text; reason: target-not-published
+- file: `blog/personal-note-classification-knowledge-graph.md`; link: `[[Obsidian 任务管理工作流]]`; target: `Obsidian 任务管理工作流`; action: converted-to-text; reason: target-not-published
+- file: `blog/personal-note-classification-knowledge-graph.md`; link: `[[知识管道]]`; target: `知识管道`; action: converted-to-text; reason: target-not-published
+- file: `blog/personal-note-classification-knowledge-graph.md`; link: `[[Obsidian 任务管理工作流]]`; target: `Obsidian 任务管理工作流`; action: converted-to-text; reason: target-not-published
+- file: `blog/personal-note-classification-knowledge-graph.md`; link: `[[Obsidian 知识管道在公司 Vault 的复用指南]]`; target: `Obsidian 知识管道在公司 Vault 的复用指南`; action: converted-to-text; reason: target-not-published
 - file: `notes/c-language-professional-foundations.md`; link: `[[C语言专业级编程考试复习]]`; target: `C语言专业级编程考试复习`; action: converted-to-text; reason: target-not-published
 - file: `notes/c-language-professional-foundations.md`; link: `[[C语言专业级考试参考资料]]`; target: `C语言专业级考试参考资料`; action: converted-to-text; reason: target-not-published
 - file: `notes/c-language-professional-foundations.md`; link: `[[变量声明]]`; target: `变量声明`; action: converted-to-text; reason: target-not-published
