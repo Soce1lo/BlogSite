@@ -6,7 +6,14 @@
 
 ## Scope
 
-V1 描述知识来源如何成为 BlogSite 发布候选。它不规定 Vault 目录、Astro collection 实现、页面布局或未来框架。
+V1 描述知识来源如何成为 BlogSite 发布候选。它不把 Vault 管理文件夹变成 frontmatter 字段，也不规定 Astro collection 实现、页面布局或未来框架。
+
+## Source layout and series navigation
+
+- 同步器递归读取源 Vault 的 Markdown，因此公开稿可以位于 `60-Publish/` 下的一级或多级管理子文件夹中；当前 KnowledgeVault 对独立公开稿的最低目录深度由 Vault 自己的 frontmatter profile 维护。
+- 管理文件夹只用于源稿的整理和 provenance。同步 manifest 与生成副本保留完整的相对 `sourceVaultPath`，但不会把管理文件夹自动变成 `publish_category`、`publish_topic` 或 `publish_series`。
+- 公开副本仍按 collection 和唯一 `publish_slug` 输出，站点 URL 由 `publish_slug` 决定；移动源稿或更换管理文件夹不会改变 URL，也不会改变站点集合。
+- `publish_series` 是跨 `blog`、`notes`、`projects` 的公开系列标识。只有明确填写该字段的内容才进入系列导航；`publish_series_order` 只能与系列一起使用，且必须是有限数值。系列没有顺序的内容仍可发布，但在系列排序中排在有顺序内容之后。
 
 ## Required fields
 
@@ -21,7 +28,7 @@ V1 描述知识来源如何成为 BlogSite 发布候选。它不规定 Vault 目
 - 缺少 `publish_kind` 时，blog、notes、projects 分别映射为 thought、learned、built。
 - `publish_date` 记录内容第一次进入公开站点的日期；首次发布后保持不变，正文修订只更新 `updated`。V1 适配器仅为已经存在的旧内容在缺少该字段时回退到 `created`；该兼容路径不豁免当前来源的创作规则。
 - `publish_series_order` 必须是有限 number，且必须同时存在 `publish_series`；否则发布候选无效。
-- topic、series 和 kind 只表达公开语义，不改变 Vault 目录或知识层级。
+- topic、series 和 kind 只表达公开语义，不改变 Vault 管理文件夹或知识层级。
 
 ## Privacy and ownership
 

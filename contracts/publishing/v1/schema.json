@@ -5,6 +5,12 @@
   "description": "Vault 中可进入 BlogSite 同步候选集的 flat frontmatter。",
   "type": "object",
   "x-contract-version": "v1",
+  "x-source-layout": {
+    "nested_source_paths": true,
+    "source_path_is_management_only": true,
+    "route_identity": "publish_slug",
+    "series_fields": ["publish_series", "publish_series_order"]
+  },
   "x-authoring-required-by-publish-status": {
     "draft": [],
     "published": ["publish_date"]

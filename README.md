@@ -19,7 +19,7 @@
 - 三类内容集合：`blog`、`notes`、`projects`。
 - 跨集合成长输出：按首次发布时间 `pubDate` 排序并按年月组织思考、学习、构建与修订；`updatedDate` 只记录修订，不改变时间线位置。
 - 人工维护的公开 Profile：集中管理身份、NOW、长期主题和精选内容，不从私人 Daily 自动推导状态。
-- 真实 Vault 只读同步：生成公开 Markdown、公开图片和报告，不写回 Vault。
+- 真实 Vault 只读同步：递归读取可位于管理子文件夹中的公开稿，生成公开 Markdown、公开图片和报告，不写回 Vault；源文件夹不改变站点 URL。
 - 版本化发布契约：Vault 的公开元数据能力、允许值和缺省行为统一以 [`contracts/publishing/v1/`](contracts/publishing/v1/) 为准。
 - 发布边界检查：拦截残留双链、本机绝对路径、`file://`、Daily 来源、重复 slug、不可信发布状态和缺失必需 frontmatter。
 - 发布 manifest：生成 `reports/publish-manifest.json` 和 `reports/publish-manifest.md`，用于对账来源、URL、状态和 warning。
@@ -88,6 +88,8 @@ src/content/
 ```
 
 每个集合使用 `src/content.config.ts` 中的共享 schema。生产列表和 RSS 仅包含 `draft: false`、`visibility: public` 的内容；`unlisted` 内容可生成详情页但不会进入公开列表。
+
+Vault 侧的 `60-Publish/<管理文件夹>/...` 只是源稿管理结构；公开系列使用 `publish_series` / `publish_series_order` 明确表达，不能从文件夹名自动推导。
 
 ## 页面
 

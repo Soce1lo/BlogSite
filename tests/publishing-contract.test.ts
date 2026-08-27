@@ -19,7 +19,7 @@ function makeDocument(
 ): VaultDocument {
   return {
     absolutePath: `/synthetic/${publishTarget}.md`,
-    sourceVaultPath: `60-Publish/${publishTarget}.md`,
+    sourceVaultPath: `60-Publish/Contract Examples/${publishTarget}.md`,
     data: {
       title: `${publishTarget} title`,
       description: `${publishTarget} description`,
@@ -41,6 +41,12 @@ test("V1 schema 与当前发布候选枚举保持一致", async () => {
   );
 
   assert.equal(schema["x-contract-version"], PUBLISH_CONTRACT_VERSION);
+  assert.deepEqual(schema["x-source-layout"], {
+    nested_source_paths: true,
+    source_path_is_management_only: true,
+    route_identity: "publish_slug",
+    series_fields: ["publish_series", "publish_series_order"],
+  });
   assert.deepEqual(schema["x-authoring-required-by-publish-status"], {
     draft: [],
     published: ["publish_date"],
@@ -161,13 +167,26 @@ test("V1 保留带 series 的有效数值顺序", () => {
   assert.equal(evaluation.entry.seriesOrder, 2);
 });
 
+test("V1 接受嵌套管理文件夹中的源稿且不把文件夹带入站点路由", () => {
+  const nestedDocument = {
+    ...makeDocument("blog"),
+    sourceVaultPath: "60-Publish/KnowledgeVault 实践/nested-entry.md",
+  };
+
+  const evaluation = evaluatePublishCandidate(nestedDocument);
+
+  assert.ok(evaluation.entry);
+  assert.equal(evaluation.entry.sourceVaultPath, nestedDocument.sourceVaultPath);
+  assert.equal(evaluation.entry.url, "/blog/blog-entry/");
+});
+
 for (const exampleName of ["published-blog.md", "draft-note.md"]) {
   test(`V1 example ${exampleName} 可被当前候选解析器接受`, async () => {
     const absolutePath = path.join(contractRoot, "examples", exampleName);
     const parsed = matter(await readFile(absolutePath, "utf8"));
     const evaluation = evaluatePublishCandidate({
       absolutePath,
-      sourceVaultPath: `60-Publish/${exampleName}`,
+      sourceVaultPath: `60-Publish/Contract Examples/${exampleName}`,
       data: parsed.data as Record<string, unknown>,
       content: parsed.content,
     });

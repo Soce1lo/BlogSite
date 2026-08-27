@@ -10,7 +10,7 @@
 
 1. MUST 先运行 `git status --short --branch`，确认当前分支、未提交改动和是否有用户正在编辑的文件。
 2. MUST 读取 `docs/publishing-guide.md`、`docs/vault-sync-guide.md` 和 `docs/codex-maintenance-guide.md`，再开始真实发布。
-3. MUST 先在真实 Vault 运行其当前合同与 frontmatter 检查，再做只读候选扫描。当前来源为 `publish_status: published` 时必须具有 `publish_date`；`draft` 可以省略，但必须得到显式授权后才能改为 `published`，且转换时记录首次发布日期。
+3. MUST 先在真实 Vault 运行其当前合同与 frontmatter 检查，再做只读候选扫描。独立公开稿应位于 `60-Publish/` 下至少一级管理子文件夹；文件夹只承担源稿管理，不自动决定分类或系列。当前来源为 `publish_status: published` 时必须具有 `publish_date`；`draft` 可以省略，但必须得到显式授权后才能改为 `published`，且转换时记录首次发布日期。
 4. MUST 先做临时目录 preview sync，不直接写入正式公开副本。示例：
 
 ```bash

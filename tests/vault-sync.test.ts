@@ -194,7 +194,7 @@ test("同步筛选内容、复制图片、清理旧托管副本且不修改源 V
   const reportsPath = path.join(root, "reports");
 
   await writeText(
-    path.join(vaultPath, "Articles", "Article.md"),
+    path.join(vaultPath, "60-Publish", "KnowledgeVault 实践", "Article.md"),
     `---
 title: "公开文章"
 description: "用于验证同步的合成文章。"
@@ -351,7 +351,10 @@ sourceVaultPath: "examples/manual.md"
   assert.equal(parsedArticle.data.sourcePublishStatus, "published");
   assert.equal(parsedArticle.data.pubDate, "2026-06-15");
   assert.equal(parsedArticle.data.managedBy, "vault-sync");
-  assert.equal(parsedArticle.data.sourceVaultPath, "Articles/Article.md");
+  assert.equal(
+    parsedArticle.data.sourceVaultPath,
+    "60-Publish/KnowledgeVault 实践/Article.md",
+  );
   assert.equal(parsedArticle.data.series, "从 Logseq 到 Obsidian");
   assert.equal(parsedArticle.data.seriesOrder, 10);
   assert.equal(parsedArticle.data.topic, "Knowledge Management");
@@ -363,6 +366,9 @@ sourceVaultPath: "examples/manual.md"
   assert.match(article, /!\[架构图\]\(\/images\/public-article\/diagram\.png\)/);
   assert.match(article, /!\[另一个图\]\(\/images\/public-article\/other\.png\)/);
   assert.match(article, /\[missing image: missing\.png\]/);
+  await assert.rejects(
+    readFile(path.join(contentOutputPath, "blog", "KnowledgeVault 实践", "public-article.md")),
+  );
 
   await readFile(path.join(imageOutputPath, "public-article", "diagram.png"));
   await readFile(path.join(imageOutputPath, "public-article", "other.png"));
@@ -399,7 +405,7 @@ sourceVaultPath: "examples/manual.md"
   assert.deepEqual(
     manifest.entries.find((entry: { slug: string }) => entry.slug === "public-article"),
     {
-      sourceVaultPath: "Articles/Article.md",
+      sourceVaultPath: "60-Publish/KnowledgeVault 实践/Article.md",
       collection: "blog",
       slug: "public-article",
       url: "/blog/public-article/",
@@ -418,7 +424,7 @@ sourceVaultPath: "examples/manual.md"
       ],
     },
   );
-  assert.match(publishManifestMarkdown, /Articles\/Article\.md/);
+  assert.match(publishManifestMarkdown, /60-Publish\/KnowledgeVault 实践\/Article\.md/);
   assert.match(publishManifestMarkdown, /\/blog\/public-article\//);
   assert.match(publishManifestMarkdown, /revised/);
   assert.match(publishManifestMarkdown, /contract_version: v1/);
