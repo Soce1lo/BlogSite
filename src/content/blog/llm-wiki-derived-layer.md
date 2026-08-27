@@ -11,7 +11,7 @@ tags:
   - knowledge-management
   - agent
 visibility: public
-sourceVaultPath: 60-Publish/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视.md
+sourceVaultPath: 60-Publish/KnowledgeVault 实践/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: thought
@@ -25,7 +25,7 @@ topic: LLM Wiki
 
 第一版解决了“生成内容不能直接污染正式知识库”的问题，却留下了另一个更实际的问题：source、concept、synthesis、索引和正式输出散在不同位置，人没有一个可以集中审视 Agent 输出的界面。随着 I2C、SPI 和 Obsidian 等主题进入这条链路，我又对它做了一次重构：保留独立派生层，同时增加专门的人工审视层。
 
-专题入口：[Obsidian 个人知识管理专题](../obsidian-personal-knowledge-management-skill/)。
+专题总览：[我的个人知识系统](../obsidian-personal-knowledge-management-skill/)。
 
 ## 为什么不直接放进正式图谱
 
@@ -134,3 +134,5 @@ topic: LLM Wiki
 `70-LLM-Wiki/` 仍然纳入 git，但不属于 Obsidian 正式知识面，并在本机界面中隐藏。Agent 可以维护派生层，不能自动改写 Daily、正式笔记或公开稿，也不能自动发布。
 
 我现在更关心的不是让 LLM Wiki 生成更多内容，而是让无用内容更容易被看见、删除和压缩。一个可靠的知识工作流，不只要能持续生产，还要让人始终拥有清晰的审视入口和最终决定权。
+
+这里也要如实说明现状：这个派生层解决了我担心的污染问题，但我还没有找到它不可替代的日常使用场景。它现在保持「研究存疑」状态——结构保留，不再扩充主题，等真实使用给出更清楚的判断，再决定它承担什么、不承担什么。

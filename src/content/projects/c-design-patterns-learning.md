@@ -10,7 +10,7 @@ tags:
   - 设计模式
   - 软件设计
 visibility: public
-sourceVaultPath: 60-Publish/C 语言设计模式学习计划.md
+sourceVaultPath: 60-Publish/C 语言学习实践/C 语言设计模式学习计划.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: built

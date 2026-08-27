@@ -11,7 +11,7 @@ tags:
   - markdown
   - llm-wiki
 visibility: public
-sourceVaultPath: 60-Publish/Obsidian 入门：本地 Markdown、链接网络与我的知识库实践.md
+sourceVaultPath: 60-Publish/KnowledgeVault 实践/Obsidian 入门：本地 Markdown、链接网络与我的知识库实践.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: thought
@@ -25,7 +25,7 @@ topic: Obsidian
 
 这篇是一次笔记式介绍。我主要参考了 Obsidian 的中文帮助文档，并结合当前这个 KnowledgeVault 的真实使用方式，梳理三个问题：Obsidian 的设计思想是什么，最基本的用法是什么，以及我现在怎样把它接进写作、迁移、发布和 LLM Wiki 流程。
 
-专题入口：[Obsidian 个人知识管理专题](../obsidian-personal-knowledge-management-skill/)。
+专题总览：[我的个人知识系统](../obsidian-personal-knowledge-management-skill/)。
 
 ## 先理解 Vault
 

@@ -11,7 +11,7 @@ tags:
   - consumerism
   - electric-toothbrush
 visibility: public
-sourceVaultPath: 60-Publish/买电动牙刷时，我如何把营销声量还原成实际价值.md
+sourceVaultPath: 60-Publish/生活消费/买电动牙刷时，我如何把营销声量还原成实际价值.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: thought

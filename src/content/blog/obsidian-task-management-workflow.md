@@ -12,7 +12,7 @@ tags:
   - knowledge-management
   - task-management
 visibility: public
-sourceVaultPath: 60-Publish/用 Obsidian 管理任务：Daily、看板与项目进度的职责分离.md
+sourceVaultPath: 60-Publish/KnowledgeVault 实践/用 Obsidian 管理任务：Daily、看板与项目进度的职责分离.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: built
@@ -37,7 +37,7 @@ topic: Obsidian
 
 这套方法的关键不是安装了哪些插件，而是让任务、视图和项目进度不再互相冒充。
 
-专题入口：[Obsidian 个人知识管理专题](../obsidian-personal-knowledge-management-skill/)。
+专题总览：[我的个人知识系统](../obsidian-personal-knowledge-management-skill/)。
 
 ## 任务应该留在上下文中
 

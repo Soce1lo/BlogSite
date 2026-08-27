@@ -11,7 +11,7 @@ tags:
   - daily-first
   - knowledge-gardening
 visibility: public
-sourceVaultPath: 60-Publish/把 Daily 还给思考：一次 Obsidian 知识系统重构.md
+sourceVaultPath: 60-Publish/KnowledgeVault 实践/把 Daily 还给思考：一次 Obsidian 知识系统重构.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: thought
@@ -27,7 +27,7 @@ topic: Obsidian
 
 这次重构的目标不是再做一个更漂亮的 Dashboard，而是把 Daily 还给思考。
 
-专题入口：[Obsidian 个人知识管理专题](../obsidian-personal-knowledge-management-skill/)。
+专题总览：[我的个人知识系统](../obsidian-personal-knowledge-management-skill/)。
 
 ## 三个页面，三种职责
 

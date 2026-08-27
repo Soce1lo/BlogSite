@@ -11,7 +11,7 @@ tags:
   - project-management
   - daily-first
 visibility: public
-sourceVaultPath: 60-Publish/让 Projects 回到真实项目：一次 Obsidian 项目边界重构.md
+sourceVaultPath: 60-Publish/KnowledgeVault 实践/让 Projects 回到真实项目：一次 Obsidian 项目边界重构.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: revised
@@ -28,6 +28,8 @@ topic: Obsidian
 如果问题只是“文件放错了位置”，移动一批笔记就够了。真正需要重新想清楚的是：我的知识系统，究竟应该怎样容纳项目？
 
 项目当然是驱动的一环，但它不应该成为所有输入的前提。知识同样会牵引行动，而一个项目会带来什么理解，往往要开始之后才知道。这次重构想保留的，正是这两件可以同时成立的事：行动需要边界，思考可以暂时没有归属。
+
+专题总览：[我的个人知识系统](../obsidian-personal-knowledge-management-skill/)。
 
 ## 项目需要边界，不需要预知全部收获
 

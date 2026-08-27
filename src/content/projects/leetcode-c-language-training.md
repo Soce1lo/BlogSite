@@ -11,7 +11,7 @@ tags:
   - 算法
   - 数据结构
 visibility: public
-sourceVaultPath: 60-Publish/LeetCode C 语言训练计划.md
+sourceVaultPath: 60-Publish/C 语言学习实践/LeetCode C 语言训练计划.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: built

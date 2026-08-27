@@ -14,7 +14,7 @@ tags:
   - moviepilot
   - jellyfin
 visibility: public
-sourceVaultPath: 60-Publish/从 PT 下载到 Jellyfin 入库：一套不破坏做种的动漫整理工作流.md
+sourceVaultPath: 60-Publish/Home Lab/从 PT 下载到 Jellyfin 入库：一套不破坏做种的动漫整理工作流.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: built

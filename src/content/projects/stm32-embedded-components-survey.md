@@ -10,7 +10,7 @@ tags:
   - embedded-development
   - performance-engineering
 visibility: public
-sourceVaultPath: 60-Publish/STM32 嵌入式部件全景速通计划.md
+sourceVaultPath: 60-Publish/嵌入式/STM32 嵌入式部件全景速通计划.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: built

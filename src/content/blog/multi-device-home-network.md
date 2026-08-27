@@ -12,7 +12,7 @@ tags:
   - nas
   - homelab
 visibility: public
-sourceVaultPath: 60-Publish/从远程访问 NAS 到多设备互联：我的家庭组网方案.md
+sourceVaultPath: 60-Publish/Home Lab/从远程访问 NAS 到多设备互联：我的家庭组网方案.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: built
