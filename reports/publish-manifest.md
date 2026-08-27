@@ -1,10 +1,10 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-08-23T17:04:57.351Z
-- scanned_vault_files: 827
-- publish_candidates: 19
-- synced: 19
+- generated_at: 2026-08-27T04:55:12.408Z
+- scanned_vault_files: 800
+- publish_candidates: 20
+- synced: 20
 - warnings: 21
 - errors: 0
 
@@ -29,3 +29,4 @@
 | 60-Publish/把 Daily 还给思考：一次 Obsidian 知识系统重构.md | blog | daily-first-knowledge-system-refactor | /blog/daily-first-knowledge-system-refactor/ | published | 2026-08-20 | thought | 0 |
 | 60-Publish/把个人知识流变成可审计的 Skill：从 Logseq 迁移到 Daily-first，再到安全发布.md | blog | obsidian-personal-knowledge-management-skill | /blog/obsidian-personal-knowledge-management-skill/ | published | 2026-08-08 | built | 0 |
 | 60-Publish/用 Obsidian 管理任务：Daily、看板与项目进度的职责分离.md | blog | obsidian-task-management-workflow | /blog/obsidian-task-management-workflow/ | published | 2026-07-28 | built | 0 |
+| 60-Publish/让 Projects 回到真实项目：一次 Obsidian 项目边界重构.md | blog | obsidian-project-boundary-refactor | /blog/obsidian-project-boundary-refactor/ | published | 2026-08-27 | revised | 0 |

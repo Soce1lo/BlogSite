@@ -1,10 +1,10 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-08-23T17:04:57.351Z",
+  "generatedAt": "2026-08-27T04:55:12.408Z",
   "summary": {
-    "scannedVaultFiles": 827,
-    "publishCandidates": 19,
-    "synced": 19,
+    "scannedVaultFiles": 800,
+    "publishCandidates": 20,
+    "synced": 20,
     "warnings": 21,
     "errors": 0
   },
@@ -298,6 +298,21 @@
       "outputKind": "built",
       "series": "KnowledgeVault 实践",
       "seriesOrder": 60,
+      "topic": "Obsidian",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/让 Projects 回到真实项目：一次 Obsidian 项目边界重构.md",
+      "collection": "blog",
+      "slug": "obsidian-project-boundary-refactor",
+      "url": "/blog/obsidian-project-boundary-refactor/",
+      "title": "让 Projects 回到真实项目：一次 Obsidian 项目边界重构",
+      "draft": false,
+      "publishedDate": "2026-08-27",
+      "visibility": "public",
+      "outputKind": "revised",
+      "series": "KnowledgeVault 实践",
+      "seriesOrder": 90,
       "topic": "Obsidian",
       "warnings": []
     }
