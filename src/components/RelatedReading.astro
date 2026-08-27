@@ -1,0 +1,45 @@
+---
+import type { RelatedReadingEntry } from "../lib/related";
+import { withBase } from "../lib/site";
+
+interface Props {
+  entries: RelatedReadingEntry[];
+}
+
+const { entries } = Astro.props;
+
+function entryHref(entry: RelatedReadingEntry["entry"]): string {
+  return withBase(`${entry.collection}/${entry.id}/`);
+}
+
+function relationshipLabel(item: RelatedReadingEntry): string {
+  if (item.reasons.includes("series") && item.reasons.includes("topic")) {
+    return "同系列 · 同主题";
+  }
+  return item.reasons.includes("series") ? "同系列" : "同主题";
+}
+---
+
+{entries.length > 0 && (
+  <section class="related-reading" aria-labelledby="related-reading-title">
+    <div class="related-reading__header">
+      <div>
+        <p class="eyebrow">继续探索</p>
+        <h2 id="related-reading-title">延伸阅读</h2>
+      </div>
+      <span class="related-reading__count">{entries.length} 篇</span>
+    </div>
+
+    <ul class="related-reading__list">
+      {entries.map((item) => (
+        <li class="related-reading__item">
+          <a class="related-reading__link" href={entryHref(item.entry)}>
+            <span class="related-reading__meta">{relationshipLabel(item)}</span>
+            <strong class="related-reading__title">{item.entry.data.title}</strong>
+            <span class="related-reading__description">{item.entry.data.description}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

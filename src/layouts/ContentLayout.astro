@@ -1,8 +1,10 @@
 ---
 import type { SiteEntry } from "../lib/content";
 import { prefixBaseInHtmlImageSources, withBase } from "../lib/site";
+import type { RelatedReadingEntry } from "../lib/related";
 import type { SeriesNavigation } from "../lib/series";
 import BaseLayout from "./BaseLayout.astro";
+import RelatedReadingComponent from "../components/RelatedReading.astro";
 import SeriesNavigationComponent from "../components/SeriesNavigation.astro";
 
 interface Props {
@@ -14,9 +16,10 @@ interface Props {
     text: string;
   }>;
   seriesNavigation?: SeriesNavigation;
+  relatedReading?: RelatedReadingEntry[];
 }
 
-const { entry, sectionLabel, headings = [], seriesNavigation } = Astro.props;
+const { entry, sectionLabel, headings = [], seriesNavigation, relatedReading = [] } = Astro.props;
 const sectionHref = withBase(`${entry.collection}/`);
 const tocHeadings = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
 const bodyHtml = prefixBaseInHtmlImageSources(
@@ -104,6 +107,7 @@ function normalizeHtmlText(value: string): string {
         )
       }
       <div class="prose content-body" set:html={bodyHtml} />
+      <RelatedReadingComponent entries={relatedReading} />
     </article>
   </div>
 </BaseLayout>

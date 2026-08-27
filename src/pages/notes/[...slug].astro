@@ -1,7 +1,8 @@
 ---
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import ContentLayout from "../../layouts/ContentLayout.astro";
-import { isGeneratedEntry } from "../../lib/content";
+import { isGeneratedEntry, isPublicEntry } from "../../lib/content";
+import { resolveRelatedReading, type RelatedReadingEntry } from "../../lib/related";
 import { resolveSeriesNavigation, type SeriesNavigation } from "../../lib/series";
 
 export async function getStaticPaths() {
@@ -16,19 +17,25 @@ export async function getStaticPaths() {
     ...entries,
     ...projectEntries.filter(isGeneratedEntry),
   ];
+  const publicEntries = allEntries.filter(isPublicEntry);
 
   return entries.map((entry) => ({
     params: { slug: entry.id },
-    props: { entry, seriesNavigation: resolveSeriesNavigation(entry, allEntries) },
+    props: {
+      entry,
+      seriesNavigation: resolveSeriesNavigation(entry, allEntries),
+      relatedReading: resolveRelatedReading(entry, publicEntries),
+    },
   }));
 }
 
 interface Props {
   entry: CollectionEntry<"notes">;
   seriesNavigation?: SeriesNavigation;
+  relatedReading?: RelatedReadingEntry[];
 }
 
-const { entry, seriesNavigation } = Astro.props;
+const { entry, seriesNavigation, relatedReading = [] } = Astro.props;
 const { Content, headings } = await render(entry);
 ---
 
@@ -37,6 +44,7 @@ const { Content, headings } = await render(entry);
   sectionLabel="学习"
   headings={headings}
   seriesNavigation={seriesNavigation}
+  relatedReading={relatedReading}
 >
   <Content />
 </ContentLayout>
