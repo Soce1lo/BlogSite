@@ -3,53 +3,135 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { withBase } from "../lib/site";
 ---
 
-<BaseLayout title="关于 Soce1lo" description="关于 Soce1lo，以及知识如何从私人系统抵达公开页面。">
+<BaseLayout
+  title="关于 Soce1lo"
+  description="关于 Soce1lo：一名嵌入式工程师如何在工程、知识系统、研究与家庭基础设施之间持续构建。"
+>
   <header class="page-heading">
     <p class="eyebrow">ABOUT / 关于</p>
     <h1>关于 Soce1lo</h1>
-    <p>一个长期建设者的公开工作台，也是我与同频者相认的坐标。</p>
+    <p>把问题拆开，把证据留下，把理解变成能继续工作的东西。</p>
   </header>
 
   <article class="prose about-content">
     <p class="lead">
-      我是一名研究型工程师，也是一名偏好独立判断、结构化思考与长期主义的 INTJ。
-      我关心的不只是一个答案是否正确，也关心它如何被理解、验证，并最终变成可以工作的系统。
+      我是一名长期建设者，也是一名研究型工程师。我的工作从 C、STM32 和板上验证出发，
+      也延伸到个人知识系统、量化研究、家庭组网与媒体栈，以及把这些实践整理成公开文字。
     </p>
 
-    <h2>我如何工作</h2>
     <p>
-      我习惯从真实问题开始：先观察约束，再拆解机制，通过项目验证理解，最后把结论整理成能被复用的文本。
-      这里记录的不是一份完成态简历，而是理解、学习与构建彼此推进的过程。
+      这些方向看起来跨度很大，但背后是同一种工作习惯：先看真实约束，再建立足够小的模型，
+      用可回滚的实验检验理解，最后只留下经得起复查的结论。性格上，我把 INTJ 当作一种自我观察工具——
+      我偏好独立判断、结构化理解和长期维护，但不把类型标签当成结论。
     </p>
 
-    <h2>知识如何抵达这里</h2>
+    <blockquote class="about-principle">
+      <p>我想留下的不是“我做过什么”的清单，而是问题怎样被看清、验证，并变成下一次可以复用的能力。</p>
+      <cite>— Soce1lo</cite>
+    </blockquote>
+
+    <section class="about-trace" aria-labelledby="about-trace-heading">
+      <h2 id="about-trace-heading">我的工作轨迹</h2>
+      <div class="about-trace__steps">
+        <div class="about-trace__step">
+          <span class="about-trace__label">问题</span>
+          <strong>先看约束</strong>
+          <p>把目标、边界和未知说清楚，不急着用熟悉的答案覆盖问题。</p>
+        </div>
+        <div class="about-trace__step">
+          <span class="about-trace__label">证据</span>
+          <strong>再做验证</strong>
+          <p>分清事实、选择、计划与假设，用最小实验让判断接受现实检查。</p>
+        </div>
+        <div class="about-trace__step">
+          <span class="about-trace__label">留痕</span>
+          <strong>最后成记录</strong>
+          <p>留下取舍、失败和限制，让以后能够复查，也让经验能够继续生长。</p>
+        </div>
+      </div>
+    </section>
+
+    <h2>几条同时在走的线</h2>
+    <div class="about-practice-grid">
+      <section class="about-practice-card">
+        <p class="about-practice-card__label">工程 / Embedded</p>
+        <h3>让代码在真实硬件上成立</h3>
+        <p>
+          我关心的不只是 API 或代码能否编译，也关心它能否在时序、资源和调试约束下被解释、验证和维护。
+          C、STM32、总线和板上实验，是我理解系统如何真正工作的入口。
+        </p>
+      </section>
+      <section class="about-practice-card">
+        <p class="about-practice-card__label">知识 / Knowledge</p>
+        <h3>让记录保留人的判断</h3>
+        <p>
+          我让 Daily 保留原始思考，让 Inbox 孵化仍在形成的概念，让 Notes 保存稳定理解，
+          让 Projects 只承载有目标、完成条件和生命周期的真实项目。Agent 可以帮我追问、连接和检查，
+          但不替我成为作者。
+        </p>
+      </section>
+      <section class="about-practice-card">
+        <p class="about-practice-card__label">研究 / Research</p>
+        <h3>先确认数据，再讨论结论</h3>
+        <p>
+          做量化研究时，我更愿意先确认数据质量、来源、基线和人工裁决，再谈策略或收益。
+          看起来精确的数字，如果没有可追溯的生成过程，并不能替代判断。
+        </p>
+      </section>
+      <section class="about-practice-card">
+        <p class="about-practice-card__label">家庭系统 / Home Lab</p>
+        <h3>在便利与安全之间做取舍</h3>
+        <p>
+          家庭组网和媒体栈让我持续面对可达性、隐私、便利与保种安全的拉扯。
+          对有状态的系统，我习惯先备份、隔离和保留回滚点，再分阶段改变它。
+        </p>
+      </section>
+    </div>
+
+    <h2>我如何把理解变成输出</h2>
     <p>
-      Blog 是我的知识管道的公开输出端。原始输入和未经整理的过程留在私人系统里；只有经过选择、核对与重写的内容，才会成为这里的公开记录。
+      这个 Blog 不是私人记录的镜像，也不是一份实时状态表。它是知识管道的公开末端：
+      只有经过选择、核对、脱敏和重写的内容，才会来到这里。公开文章更关心设计由来、组成、使用场景、
+      取舍和边界，而不是把过程中的每一个动作都展示出来。
     </p>
     <ol class="about-pipeline">
-      <li><strong>捕捉</strong><span>收集阅读、工作和生活里值得继续追问的信号。</span></li>
-      <li><strong>复盘</strong><span>把经历还原成问题、判断、证据与未解决的分歧。</span></li>
-      <li><strong>加工</strong><span>连接旧知识，通过研究或项目把直觉变成可检验的理解。</span></li>
-      <li><strong>选择</strong><span>判断哪些内容具有公开价值，并移除不应暴露的私人上下文。</span></li>
-      <li><strong>发布</strong><span>以思考、学习、项目或修订的形式留下可追踪输出。</span></li>
+      <li><strong>捕捉</strong><span>从工作、阅读和生活中的真实问题开始，不急着把它们整理成结论。</span></li>
+      <li><strong>复盘</strong><span>还原当时的约束、判断、证据和仍未解决的部分。</span></li>
+      <li><strong>加工</strong><span>连接已有知识，做小实验或实际构建，把直觉变成可检查的理解。</span></li>
+      <li><strong>选择</strong><span>判断哪些内容具有公共价值，并拆掉不必要的私人上下文。</span></li>
+      <li><strong>发布</strong><span>以思考、学习、项目或修订的形式留下输出，允许以后被重新检查。</span></li>
     </ol>
 
-    <h2>公开什么</h2>
-    <p>
-      我会公开已经形成判断的思考、可复用的技术学习、真实项目中的方法与取舍，以及观点变化后的修订记录。
-      它们不一定给出最终答案，但应当足够诚实、具体，并能接受以后重新检查。
-    </p>
+    <h2>公开什么，不公开什么</h2>
+    <div class="about-boundaries">
+      <section class="about-boundary">
+        <p class="about-boundary__label">可以公开</p>
+        <h3>能帮助别人复用的理解</h3>
+        <ul>
+          <li>已经形成判断的思考、经历与复盘。</li>
+          <li>经过核验、能够独立阅读的技术学习。</li>
+          <li>项目中的设计由来、方法、取舍与验证方式。</li>
+          <li>观点发生变化时，对旧判断的诚实修订。</li>
+        </ul>
+      </section>
+      <section class="about-boundary about-boundary--private">
+        <p class="about-boundary__label">留在私人系统</p>
+        <h3>不该被公开的上下文</h3>
+        <ul>
+          <li>私人日记、原始摘录和仍未想清楚的草稿。</li>
+          <li>未经授权的工作、家庭或他人信息。</li>
+          <li>凭据、敏感路径、设备细节和容易被滥用的状态。</li>
+          <li>缺少基本证据、却被包装成确定结论的内容。</li>
+        </ul>
+      </section>
+    </div>
 
-    <h2>不公开什么</h2>
+    <h2>从这里开始</h2>
     <p>
-      私人日记、原始摘录、未经授权的项目细节、敏感路径与仍缺少基本核验的草稿不会出现在这里。
-      输入留在私人系统，输出经过选择后公开。
-    </p>
-
-    <h2>保持联系</h2>
-    <p>
-      如果你也喜欢把复杂问题拆开、长期追踪一个主题，或用实际构建检验想法，可以通过
-      <a href={withBase("rss.xml")}>RSS 订阅</a>继续关注这里的变化。
+      如果你也在把复杂问题拆开、长期追踪一个主题，或者用实际构建检验想法，可以从
+      <a href={withBase("blog/")}>思考</a>、<a href={withBase("notes/")}>学习</a>和
+      <a href={withBase("projects/")}>项目</a>开始；也可以通过 <a href={withBase("rss.xml")}>RSS 订阅</a>，
+      让新的轨迹自己抵达。
     </p>
   </article>
 </BaseLayout>
