@@ -1,10 +1,10 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-08-28T00:55:46.638Z",
+  "generatedAt": "2026-08-28T02:12:42.506Z",
   "summary": {
-    "scannedVaultFiles": 798,
-    "publishCandidates": 20,
-    "synced": 20,
+    "scannedVaultFiles": 799,
+    "publishCandidates": 21,
+    "synced": 21,
     "warnings": 21,
     "errors": 0
   },
@@ -224,6 +224,21 @@
       "series": "KnowledgeVault 实践",
       "seriesOrder": 50,
       "topic": "LLM Wiki",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/我的 Obsidian 知识系统如何运行：从 Daily 到 Skill 协作.md",
+      "collection": "blog",
+      "slug": "obsidian-knowledge-system-skill-operating-guide",
+      "url": "/blog/obsidian-knowledge-system-skill-operating-guide/",
+      "title": "我的 Obsidian 知识系统如何运行：从 Daily 到 Skill 协作",
+      "draft": false,
+      "publishedDate": "2026-08-28",
+      "visibility": "public",
+      "outputKind": "built",
+      "series": "KnowledgeVault 实践",
+      "seriesOrder": 100,
+      "topic": "Obsidian",
       "warnings": []
     },
     {

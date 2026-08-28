@@ -1,10 +1,10 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-08-28T00:55:46.638Z
-- scanned_vault_files: 798
-- publish_candidates: 20
-- synced: 20
+- generated_at: 2026-08-28T02:12:42.506Z
+- scanned_vault_files: 799
+- publish_candidates: 21
+- synced: 21
 - warnings: 21
 - errors: 0
 
@@ -24,6 +24,7 @@
 | 60-Publish/KnowledgeVault 实践/从 Logseq 到 Obsidian：具体迁移指导.md | blog | logseq-to-obsidian-migration-guide | /blog/logseq-to-obsidian-migration-guide/ | published | 2026-07-03 | thought | 0 |
 | 60-Publish/KnowledgeVault 实践/从 Logseq 到 Obsidian：迁移回顾.md | blog | logseq-to-obsidian-migration | /blog/logseq-to-obsidian-migration/ | published | 2026-07-01 | thought | 0 |
 | 60-Publish/KnowledgeVault 实践/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视.md | blog | llm-wiki-derived-layer | /blog/llm-wiki-derived-layer/ | published | 2026-07-07 | thought | 0 |
+| 60-Publish/KnowledgeVault 实践/我的 Obsidian 知识系统如何运行：从 Daily 到 Skill 协作.md | blog | obsidian-knowledge-system-skill-operating-guide | /blog/obsidian-knowledge-system-skill-operating-guide/ | published | 2026-08-28 | built | 0 |
 | 60-Publish/KnowledgeVault 实践/我的个人知识系统：从 Daily、项目到公开输出.md | blog | obsidian-personal-knowledge-management-skill | /blog/obsidian-personal-knowledge-management-skill/ | published | 2026-08-08 | built | 0 |
 | 60-Publish/KnowledgeVault 实践/把 Daily 还给思考：一次 Obsidian 知识系统重构.md | blog | daily-first-knowledge-system-refactor | /blog/daily-first-knowledge-system-refactor/ | published | 2026-08-20 | thought | 0 |
 | 60-Publish/KnowledgeVault 实践/用 Obsidian 管理任务：Daily、看板与项目进度的职责分离.md | blog | obsidian-task-management-workflow | /blog/obsidian-task-management-workflow/ | published | 2026-07-28 | built | 0 |
