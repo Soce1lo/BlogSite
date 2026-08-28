@@ -1,9 +1,9 @@
 ---
 title: STM32 嵌入式部件全景速通计划
-description: 面向已有 C 或嵌入式经验的 7 次 STM32F103 集中学习计划，用代表性实验覆盖主要硬件部件，并完成一次可复现的性能调优闭环。
+description: 暂存的 STM32F103 学习项目草案：待完成实际实验、观测和复盘后，再决定如何组织为公开内容。
 pubDate: '2026-08-13'
-updatedDate: '2026-08-13'
-draft: false
+updatedDate: '2026-08-28'
+draft: true
 category: Embedded Systems
 tags:
   - stm32
@@ -12,11 +12,13 @@ tags:
 visibility: public
 sourceVaultPath: 60-Publish/嵌入式/STM32 嵌入式部件全景速通计划.md
 managedBy: vault-sync
-sourcePublishStatus: published
+sourcePublishStatus: draft
 outputKind: built
 topic: STM32
 ---
 # STM32 嵌入式部件全景速通计划
+
+> 这是一份尚未公开的项目草案。实际开始学习后，只有上板现象、测量证据、失败与恢复或明确取舍已经形成，才会重组为面向读者的公开内容；当前路线和验收条件不作为成果发布。
 
 ## 项目定位
 

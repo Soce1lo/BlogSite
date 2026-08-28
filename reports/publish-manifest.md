@@ -1,8 +1,8 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-08-27T17:50:13.994Z
-- scanned_vault_files: 797
+- generated_at: 2026-08-28T00:55:46.638Z
+- scanned_vault_files: 798
 - publish_candidates: 20
 - synced: 20
 - warnings: 21
@@ -28,5 +28,5 @@
 | 60-Publish/KnowledgeVault 实践/把 Daily 还给思考：一次 Obsidian 知识系统重构.md | blog | daily-first-knowledge-system-refactor | /blog/daily-first-knowledge-system-refactor/ | published | 2026-08-20 | thought | 0 |
 | 60-Publish/KnowledgeVault 实践/用 Obsidian 管理任务：Daily、看板与项目进度的职责分离.md | blog | obsidian-task-management-workflow | /blog/obsidian-task-management-workflow/ | published | 2026-07-28 | built | 0 |
 | 60-Publish/KnowledgeVault 实践/让 Projects 回到真实项目：一次 Obsidian 项目边界重构.md | blog | obsidian-project-boundary-refactor | /blog/obsidian-project-boundary-refactor/ | published | 2026-08-27 | revised | 0 |
-| 60-Publish/嵌入式/STM32 嵌入式部件全景速通计划.md | projects | stm32-embedded-components-survey | /projects/stm32-embedded-components-survey/ | published | 2026-08-13 | built | 0 |
+| 60-Publish/嵌入式/STM32 嵌入式部件全景速通计划.md | projects | stm32-embedded-components-survey | /projects/stm32-embedded-components-survey/ | draft | 2026-08-13 | built | 0 |
 | 60-Publish/生活消费/买电动牙刷时，我如何把营销声量还原成实际价值.md | blog | electric-toothbrush-value-first-buying | /blog/electric-toothbrush-value-first-buying/ | published | 2026-07-27 | thought | 0 |
