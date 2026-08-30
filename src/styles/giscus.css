@@ -1,0 +1,46 @@
+/* Adapt the embedded GitHub UI to the site's existing semantic tokens. */
+body {
+  background: transparent;
+}
+
+main {
+  --color-fg-default: var(--text);
+  --color-fg-muted: var(--muted);
+  --color-fg-subtle: var(--subtle);
+  --color-canvas-default: var(--background);
+  --color-canvas-overlay: var(--surface);
+  --color-canvas-inset: var(--surface-muted);
+  --color-canvas-subtle: var(--surface);
+  --color-border-default: var(--border);
+  --color-border-muted: var(--border);
+  --color-neutral-muted: var(--surface-muted);
+  --color-accent-fg: var(--accent);
+  --color-accent-emphasis: var(--accent);
+  --color-accent-muted: var(--accent-soft);
+  --color-accent-subtle: var(--accent-wash);
+  --color-btn-text: var(--text);
+  --color-btn-bg: var(--surface);
+  --color-btn-border: var(--border);
+  --color-btn-hover-bg: var(--surface-muted);
+  --color-btn-hover-border: var(--border-strong);
+  --color-btn-primary-text: var(--background);
+  --color-btn-primary-bg: var(--accent);
+  --color-btn-primary-border: var(--accent);
+  --color-btn-primary-hover-bg: var(--accent-strong);
+  --color-btn-primary-hover-border: var(--accent-strong);
+  --color-btn-primary-selected-bg: var(--accent-strong);
+  --color-btn-primary-disabled-text: var(--muted);
+  --color-btn-primary-disabled-bg: var(--surface-muted);
+  --color-btn-primary-disabled-border: var(--border);
+  --color-success-fg: var(--success);
+  --color-attention-fg: var(--annotation);
+  --color-attention-muted: var(--annotation-soft);
+  --color-attention-subtle: var(--surface-muted);
+  font-family: var(--font-body);
+  line-height: var(--leading-body);
+}
+
+.gsc-comment-box,
+.gsc-comment {
+  border-radius: var(--radius-sm);
+}

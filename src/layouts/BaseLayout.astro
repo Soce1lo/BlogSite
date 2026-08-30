@@ -2,20 +2,28 @@
 import { getCollection } from "astro:content";
 import "../styles/global.css";
 import { siteProfile } from "../data/site-profile";
+import VisitorAnalytics from "../components/VisitorAnalytics.astro";
+import VisitorCount from "../components/VisitorCount.astro";
 import type { SiteEntry } from "../lib/content";
+import { resolveEngagementConfig } from "../lib/engagement";
 import { buildSearchItems, serializeForInlineJson } from "../lib/search";
 import { withBase } from "../lib/site";
 
 interface Props {
   title?: string;
   description?: string;
+  engagementAllowed?: boolean;
+  giscusBacklink?: string;
 }
 
 const {
   title = siteProfile.name,
   description = "Soce1lo 的成长输出日志：记录思考、技术学习与项目实践。",
+  engagementAllowed = true,
+  giscusBacklink,
 } = Astro.props;
 const pageTitle = title === siteProfile.name ? title : `${title} | ${siteProfile.name}`;
+const { goatcounter } = resolveEngagementConfig(import.meta.env);
 
 const [blogEntries, noteEntries, projectEntries] = await Promise.all([
   getCollection("blog"),
@@ -41,6 +49,7 @@ const isCurrentSection = (section: string): boolean => {
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    {giscusBacklink && <meta name="giscus:backlink" content={giscusBacklink} />}
     <link rel="icon" type="image/svg+xml" href={withBase("favicon.svg")} />
     <link rel="alternate" type="application/rss+xml" title="Soce1lo RSS" href={withBase("rss.xml")} />
     <title>{pageTitle}</title>
@@ -103,7 +112,9 @@ const isCurrentSection = (section: string): boolean => {
     </main>
     <footer class="site-footer">
       <p>{siteProfile.boundary} <a href={withBase("rss.xml")}>订阅 RSS</a></p>
+      {engagementAllowed && goatcounter && <VisitorCount config={goatcounter} scope="site" />}
     </footer>
+    {engagementAllowed && goatcounter && <VisitorAnalytics config={goatcounter} />}
     <div class="search-panel" data-search-panel hidden>
       <section class="search-dialog" role="dialog" aria-modal="true" aria-label="站内搜索">
         <div class="search-dialog__header">

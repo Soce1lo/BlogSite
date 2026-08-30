@@ -1,0 +1,21 @@
+---
+import { counterUrl, type GoatCounterConfig } from "../lib/engagement";
+
+interface Props {
+  config: GoatCounterConfig;
+  scope: "site" | "page";
+}
+
+const { config, scope } = Astro.props;
+const path = scope === "site" ? "TOTAL" : Astro.url.pathname;
+---
+
+<span
+  class:list={["visitor-count", { "visitor-count--site": scope === "site" }]}
+  data-visitor-count={counterUrl(config, path)}
+  hidden
+  title="按 GoatCounter 的去重访问口径统计，数据可能延迟最多四小时。"
+>
+  {scope === "site" ? "本站累计访问" : "访问"}
+  <span class="visitor-count__value" data-visitor-value></span>次
+</span>
