@@ -1,0 +1,23 @@
+---
+import type { GoatCounterConfig } from "../lib/engagement";
+
+interface Props {
+  config: GoatCounterConfig;
+}
+
+const { config } = Astro.props;
+---
+
+<div
+  hidden
+  data-visitor-analytics
+  data-endpoint={config.endpoint}
+  data-path={Astro.url.pathname}
+  data-site={Astro.site?.href ?? ""}
+  data-production={String(import.meta.env.PROD)}
+></div>
+
+<script>
+  import { initializeVisitors } from "../scripts/visitors";
+  initializeVisitors();
+</script>

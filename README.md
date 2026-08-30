@@ -25,6 +25,7 @@
 - 发布 manifest：生成 `reports/publish-manifest.json` 和 `reports/publish-manifest.md`，用于对账来源、URL、状态和 warning。
 - GitHub Pages 部署：push 到 `main` 后由 Actions 构建并部署；CI 不执行 Vault 同步。
 - Tone-inspired 阅读主题：明暗主题、轻量站内搜索、阅读进度条、文章目录 rail、目录高亮、长文 prose、移动端适配和重复 H1 隐藏。
+- 可选访客互动：GoatCounter 单页/全站访问次数，以及按需加载的 giscus GitHub 留言；默认关闭，不在未公开页面启用。配置见[访问次数与留言](docs/visitor-comments-guide.md)。
 
 ## 页面与视觉结构
 
@@ -44,7 +45,7 @@
 - 当某个长期主题积累至少 3 条公开记录时，再考虑独立主题详情页。
 - 有持续半年以上的公开输出后，再增加按年月浏览和年度回顾。
 - NOW 历史只在显式发布快照后保留，不自动读取私人状态。
-- Pagefind、相关文章、代码复制、图片查看、OG 图片和评论等能力，只有在真实使用需求出现后再引入。
+- Pagefind、代码复制、图片查看和 OG 图片等能力，只有在真实使用需求出现后再引入。
 
 任何新增能力都不得导入示例内容冒充个人输出，不得让 GitHub Actions 读取真实 Vault，也不得绕过 `check:publish` 的隐私边界。
 
@@ -115,6 +116,7 @@ Vault 侧的 `60-Publish/<管理文件夹>/...` 只是源稿管理结构；公�
 - [发布指南](docs/publishing-guide.md)
 - [Vault 同步边界](docs/vault-sync-guide.md)
 - [Codex 维护指南](docs/codex-maintenance-guide.md)
+- [访问次数与 GitHub 留言](docs/visitor-comments-guide.md)
 - [Phase 1 执行报告](docs/phase-1-execution-report.md)
 - [Phase 2 执行报告](docs/phase-2-execution-report.md)
 - [Phase 3 执行报告](docs/phase-3-execution-report.md)

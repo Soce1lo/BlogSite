@@ -1,0 +1,41 @@
+---
+import { giscusThemes, type GiscusConfig } from "../lib/engagement";
+
+interface Props {
+  config: GiscusConfig;
+  term: string;
+}
+
+const { config, term } = Astro.props;
+const themes = giscusThemes(Astro.site, import.meta.env.BASE_URL);
+---
+
+<section
+  class="article-comments"
+  aria-labelledby="comments-title"
+  data-github-comments
+  data-repo={config.repo}
+  data-repo-id={config.repoId}
+  data-category={config.category}
+  data-category-id={config.categoryId}
+  data-term={term}
+  data-theme-light={themes.light}
+  data-theme-dark={themes.dark}
+>
+  <h2 id="comments-title">留言</h2>
+  <p class="article-comments__description">
+    使用 GitHub 账号参与交流。评论公开保存在
+    <a href={`https://github.com/${config.repo}/discussions`} target="_blank" rel="noopener noreferrer">GitHub Discussions</a>。
+  </p>
+  <button class="control-button" type="button" data-comments-load aria-controls="article-discussion" hidden>
+    加载评论
+  </button>
+  <p class="article-comments__status" data-comments-status role="status" hidden></p>
+  <div class="giscus" id="article-discussion" data-comments-container></div>
+  <noscript><p class="article-comments__description">启用 JavaScript 后可在此留言，也可以前往 GitHub Discussions。</p></noscript>
+</section>
+
+<script>
+  import { initializeComments } from "../scripts/comments";
+  initializeComments();
+</script>
