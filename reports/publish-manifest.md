@@ -1,8 +1,8 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-08-28T02:12:42.506Z
-- scanned_vault_files: 799
+- generated_at: 2026-09-10T17:10:42.767Z
+- scanned_vault_files: 820
 - publish_candidates: 21
 - synced: 21
 - warnings: 21
@@ -16,8 +16,8 @@
 | 10-Notes/编程语言/C/C语言专业级基础知识汇总.md | notes | c-language-professional-foundations | /notes/c-language-professional-foundations/ | published | 2026-07-12 | learned | 6 |
 | 10-Notes/编程语言/C/C语言专业编程技巧清单.md | notes | c-professional-programming-checklist | /notes/c-professional-programming-checklist/ | published | 2026-07-12 | learned | 3 |
 | 10-Notes/编程语言/C/C语言编程题常用代码模板.md | notes | c-programming-exam-templates | /notes/c-programming-exam-templates/ | published | 2026-07-12 | learned | 7 |
-| 60-Publish/C 语言学习实践/C 语言设计模式学习计划.md | projects | c-design-patterns-learning | /projects/c-design-patterns-learning/ | published | 2026-07-21 | built | 0 |
-| 60-Publish/C 语言学习实践/LeetCode C 语言训练计划.md | projects | leetcode-c-language-training | /projects/leetcode-c-language-training/ | published | 2026-07-21 | built | 0 |
+| 20-Projects/LeetCode C 语言训练/LeetCode C 语言训练.md | projects | leetcode-c-language-training | /projects/leetcode-c-language-training/ | published | 2026-07-21 | built | 0 |
+| 20-Projects/卡码网设计模式编程课学习计划/卡码网设计模式编程课学习计划.md | projects | c-design-patterns-learning | /projects/c-design-patterns-learning/ | published | 2026-07-21 | built | 0 |
 | 60-Publish/Home Lab/从 PT 下载到 Jellyfin 入库：一套不破坏做种的动漫整理工作流.md | blog | pt-download-to-jellyfin-workflow | /blog/pt-download-to-jellyfin-workflow/ | published | 2026-08-13 | built | 0 |
 | 60-Publish/Home Lab/从远程访问 NAS 到多设备互联：我的家庭组网方案.md | blog | multi-device-home-network | /blog/multi-device-home-network/ | published | 2026-08-10 | built | 0 |
 | 60-Publish/KnowledgeVault 实践/Obsidian 入门：本地 Markdown、链接网络与我的知识库实践.md | blog | obsidian-local-markdown-knowledge-vault | /blog/obsidian-local-markdown-knowledge-vault/ | published | 2026-07-07 | thought | 0 |
