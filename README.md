@@ -104,7 +104,7 @@ Vault 侧的 `60-Publish/<管理文件夹>/...` 只是源稿管理结构；公�
 
 ## GitHub Pages
 
-`.github/workflows/deploy.yml` 在 pull request 中只检查和构建，在 `main` 分支 push 时额外部署。workflow 不执行 Vault 同步，也不会读取任何私人目录。
+`.github/workflows/deploy.yml` 在 pull request 中只检查和构建，在 `main` 分支 push 时额外部署。workflow 不执行 Vault 同步，也不会读取任何私人目录。workflow 使用 Node.js 24 运行 action（`actions/checkout@v5`、`pnpm/action-setup@v6`、`actions/setup-node@v5`、`actions/upload-pages-artifact@v5`、`actions/deploy-pages@v5`），不使用已弃用的 Node 20 action 运行时。
 
 默认部署到 GitHub Pages 标准域名和仓库子路径。使用自定义域名时，可配置仓库变量：
 

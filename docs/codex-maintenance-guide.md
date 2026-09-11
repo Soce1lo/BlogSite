@@ -27,6 +27,7 @@ pnpm dev
 8. 首页 Profile、NOW、长期主题和精选引用只在 `src/data/site-profile.ts` 中人工维护，不得从 Daily、任务列表或 git 状态自动生成。
 9. 维护 `publish_kind` 的同步或展示行为时，以 `contracts/publishing/v1/` 为执行依据，并同步更新合成 Vault 测试、Astro schema 和 manifest。
 10. 发布字段、枚举或默认值变更必须先更新 `contracts/publishing/` 和 `tests/publishing-contract.test.ts`，再修改同步器、Astro schema、操作文档或 Vault 局部约定。
+11. GitHub Actions 只能使用 Node 24 运行时兼容的 action 版本；当前基线是 `actions/checkout@v5`、`pnpm/action-setup@v6`、`actions/setup-node@v5`、`actions/upload-pages-artifact@v5`、`actions/deploy-pages@v5`。升级或新增 action 后，必须用 `gh run view <run-id> --log | grep "Node 20 is being deprecated"` 确认无输出，并核对 build、deploy 和 live URL；设计依据见 `docs/superpowers/specs/2026-09-12-github-actions-node24-runtime-design.md`。
 
 ## 真实内容接入
 
