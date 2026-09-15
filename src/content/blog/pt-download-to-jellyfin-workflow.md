@@ -4,7 +4,7 @@ description: >-
   以 qBittorrent、MoviePilot 和 Jellyfin
   为主线，介绍如何在保留原种做种的前提下，自动完成动漫识别、硬链接整理、元数据刮削与媒体库入库。
 pubDate: '2026-08-13'
-updatedDate: '2026-08-15'
+updatedDate: '2026-09-15'
 draft: false
 category: Home Lab
 tags:
@@ -18,6 +18,8 @@ sourceVaultPath: 60-Publish/Home Lab/从 PT 下载到 Jellyfin 入库：一套�
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: built
+series: Home Lab
+seriesOrder: 2
 topic: 家庭影音自动化
 ---
 # 从 PT 下载到 Jellyfin 入库：一套不破坏做种的动漫整理工作流
@@ -30,7 +32,7 @@ topic: 家庭影音自动化
 
 我想改掉的正是这个断点，但前提比“能自动入库”更严格：不能移动或修改 qBittorrent 正在做种的原文件，不能让一次错误识别批量污染媒体库，也不能为了统一路径让已有种子重新校验甚至重新下载。
 
-最后落地的方案是一条带安全门的自动流水线：只有明确打上标签的任务会进入 MoviePilot；识别通过后使用硬链接建立媒体库入口；Jellyfin 只读取整理后的目录。原始下载文件继续留在 qBittorrent 管理下，做种路径不变。
+最后落地的方案是一条带安全门的自动流水线：只有明确打上标签的任务会进入 MoviePilot；识别通过后使用硬链接建立媒体库入口；电影和剧集由 MoviePilot 刮削，动漫库则交给 Jellyfin 与 Bangumi 插件写回元数据。原始下载文件继续留在 qBittorrent 管理下，做种路径不变。
 
 ## 最终工作流
 
@@ -50,13 +52,15 @@ topic: 家庭影音自动化
        TMDB + 窄范围自定义识别词
                  |
                  v
- 在媒体库目录创建硬链接、重命名并刮削
+ 在媒体库目录创建硬链接、重命名
+      电影/剧集在此刮削元数据
                  |
                  v
-       Jellyfin 扫描并展示媒体
+     Jellyfin 扫描媒体库并展示
+   动漫库由 Jellyfin + Bangumi 写回元数据
 ```
 
-这里没有任何一步需要修改原视频内容。qBittorrent 管理下载副本与 PT 状态；MoviePilot 管理识别和媒体库目录；Jellyfin 只负责读取已经整理好的结果。三者的职责清楚后，自动化才不会反过来干扰做种。
+这里没有任何一步需要修改原视频内容。qBittorrent 管理下载副本与 PT 状态；MoviePilot 管理识别和媒体库目录，并为电影、剧集刮削元数据；Jellyfin 扫描媒体库，同时负责动漫库的元数据刮削。职责清楚后，自动化才不会反过来干扰做种。
 
 ## qBittorrent：原始文件和做种状态的唯一管理者
 
@@ -109,7 +113,7 @@ media-root/
 
 因此，我把 MoviePilot 的整理方式固定为硬链接，不使用“移动”；同时把内容修改、清理下载目录和媒体库删除视为三类不同操作，不让 Jellyfin 目录承担种子生命周期管理。
 
-## MoviePilot：识别、整理和刮削的编排层
+## MoviePilot：识别、整理和元数据编排层
 
 qBittorrent 下载完成后，会调用 MoviePilot 的立即整理入口。MoviePilot 再检查标签、任务状态和下载路径，符合条件才继续识别。
 
@@ -119,7 +123,7 @@ qBittorrent 下载完成后，会调用 MoviePilot 的立即整理入口。Movie
 2. 查询 TMDB，确定稳定的媒体 ID 和元数据；
 3. 根据动画电影、日番、国漫等分类规则选择媒体库目录；
 4. 按 Jellyfin 友好的模板建立季度目录和文件名；
-5. 创建硬链接，并生成海报、简介或其他刮削信息；
+5. 创建硬链接；电影和剧集在此生成海报、简介等刮削信息，动漫库则留给 Jellyfin + Bangumi；
 6. 让 Jellyfin 在整理后的媒体库中发现新内容。
 
 MoviePilot、qBittorrent、Jellyfin 和代理服务运行在一个专用 Docker 网络中，服务之间使用容器名通信。这样重建容器后不需要依赖容易变化的内部 IP，也不用绕到宿主机端口再返回容器。
@@ -146,7 +150,7 @@ MoviePilot、qBittorrent、Jellyfin 和代理服务运行在一个专用 Docker 
 
 更重要的收益是形成了一套安全增量方法：新标题失败时增加窄规则，并在全量回归通过后再进入自动整理。
 
-## Jellyfin：只消费整理后的媒体库
+## Jellyfin：媒体库消费方，也是动漫元数据的唯一写入方
 
 Jellyfin 不直接读取 qBittorrent 的下载目录，而是只挂载 MoviePilot 整理后的媒体库。这样下载目录里复杂的发布名、合集结构、截图和校验文件不会直接出现在 Jellyfin 中。
 
@@ -158,6 +162,22 @@ Jellyfin 不直接读取 qBittorrent 的下载目录，而是只挂载 MoviePilo
 - 其他电影和电视剧分类。
 
 MoviePilot 负责决定内容应进入哪个目录，Jellyfin 负责扫描、展示和播放。缺少媒体库时只补对应路径，不重建已有库，也不把一次配置修改变成全库迁移。
+
+Jellyfin 在这个流程里不只是消费方：动漫库的元数据由它写回，电影和剧集则只读。为什么写入方必须唯一，见下一节。
+
+## 动漫元数据：把写入方收敛到一处
+
+基础流水线跑通后，动漫库里还留着一层隐患：MoviePilot 和 Jellyfin 插件都会刮削动漫元数据，写出的 NFO 会互相覆盖。日番库里甚至同时出现过 MoviePilot 式的 `<uniqueid>` 和 Jellyfin 式的 `<fileinfo>`，说明两个写入方在反复改写同一份文件。
+
+处理方式和整理路径同源：让每个媒体库只有一个写入方。
+
+- 动漫三库交给 Jellyfin + Bangumi 插件，由它刮削并写回 NFO 与图片；
+- MoviePilot 对这三个目录关闭刮削，继续负责识别、硬链接、重命名和媒体库刷新；
+- 电影和剧集仍然由 MoviePilot 写 NFO，Jellyfin 只读。
+
+切换后重新刷新了三个动漫库：Bangumi 覆盖从日番 1/19 提升到 19/19、国漫 0/1 到 1/1，动漫 NFO 总数从 426 增到 440，刷新过程中没有出现元数据被互相覆盖或回退。硬链接的 inode 基线也逐条比对过，视频文件零删除、零路径漂移。
+
+这条规则服务于最初的目标：不破坏做种，不让一次错误配置污染媒体库，并且任何一步都能回退到切换前的状态。
 
 ## 从手动整理到自动入库，效果如何
 
@@ -173,6 +193,7 @@ MoviePilot 负责决定内容应进入哪个目录，Jellyfin 负责扫描、展
 | 历史任务 | 迁移可能触发移动或重新校验 | 哈希、保存路径和内容路径保持不变 |
 | 媒体文件占用 | 复制会产生第二份视频 | 硬链接只保留一份内容数据 |
 | Jellyfin 目录 | 分类不完整 | 动画电影、日番和国漫分别入库 |
+| 动漫元数据写入方 | MoviePilot 与 Jellyfin 插件互相覆盖 | 动漫三库只由 Jellyfin + Bangumi 写入 |
 
 为了确认“没有破坏做种”不是一句主观判断，我还做了两类验证。
 

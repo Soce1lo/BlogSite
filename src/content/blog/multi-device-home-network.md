@@ -2,7 +2,7 @@
 title: 从远程访问 NAS 到多设备互联：我的家庭组网方案
 description: 从一台 NAS 的远程访问需求出发，说明我如何把 Tailscale、家庭服务、代理分流和可选 VPS 组成一套低维护的多设备互联方案。
 pubDate: '2026-08-10'
-updatedDate: '2026-08-10'
+updatedDate: '2026-09-15'
 draft: false
 category: Home Lab
 tags:
@@ -16,6 +16,8 @@ sourceVaultPath: 60-Publish/Home Lab/从远程访问 NAS 到多设备互联：�
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: built
+series: Home Lab
+seriesOrder: 1
 topic: 家庭网络
 ---
 # 从远程访问 NAS 到多设备互联：我的家庭组网方案
@@ -131,7 +133,7 @@ Unraid WebUI 属于管理面，只给可信管理设备使用。qBittorrent WebU
 
 这件事让我确认了一个很有用的边界：Tailscale 是私网路由，Clash / Mihomo 是公网出站策略。两者可以共存，但不能只在其中一边声明“直连”，然后假设系统一定会走对接口。
 
-NAS 侧如果以后部署 Mihomo，也会采用相同思路。先让确实需要外部 API、元数据或镜像源的容器显式使用代理，不让代理接管所有容器，更不把 NAS 直接变成全屋软路由。
+NAS 侧现在使用独立的 v2rayA 容器承担同一思路。它只让确实需要外部 API 或元数据的 MoviePilot、Jellyfin、Docker 守护进程拉取镜像以及 Unraid 主机 WebUI 出站显式使用代理，不接管 qBittorrent 下载、Jellyfin 播放和 Unraid 默认路由，也没有把 NAS 变成全屋软路由。代理端口只暴露给容器网络和 host 回环，管理面仍通过 Tailnet 访问。
 
 ## 5. 运维记录：让“曾经可用”变成可复验
 

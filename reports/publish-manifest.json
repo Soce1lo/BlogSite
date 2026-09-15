@@ -1,6 +1,6 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-09-10T17:10:42.767Z",
+  "generatedAt": "2026-09-15T04:31:29.275Z",
   "summary": {
     "scannedVaultFiles": 820,
     "publishCandidates": 21,
@@ -9,6 +9,64 @@
     "errors": 0
   },
   "entries": [
+    {
+      "sourceVaultPath": "10-Notes/编程语言/C/C语言编程题常用代码模板.md",
+      "collection": "notes",
+      "slug": "c-programming-exam-templates",
+      "url": "/notes/c-programming-exam-templates/",
+      "title": "C语言编程题常用代码模板",
+      "draft": false,
+      "publishedDate": "2026-07-12",
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "C",
+      "warnings": [
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published"
+      ]
+    },
+    {
+      "sourceVaultPath": "10-Notes/编程语言/C/C语言专业编程技巧清单.md",
+      "collection": "notes",
+      "slug": "c-professional-programming-checklist",
+      "url": "/notes/c-professional-programming-checklist/",
+      "title": "C语言专业编程技巧清单",
+      "draft": false,
+      "publishedDate": "2026-07-12",
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "C",
+      "warnings": [
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published"
+      ]
+    },
+    {
+      "sourceVaultPath": "10-Notes/编程语言/C/C语言专业级基础知识汇总.md",
+      "collection": "notes",
+      "slug": "c-language-professional-foundations",
+      "url": "/notes/c-language-professional-foundations/",
+      "title": "C语言专业级基础知识汇总",
+      "draft": false,
+      "publishedDate": "2026-07-12",
+      "visibility": "public",
+      "outputKind": "learned",
+      "topic": "C",
+      "warnings": [
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published",
+        "wikilink: target-not-published"
+      ]
+    },
     {
       "sourceVaultPath": "10-Notes/嵌入式与视觉/I2C 协议基础.md",
       "collection": "notes",
@@ -57,62 +115,17 @@
       ]
     },
     {
-      "sourceVaultPath": "10-Notes/编程语言/C/C语言专业级基础知识汇总.md",
-      "collection": "notes",
-      "slug": "c-language-professional-foundations",
-      "url": "/notes/c-language-professional-foundations/",
-      "title": "C语言专业级基础知识汇总",
+      "sourceVaultPath": "20-Projects/卡码网设计模式编程课学习计划/卡码网设计模式编程课学习计划.md",
+      "collection": "projects",
+      "slug": "c-design-patterns-learning",
+      "url": "/projects/c-design-patterns-learning/",
+      "title": "卡码网设计模式编程课学习计划",
       "draft": false,
-      "publishedDate": "2026-07-12",
+      "publishedDate": "2026-07-21",
       "visibility": "public",
-      "outputKind": "learned",
-      "topic": "C",
-      "warnings": [
-        "wikilink: target-not-published",
-        "wikilink: target-not-published",
-        "wikilink: target-not-published",
-        "wikilink: target-not-published",
-        "wikilink: target-not-published",
-        "wikilink: target-not-published"
-      ]
-    },
-    {
-      "sourceVaultPath": "10-Notes/编程语言/C/C语言专业编程技巧清单.md",
-      "collection": "notes",
-      "slug": "c-professional-programming-checklist",
-      "url": "/notes/c-professional-programming-checklist/",
-      "title": "C语言专业编程技巧清单",
-      "draft": false,
-      "publishedDate": "2026-07-12",
-      "visibility": "public",
-      "outputKind": "learned",
-      "topic": "C",
-      "warnings": [
-        "wikilink: target-not-published",
-        "wikilink: target-not-published",
-        "wikilink: target-not-published"
-      ]
-    },
-    {
-      "sourceVaultPath": "10-Notes/编程语言/C/C语言编程题常用代码模板.md",
-      "collection": "notes",
-      "slug": "c-programming-exam-templates",
-      "url": "/notes/c-programming-exam-templates/",
-      "title": "C语言编程题常用代码模板",
-      "draft": false,
-      "publishedDate": "2026-07-12",
-      "visibility": "public",
-      "outputKind": "learned",
-      "topic": "C",
-      "warnings": [
-        "wikilink: target-not-published",
-        "wikilink: target-not-published",
-        "wikilink: target-not-published",
-        "wikilink: target-not-published",
-        "wikilink: target-not-published",
-        "wikilink: target-not-published",
-        "wikilink: target-not-published"
-      ]
+      "outputKind": "built",
+      "topic": "Design Patterns",
+      "warnings": []
     },
     {
       "sourceVaultPath": "20-Projects/LeetCode C 语言训练/LeetCode C 语言训练.md",
@@ -128,16 +141,29 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "20-Projects/卡码网设计模式编程课学习计划/卡码网设计模式编程课学习计划.md",
+      "sourceVaultPath": "60-Publish/嵌入式/STM32 嵌入式部件全景速通计划.md",
       "collection": "projects",
-      "slug": "c-design-patterns-learning",
-      "url": "/projects/c-design-patterns-learning/",
-      "title": "卡码网设计模式编程课学习计划",
-      "draft": false,
-      "publishedDate": "2026-07-21",
+      "slug": "stm32-embedded-components-survey",
+      "url": "/projects/stm32-embedded-components-survey/",
+      "title": "STM32 嵌入式部件全景速通计划",
+      "draft": true,
+      "publishedDate": "2026-08-13",
       "visibility": "public",
       "outputKind": "built",
-      "topic": "Design Patterns",
+      "topic": "STM32",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/生活消费/买电动牙刷时，我如何把营销声量还原成实际价值.md",
+      "collection": "blog",
+      "slug": "electric-toothbrush-value-first-buying",
+      "url": "/blog/electric-toothbrush-value-first-buying/",
+      "title": "买电动牙刷时，我如何把营销声量还原成实际价值",
+      "draft": false,
+      "publishedDate": "2026-07-27",
+      "visibility": "public",
+      "outputKind": "thought",
+      "topic": "消费决策",
       "warnings": []
     },
     {
@@ -150,6 +176,8 @@
       "publishedDate": "2026-08-13",
       "visibility": "public",
       "outputKind": "built",
+      "series": "Home Lab",
+      "seriesOrder": 2,
       "topic": "家庭影音自动化",
       "warnings": []
     },
@@ -163,21 +191,23 @@
       "publishedDate": "2026-08-10",
       "visibility": "public",
       "outputKind": "built",
+      "series": "Home Lab",
+      "seriesOrder": 1,
       "topic": "家庭网络",
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/Obsidian 入门：本地 Markdown、链接网络与我的知识库实践.md",
+      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/把 Daily 还给思考：一次 Obsidian 知识系统重构.md",
       "collection": "blog",
-      "slug": "obsidian-local-markdown-knowledge-vault",
-      "url": "/blog/obsidian-local-markdown-knowledge-vault/",
-      "title": "Obsidian 入门：本地 Markdown、链接网络与我的知识库实践",
+      "slug": "daily-first-knowledge-system-refactor",
+      "url": "/blog/daily-first-knowledge-system-refactor/",
+      "title": "把 Daily 还给思考：一次 Obsidian 知识系统重构",
       "draft": false,
-      "publishedDate": "2026-07-07",
+      "publishedDate": "2026-08-20",
       "visibility": "public",
       "outputKind": "thought",
       "series": "KnowledgeVault 实践",
-      "seriesOrder": 40,
+      "seriesOrder": 70,
       "topic": "Obsidian",
       "warnings": []
     },
@@ -212,18 +242,18 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视.md",
+      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/让 Projects 回到真实项目：一次 Obsidian 项目边界重构.md",
       "collection": "blog",
-      "slug": "llm-wiki-derived-layer",
-      "url": "/blog/llm-wiki-derived-layer/",
-      "title": "在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视",
+      "slug": "obsidian-project-boundary-refactor",
+      "url": "/blog/obsidian-project-boundary-refactor/",
+      "title": "让 Projects 回到真实项目：一次 Obsidian 项目边界重构",
       "draft": false,
-      "publishedDate": "2026-07-07",
+      "publishedDate": "2026-08-27",
       "visibility": "public",
-      "outputKind": "thought",
+      "outputKind": "revised",
       "series": "KnowledgeVault 实践",
-      "seriesOrder": 50,
-      "topic": "LLM Wiki",
+      "seriesOrder": 90,
+      "topic": "Obsidian",
       "warnings": []
     },
     {
@@ -257,21 +287,6 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/把 Daily 还给思考：一次 Obsidian 知识系统重构.md",
-      "collection": "blog",
-      "slug": "daily-first-knowledge-system-refactor",
-      "url": "/blog/daily-first-knowledge-system-refactor/",
-      "title": "把 Daily 还给思考：一次 Obsidian 知识系统重构",
-      "draft": false,
-      "publishedDate": "2026-08-20",
-      "visibility": "public",
-      "outputKind": "thought",
-      "series": "KnowledgeVault 实践",
-      "seriesOrder": 70,
-      "topic": "Obsidian",
-      "warnings": []
-    },
-    {
       "sourceVaultPath": "60-Publish/KnowledgeVault 实践/用 Obsidian 管理任务：Daily、看板与项目进度的职责分离.md",
       "collection": "blog",
       "slug": "obsidian-task-management-workflow",
@@ -287,44 +302,33 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/让 Projects 回到真实项目：一次 Obsidian 项目边界重构.md",
+      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视.md",
       "collection": "blog",
-      "slug": "obsidian-project-boundary-refactor",
-      "url": "/blog/obsidian-project-boundary-refactor/",
-      "title": "让 Projects 回到真实项目：一次 Obsidian 项目边界重构",
+      "slug": "llm-wiki-derived-layer",
+      "url": "/blog/llm-wiki-derived-layer/",
+      "title": "在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视",
       "draft": false,
-      "publishedDate": "2026-08-27",
-      "visibility": "public",
-      "outputKind": "revised",
-      "series": "KnowledgeVault 实践",
-      "seriesOrder": 90,
-      "topic": "Obsidian",
-      "warnings": []
-    },
-    {
-      "sourceVaultPath": "60-Publish/嵌入式/STM32 嵌入式部件全景速通计划.md",
-      "collection": "projects",
-      "slug": "stm32-embedded-components-survey",
-      "url": "/projects/stm32-embedded-components-survey/",
-      "title": "STM32 嵌入式部件全景速通计划",
-      "draft": true,
-      "publishedDate": "2026-08-13",
-      "visibility": "public",
-      "outputKind": "built",
-      "topic": "STM32",
-      "warnings": []
-    },
-    {
-      "sourceVaultPath": "60-Publish/生活消费/买电动牙刷时，我如何把营销声量还原成实际价值.md",
-      "collection": "blog",
-      "slug": "electric-toothbrush-value-first-buying",
-      "url": "/blog/electric-toothbrush-value-first-buying/",
-      "title": "买电动牙刷时，我如何把营销声量还原成实际价值",
-      "draft": false,
-      "publishedDate": "2026-07-27",
+      "publishedDate": "2026-07-07",
       "visibility": "public",
       "outputKind": "thought",
-      "topic": "消费决策",
+      "series": "KnowledgeVault 实践",
+      "seriesOrder": 50,
+      "topic": "LLM Wiki",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/Obsidian 入门：本地 Markdown、链接网络与我的知识库实践.md",
+      "collection": "blog",
+      "slug": "obsidian-local-markdown-knowledge-vault",
+      "url": "/blog/obsidian-local-markdown-knowledge-vault/",
+      "title": "Obsidian 入门：本地 Markdown、链接网络与我的知识库实践",
+      "draft": false,
+      "publishedDate": "2026-07-07",
+      "visibility": "public",
+      "outputKind": "thought",
+      "series": "KnowledgeVault 实践",
+      "seriesOrder": 40,
+      "topic": "Obsidian",
       "warnings": []
     }
   ]
