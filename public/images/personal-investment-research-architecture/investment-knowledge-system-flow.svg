@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="780" viewBox="0 0 1100 780" role="img" aria-labelledby="title desc">
+  <title id="title">投资研究单元与个人知识系统协同</title>
+  <desc id="desc">Daily 的原始想法可在用户确认后进入 Inbox，再经复核成为 Notes。明确的研究问题可进入作为整体的投资研究单元，产出经人工判断和研究复盘后成为可复用认识。Resources 和 LLM Wiki 仅作辅助输入，不自动成为正式知识；作者选择后可将 Notes 或研究复盘改写为 Blog 的投资长期主题。</desc>
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#17324d" flood-opacity=".10"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3b647c"/></marker>
+    <style>
+      .bg{fill:#fbfaf6}.title{font:700 28px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;fill:#17324d}.sub{font:400 14px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;fill:#607080}.h{font:700 17px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;fill:#18334b}.t{font:400 14px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;fill:#425466}.s{font:600 12px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;fill:#3b647c}.node{fill:#fffefd;stroke:#cfd9dd;stroke-width:1.4}.blue{fill:#edf6fb;stroke:#80b9d2;stroke-width:1.5}.green{fill:#edf7f2;stroke:#8bc7ad;stroke-width:1.5}.aux{fill:#f5f5f1;stroke:#bfc9c8;stroke-width:1.3}.line{fill:none;stroke:#3b647c;stroke-width:2;marker-end:url(#arrow)}.dash{fill:none;stroke:#8097a4;stroke-width:1.6;stroke-dasharray:6 5;marker-end:url(#arrow)}.label{fill:#fbfaf6;stroke:#d6dee0;stroke-width:1}
+    </style>
+  </defs>
+  <rect class="bg" width="1100" height="780" rx="18"/>
+  <text class="title" x="60" y="62">投资研究单元与个人知识系统的协同</text>
+  <text class="sub" x="60" y="90">两条可选入口在复核后汇入可复用认识；目录不是内容必须经过的流水线。</text>
+
+  <rect class="aux" x="86" y="128" width="188" height="73" rx="13"/>
+  <text class="h" x="110" y="159">Resources</text><text class="t" x="110" y="183">外部资料</text>
+  <rect class="aux" x="310" y="128" width="218" height="73" rx="13"/>
+  <text class="h" x="334" y="159">LLM Wiki</text><text class="t" x="334" y="183">研究缓存</text>
+  <text class="s" x="570" y="154">辅助输入，不自动成为正式知识</text>
+  <path class="dash" d="M180 201 V242 H133 V277"/>
+  <path class="dash" d="M419 201 V242 H133 V277"/>
+  <path class="dash" d="M419 201 V444 H530 V474"/>
+
+  <text class="s" x="60" y="250">概念孵化路径</text>
+  <rect class="node" filter="url(#shadow)" x="60" y="277" width="146" height="112" rx="14"/>
+  <text class="h" x="84" y="317">Daily</text><text class="t" x="84" y="345">原始想法</text><text class="t" x="84" y="368">保留语境</text>
+  <rect class="blue" x="241" y="292" width="111" height="81" rx="13"/>
+  <text class="h" x="296" y="323" text-anchor="middle">用户确认</text><text class="t" x="296" y="348" text-anchor="middle">概念</text>
+  <rect class="node" filter="url(#shadow)" x="387" y="277" width="145" height="112" rx="14"/>
+  <text class="h" x="411" y="317">Inbox</text><text class="t" x="411" y="345">确认后的</text><text class="t" x="411" y="368">概念孵化</text>
+  <rect class="blue" x="565" y="292" width="92" height="81" rx="13"/>
+  <text class="h" x="611" y="323" text-anchor="middle">经复核</text><text class="t" x="611" y="348" text-anchor="middle">整理</text>
+  <rect class="green" filter="url(#shadow)" x="692" y="277" width="166" height="112" rx="14"/>
+  <text class="h" x="716" y="317">Notes</text><text class="t" x="716" y="345">稳定、可复用</text><text class="t" x="716" y="368">的人类知识</text>
+  <path class="line" d="M206 333 H241"/><path class="line" d="M352 333 H387"/><path class="line" d="M532 333 H565"/><path class="line" d="M657 333 H692"/>
+
+  <text class="s" x="60" y="451">明确问题时的研究路径（可直接进入）</text>
+  <rect class="blue" x="128" y="477" width="174" height="91" rx="14"/>
+  <text class="h" x="215" y="513" text-anchor="middle">明确研究问题</text><text class="t" x="215" y="540" text-anchor="middle">可来自 Daily 或实践</text>
+  <path class="line" d="M206 389 V429 H215 V477"/>
+  <rect class="node" filter="url(#shadow)" x="356" y="449" width="348" height="158" rx="16"/>
+  <rect x="356" y="449" width="348" height="42" rx="16" fill="#d9edf7"/>
+  <text class="h" x="380" y="477">投资研究单元</text>
+  <text class="t" x="380" y="522">Project 研究卡 · 量化证据 · 人工判断</text>
+  <text class="t" x="380" y="551">问题、实验、结论与下一步保持可追溯</text>
+  <rect x="380" y="568" width="135" height="23" rx="11" fill="#edf7f2"/>
+  <text class="s" x="447" y="584" text-anchor="middle">本地日线研究</text>
+  <path class="line" d="M302 522 H356"/>
+  <rect class="node" filter="url(#shadow)" x="748" y="477" width="147" height="91" rx="14"/>
+  <text class="h" x="822" y="513" text-anchor="middle">研究复盘</text><text class="t" x="822" y="540" text-anchor="middle">限制与认识</text>
+  <path class="line" d="M704 522 H748"/>
+  <path class="line" d="M822 477 V421 H775 V389"/>
+  <rect class="label" x="833" y="420" width="103" height="22" rx="10"/>
+  <text class="s" x="884" y="435" text-anchor="middle">复核后沉淀</text>
+
+  <text class="s" x="60" y="659">公开表达由作者选择</text>
+  <rect class="node" x="390" y="646" width="177" height="76" rx="13"/>
+  <text class="h" x="478" y="677" text-anchor="middle">作者选择改写</text><text class="t" x="478" y="702" text-anchor="middle">面向读者的表达</text>
+  <rect class="green" filter="url(#shadow)" x="772" y="637" width="228" height="96" rx="15"/>
+  <text class="h" x="886" y="675" text-anchor="middle">Blog</text><text class="t" x="886" y="704" text-anchor="middle">投资长期主题</text>
+  <path class="line" d="M858 333 H980 V621 H478 V646"/>
+  <path class="line" d="M822 568 V621 H478 V646"/>
+  <path class="line" d="M567 684 H772"/>
+  <rect class="label" x="642" y="650" width="97" height="22" rx="10"/>
+  <text class="s" x="690" y="665" text-anchor="middle">选择后输出</text>
+  <text class="sub" x="60" y="752">图中箭头表示可用接口与复核关系，不表示每条内容都必须经过全部目录。</text>
+</svg>

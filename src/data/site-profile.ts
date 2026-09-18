@@ -36,6 +36,14 @@ export const siteProfile = {
       topics: ["Obsidian", "LLM Wiki"],
       tags: ["knowledge-management"],
     },
+    {
+      id: "investment-research",
+      label: "投资",
+      description: "从基础理解、日线研究到可复核的判断与复盘。",
+      series: [],
+      topics: ["投资"],
+      tags: ["investment-research"],
+    },
   ],
   featured: [
     { collection: "blog", id: "obsidian-personal-knowledge-management-skill" },

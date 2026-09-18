@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="720" viewBox="0 0 1100 720" role="img" aria-labelledby="title desc">
+  <title id="title">投资研究单元架构</title>
+  <desc id="desc">投资研究工作区、研究卡与量化平台通过 research_id 和多次 run_id 保持可追溯；平台的证据经人工复核回到研究卡。当前仅做本地日线研究，不接入实盘，Dashboard 仅供浏览。</desc>
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#17324d" flood-opacity=".10"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3b647c"/></marker>
+    <style>
+      .bg{fill:#fbfaf6}.title{font:700 28px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;fill:#17324d}.sub{font:400 14px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;fill:#607080}.h{font:700 17px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;fill:#18334b}.t{font:400 14px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;fill:#425466}.s{font:600 12px -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;fill:#3b647c}.node{fill:#fffefd;stroke:#cfd9dd;stroke-width:1.4}.blue{fill:#edf6fb;stroke:#80b9d2;stroke-width:1.5}.green{fill:#edf7f2;stroke:#8bc7ad;stroke-width:1.5}.platform{fill:#f5faf9;stroke:#78af9b;stroke-width:1.7}.line{fill:none;stroke:#3b647c;stroke-width:2;marker-end:url(#arrow)}.dash{fill:none;stroke:#5b91a8;stroke-width:1.8;stroke-dasharray:6 5;marker-end:url(#arrow)}.muted{fill:none;stroke:#9aaab3;stroke-width:1.5;stroke-dasharray:5 5}.label{fill:#fbfaf6;stroke:#d6dee0;stroke-width:1}
+    </style>
+  </defs>
+  <rect class="bg" width="1100" height="720" rx="18"/>
+  <text class="title" x="60" y="64">投资研究单元的内部架构</text>
+  <text class="sub" x="60" y="92">研究工作区负责行动；量化平台负责可复现实验；结论始终由人复核。</text>
+  <rect x="742" y="44" width="298" height="43" rx="21" fill="#fff5df" stroke="#e5b85d"/>
+  <text class="s" x="891" y="70" text-anchor="middle" fill="#7a561a">边界：当前仅本地日线研究 · 不接入实盘</text>
+
+  <rect class="node" filter="url(#shadow)" x="60" y="202" width="188" height="124" rx="14"/>
+  <text class="h" x="84" y="239">研究工作区</text>
+  <text class="t" x="84" y="267">项目行动</text>
+  <text class="t" x="84" y="290">优先级 · 下一步</text>
+
+  <rect class="blue" filter="url(#shadow)" x="283" y="157" width="188" height="205" rx="14"/>
+  <text class="h" x="307" y="197">研究卡</text>
+  <line x1="307" y1="211" x2="446" y2="211" stroke="#b9d6e4"/>
+  <text class="t" x="307" y="239">问题</text><text class="t" x="307" y="265">假设</text><text class="t" x="307" y="291">人工结论</text>
+  <rect x="307" y="310" width="137" height="30" rx="15" fill="#d9edf7"/>
+  <text class="s" x="375" y="330" text-anchor="middle">research_id</text>
+
+  <path class="line" d="M248 264 H283"/>
+  <rect class="label" x="252" y="237" width="58" height="21" rx="10"/>
+  <text class="s" x="281" y="252" text-anchor="middle">推进</text>
+
+  <rect class="platform" filter="url(#shadow)" x="510" y="132" width="530" height="300" rx="16"/>
+  <text class="h" x="536" y="171">量化研究平台</text>
+  <text class="sub" x="536" y="195">数据、检查、实验与产物各自留痕</text>
+  <line x1="536" y1="214" x2="1014" y2="214" stroke="#b9d8ce"/>
+  <rect class="node" x="536" y="245" width="103" height="111" rx="11"/>
+  <text class="h" x="587" y="281" text-anchor="middle">日线数据</text><text class="t" x="587" y="309" text-anchor="middle">本地数据</text><text class="t" x="587" y="331" text-anchor="middle">口径记录</text>
+  <rect class="node" x="654" y="245" width="103" height="111" rx="11"/>
+  <text class="h" x="705" y="281" text-anchor="middle">查询检查</text><text class="t" x="705" y="309" text-anchor="middle">口径</text><text class="t" x="705" y="331" text-anchor="middle">质量校验</text>
+  <rect class="blue" x="772" y="245" width="103" height="111" rx="11"/>
+  <text class="h" x="823" y="281" text-anchor="middle">实验</text><text class="t" x="823" y="309" text-anchor="middle">回测</text><text class="t" x="823" y="331" text-anchor="middle">扫描</text>
+  <rect class="green" x="890" y="245" width="124" height="111" rx="11"/>
+  <text class="h" x="952" y="281" text-anchor="middle">研究产物</text><text class="t" x="952" y="309" text-anchor="middle">报告</text><text class="t" x="952" y="331" text-anchor="middle">manifest</text>
+  <path class="line" d="M639 300 H654"/><path class="line" d="M757 300 H772"/><path class="line" d="M875 300 H890"/>
+  <rect x="783" y="372" width="81" height="27" rx="13" fill="#d9edf7"/>
+  <text class="s" x="823" y="390" text-anchor="middle">run_id × N</text>
+  <path class="muted" d="M823 356 V372"/>
+
+  <path class="line" d="M471 226 H510"/>
+  <rect class="label" x="466" y="193" width="90" height="22" rx="10"/>
+  <text class="s" x="511" y="208" text-anchor="middle">研究规格</text>
+  <path class="dash" d="M471 325 H510"/>
+  <text class="s" x="482" y="315">关联</text>
+
+  <rect class="node" filter="url(#shadow)" x="570" y="480" width="400" height="86" rx="14"/>
+  <text class="h" x="596" y="517">Dashboard</text>
+  <text class="t" x="596" y="542">浏览研究结果与运行状态</text>
+  <rect x="782" y="501" width="162" height="38" rx="19" fill="#f0f2f1"/>
+  <text class="s" x="863" y="525" text-anchor="middle" fill="#65747c">只浏览，不维护任务状态</text>
+  <path class="muted" d="M952 356 V450 H770 V480"/>
+
+  <rect class="blue" filter="url(#shadow)" x="283" y="490" width="214" height="126" rx="14"/>
+  <text class="h" x="307" y="529">人工判断</text>
+  <text class="t" x="307" y="557">复核证据与限制</text>
+  <text class="t" x="307" y="581">形成结论与下一步</text>
+  <path class="line" d="M952 356 V450 H497 V490"/>
+  <rect class="label" x="680" y="428" width="100" height="22" rx="10"/>
+  <text class="s" x="730" y="443" text-anchor="middle">证据供复核</text>
+  <path class="line" d="M390 490 V362"/>
+  <rect class="label" x="399" y="413" width="79" height="22" rx="10"/>
+  <text class="s" x="438" y="428" text-anchor="middle">结论回卡</text>
+  <text class="sub" x="60" y="671">可追溯性：一张研究卡以 research_id 关联平台记录；一次研究可对应多次 run_id。</text>
+</svg>
