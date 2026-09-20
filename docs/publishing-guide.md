@@ -2,7 +2,7 @@
 
 ## 契约权威位置
 
-发布字段、允许值、默认行为和兼容规则以 `contracts/publishing/v1/contract.md` 与 `contracts/publishing/v1/schema.json` 为唯一权威来源。本指南只描述执行流程；出现不一致时先修正契约及其测试，再更新本指南。
+发布字段、允许值、默认行为和兼容规则以 `contracts/publishing/v1/contract.md` 与 `contracts/publishing/v1/schema.json` 为唯一权威来源。本指南是本仓库真实内容接入、同步和线上发布的唯一操作序列；`AGENTS.md`、README、同步边界和维护指南只保留各自的路由、选项或维护职责，并链接到这里。出现不一致时先修正契约及其测试，再更新本指南。
 
 ## Agent 发布 Runbook
 

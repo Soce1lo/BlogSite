@@ -1,10 +1,10 @@
 # Vault 同步边界
 
-当前同步器消费 `contracts/publishing/v1/` 定义的来源契约，并生成 Astro 公开副本。该目录是字段模型的唯一权威位置；本指南只说明当前同步实现和安全边界。
+当前同步器消费 `contracts/publishing/v1/` 定义的来源契约，并生成 Astro 公开副本。该目录是字段模型的唯一权威位置；本指南只说明当前同步实现、选项和安全边界。真实内容接入、同步和发布的完整操作顺序以[发布指南](publishing-guide.md)为准。
 
 ## 运行方式
 
-默认配置使用相对路径，不在仓库中保存本机绝对路径：
+默认配置使用相对路径，不在仓库中保存本机绝对路径。以下是本地同步选项，不替代[发布指南](publishing-guide.md)规定的 preview、授权和后续验证：
 
 ```bash
 BLOGSITE_VAULT_PATH="../KnowledgeVault" pnpm sync:vault
@@ -42,6 +42,6 @@ pnpm build
 
 ## 当前公开同步状态
 
-每次真实同步都以当次 `reports/` 中的 `sync-report.md`、`wikilink-warnings.md`、`asset-warnings.md`、`publish-manifest.json` 和 `publish-manifest.md` 为准；本文不固化候选数、同步数或 warning 统计。正式同步前仍须先做临时目录 preview，并确认嵌套源路径、系列字段、私有链接和资源 warning 都符合本次范围。
+每次真实同步都以当次 `reports/` 中的 `sync-report.md`、`wikilink-warnings.md`、`asset-warnings.md`、`publish-manifest.json` 和 `publish-manifest.md` 为准；本文不固化候选数、同步数或 warning 统计。preview、授权和报告审阅的顺序以[发布指南](publishing-guide.md)为准；仍须确认嵌套源路径、系列字段、私有链接和资源 warning 都符合本次范围。
 
 JSON 和 Markdown manifest 必须记录 `contractVersion: v1` / `contract_version: v1`，用于确认本次结果由哪个契约版本生成。

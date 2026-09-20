@@ -11,7 +11,8 @@
 - `pnpm test`：运行 Node/tsx 测试套件。
 - `pnpm check:publish`：检查公开内容边界、双链残留、本机/私有路径、来源状态和图片引用；安全相对说明路径不应被拦截。
 - `pnpm build`：执行 `astro check` 后生成生产构建。
-- `pnpm prepare:publish`：本地同步 Vault、检查发布内容并构建；只在明确配置本地 Vault 且完成 preview/授权后使用。
+- `pnpm prepare:publish`：本地同步 Vault、检查发布内容并构建；
+  仅在已按 `docs/publishing-guide.md` 完成 preview 和授权条件后使用。
 
 ## 代码风格与命名约定
 
@@ -29,4 +30,4 @@
 
 ## 安全与配置边界
 
-不要提交 `.env`、本机绝对路径、真实 Vault 正文、私有附件或完整 Obsidian 数据。真实发布必须先按 `docs/publishing-guide.md` 的 Agent 发布 Runbook 做临时目录 preview sync，并检查 `reports/sync-report.md`、`reports/publish-manifest.json` 和 `reports/publish-manifest.md`。`sync:vault` 必须保持源 Vault 只读，输出目录不得位于 Vault 内；遇到源文 `publish_status: draft` 必须先确认，不要代替用户改成 `published`。GitHub Actions 只能构建仓库内已有公开副本，不应加入真实 Vault 同步步骤。
+不要提交 `.env`、本机绝对路径、真实 Vault 正文、私有附件或完整 Obsidian 数据。真实内容接入、同步和线上发布的唯一操作序列见 [`docs/publishing-guide.md`](docs/publishing-guide.md)；本文件只保留路由和边界。`sync:vault` 必须保持源 Vault 只读，输出目录不得位于 Vault 内；遇到源文 `publish_status: draft` 必须先确认，不要代替用户改成 `published`。GitHub Actions 只能构建仓库内已有公开副本，不应加入真实 Vault 同步步骤。

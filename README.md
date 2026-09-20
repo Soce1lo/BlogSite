@@ -69,7 +69,7 @@ pnpm build
 pnpm preview
 ```
 
-配置好本地 Vault 路径后，可运行：
+配置好本地 Vault 路径后，可使用以下同步选项：
 
 ```bash
 BLOGSITE_VAULT_PATH="../KnowledgeVault" pnpm sync:vault
@@ -77,7 +77,11 @@ pnpm check:publish
 pnpm build
 ```
 
-`sync:vault` 只读取 Vault，将发布副本、公开图片和短报告写入 BlogSite。路径可以通过 `BLOGSITE_VAULT_PATH`、`BLOGSITE_CONTENT_OUTPUT_PATH`、`BLOGSITE_IMAGE_OUTPUT_PATH` 和 `BLOGSITE_REPORTS_PATH` 覆盖。正式同步前必须先按发布指南执行临时目录 preview。
+`sync:vault` 只读取 Vault，将发布副本、公开图片和短报告写入 BlogSite。
+路径可以通过 `BLOGSITE_VAULT_PATH`、`BLOGSITE_CONTENT_OUTPUT_PATH`、
+`BLOGSITE_IMAGE_OUTPUT_PATH` 和 `BLOGSITE_REPORTS_PATH` 覆盖。
+真实内容接入或发布时，须按[发布指南](docs/publishing-guide.md)的唯一 Runbook 执行；
+本节不重复 preview、授权、检查与线上验证顺序。
 
 ## 内容结构
 

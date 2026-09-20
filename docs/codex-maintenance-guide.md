@@ -31,7 +31,7 @@ pnpm dev
 
 ## 真实内容接入
 
-真实 Obsidian 内容接入必须继续按 `docs/publishing-guide.md` 的 Agent 发布 Runbook 执行。新增或更新真实内容时，先做临时目录 preview sync，确认 `reports/sync-report.md`、`reports/publish-manifest.json` 和 `reports/publish-manifest.md`，再正式同步、检查、构建、提交和发布。遇到源文 `publish_status: draft` 必须先得到明确授权，不要替用户改为 published。
+真实 Obsidian 内容接入必须按[发布指南](publishing-guide.md)的 Agent 发布 Runbook 执行；本指南不重复发布操作序列。维护时继续遵守其中的 preview、授权和报告审阅要求。遇到源文 `publish_status: draft` 必须先得到明确授权，不要替用户改为 `published`。
 
 ## 站点体验维护
 
