@@ -12,7 +12,7 @@ tags:
   - migration
   - guide
 visibility: public
-sourceVaultPath: 60-Publish/KnowledgeVault 实践/从 Logseq 到 Obsidian：具体迁移指导.md
+sourceVaultPath: 60-Publish/Blog/KnowledgeVault 实践/从 Logseq 到 Obsidian：具体迁移指导.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: thought

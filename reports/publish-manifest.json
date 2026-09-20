@@ -1,10 +1,10 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-09-18T13:33:40.863Z",
+  "generatedAt": "2026-09-20T16:28:05.640Z",
   "summary": {
     "scannedVaultFiles": 825,
-    "publishCandidates": 22,
-    "synced": 22,
+    "publishCandidates": 21,
+    "synced": 21,
     "warnings": 21,
     "errors": 0
   },
@@ -141,7 +141,7 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/Home Lab/从 PT 下载到 Jellyfin 入库：一套不破坏做种的动漫整理工作流.md",
+      "sourceVaultPath": "60-Publish/Blog/Home Lab/从 PT 下载到 Jellyfin 入库：一套不破坏做种的动漫整理工作流.md",
       "collection": "blog",
       "slug": "pt-download-to-jellyfin-workflow",
       "url": "/blog/pt-download-to-jellyfin-workflow/",
@@ -156,7 +156,7 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/Home Lab/从远程访问 NAS 到多设备互联：我的家庭组网方案.md",
+      "sourceVaultPath": "60-Publish/Blog/Home Lab/从远程访问 NAS 到多设备互联：我的家庭组网方案.md",
       "collection": "blog",
       "slug": "multi-device-home-network",
       "url": "/blog/multi-device-home-network/",
@@ -171,7 +171,7 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/Obsidian 入门：本地 Markdown、链接网络与我的知识库实践.md",
+      "sourceVaultPath": "60-Publish/Blog/KnowledgeVault 实践/Obsidian 入门：本地 Markdown、链接网络与我的知识库实践.md",
       "collection": "blog",
       "slug": "obsidian-local-markdown-knowledge-vault",
       "url": "/blog/obsidian-local-markdown-knowledge-vault/",
@@ -186,7 +186,7 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/从 Logseq 到 Obsidian：具体迁移指导.md",
+      "sourceVaultPath": "60-Publish/Blog/KnowledgeVault 实践/从 Logseq 到 Obsidian：具体迁移指导.md",
       "collection": "blog",
       "slug": "logseq-to-obsidian-migration-guide",
       "url": "/blog/logseq-to-obsidian-migration-guide/",
@@ -201,7 +201,7 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/从 Logseq 到 Obsidian：迁移回顾.md",
+      "sourceVaultPath": "60-Publish/Blog/KnowledgeVault 实践/从 Logseq 到 Obsidian：迁移回顾.md",
       "collection": "blog",
       "slug": "logseq-to-obsidian-migration",
       "url": "/blog/logseq-to-obsidian-migration/",
@@ -216,7 +216,7 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视.md",
+      "sourceVaultPath": "60-Publish/Blog/KnowledgeVault 实践/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视.md",
       "collection": "blog",
       "slug": "llm-wiki-derived-layer",
       "url": "/blog/llm-wiki-derived-layer/",
@@ -231,7 +231,7 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/我的 Obsidian 知识系统如何运行：从 Daily 到 Skill 协作.md",
+      "sourceVaultPath": "60-Publish/Blog/KnowledgeVault 实践/我的 Obsidian 知识系统如何运行：从 Daily 到 Skill 协作.md",
       "collection": "blog",
       "slug": "obsidian-knowledge-system-skill-operating-guide",
       "url": "/blog/obsidian-knowledge-system-skill-operating-guide/",
@@ -246,7 +246,7 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/我的个人知识系统：从 Daily、项目到公开输出.md",
+      "sourceVaultPath": "60-Publish/Blog/KnowledgeVault 实践/我的个人知识系统：从 Daily、项目到公开输出.md",
       "collection": "blog",
       "slug": "obsidian-personal-knowledge-management-skill",
       "url": "/blog/obsidian-personal-knowledge-management-skill/",
@@ -261,7 +261,7 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/把 Daily 还给思考：一次 Obsidian 知识系统重构.md",
+      "sourceVaultPath": "60-Publish/Blog/KnowledgeVault 实践/把 Daily 还给思考：一次 Obsidian 知识系统重构.md",
       "collection": "blog",
       "slug": "daily-first-knowledge-system-refactor",
       "url": "/blog/daily-first-knowledge-system-refactor/",
@@ -276,7 +276,7 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/用 Obsidian 管理任务：Daily、看板与项目进度的职责分离.md",
+      "sourceVaultPath": "60-Publish/Blog/KnowledgeVault 实践/用 Obsidian 管理任务：Daily、看板与项目进度的职责分离.md",
       "collection": "blog",
       "slug": "obsidian-task-management-workflow",
       "url": "/blog/obsidian-task-management-workflow/",
@@ -291,7 +291,7 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/KnowledgeVault 实践/让 Projects 回到真实项目：一次 Obsidian 项目边界重构.md",
+      "sourceVaultPath": "60-Publish/Blog/KnowledgeVault 实践/让 Projects 回到真实项目：一次 Obsidian 项目边界重构.md",
       "collection": "blog",
       "slug": "obsidian-project-boundary-refactor",
       "url": "/blog/obsidian-project-boundary-refactor/",
@@ -306,7 +306,7 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/嵌入式/STM32 嵌入式部件全景速通计划.md",
+      "sourceVaultPath": "60-Publish/Blog/嵌入式/STM32 嵌入式部件全景速通计划.md",
       "collection": "projects",
       "slug": "stm32-embedded-components-survey",
       "url": "/projects/stm32-embedded-components-survey/",
@@ -319,20 +319,7 @@
       "warnings": []
     },
     {
-      "sourceVaultPath": "60-Publish/投资/我的投资研究工作台：从一个问题到一份可复核的判断.md",
-      "collection": "blog",
-      "slug": "personal-investment-research-architecture",
-      "url": "/blog/personal-investment-research-architecture/",
-      "title": "我的投资研究工作台：从一个问题到一份可复核的判断",
-      "draft": false,
-      "publishedDate": "2026-09-18",
-      "visibility": "public",
-      "outputKind": "built",
-      "topic": "投资",
-      "warnings": []
-    },
-    {
-      "sourceVaultPath": "60-Publish/生活消费/买电动牙刷时，我如何把营销声量还原成实际价值.md",
+      "sourceVaultPath": "60-Publish/Blog/生活消费/买电动牙刷时，我如何把营销声量还原成实际价值.md",
       "collection": "blog",
       "slug": "electric-toothbrush-value-first-buying",
       "url": "/blog/electric-toothbrush-value-first-buying/",

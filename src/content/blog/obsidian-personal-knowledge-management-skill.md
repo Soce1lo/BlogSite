@@ -13,7 +13,7 @@ tags:
   - projects
   - llm-wiki
 visibility: public
-sourceVaultPath: 60-Publish/KnowledgeVault 实践/我的个人知识系统：从 Daily、项目到公开输出.md
+sourceVaultPath: 60-Publish/Blog/KnowledgeVault 实践/我的个人知识系统：从 Daily、项目到公开输出.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: built

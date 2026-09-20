@@ -11,7 +11,7 @@ tags:
   - daily-first
   - knowledge-gardening
 visibility: public
-sourceVaultPath: 60-Publish/KnowledgeVault 实践/把 Daily 还给思考：一次 Obsidian 知识系统重构.md
+sourceVaultPath: 60-Publish/Blog/KnowledgeVault 实践/把 Daily 还给思考：一次 Obsidian 知识系统重构.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: thought

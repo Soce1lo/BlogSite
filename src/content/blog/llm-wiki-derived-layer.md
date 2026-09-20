@@ -11,7 +11,7 @@ tags:
   - knowledge-management
   - agent
 visibility: public
-sourceVaultPath: 60-Publish/KnowledgeVault 实践/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视.md
+sourceVaultPath: 60-Publish/Blog/KnowledgeVault 实践/在 Obsidian Vault 中引入 LLM Wiki：从独立派生层到人工审视.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: thought

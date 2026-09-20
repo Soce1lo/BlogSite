@@ -11,7 +11,7 @@ tags:
   - markdown
   - llm-wiki
 visibility: public
-sourceVaultPath: 60-Publish/KnowledgeVault 实践/Obsidian 入门：本地 Markdown、链接网络与我的知识库实践.md
+sourceVaultPath: 60-Publish/Blog/KnowledgeVault 实践/Obsidian 入门：本地 Markdown、链接网络与我的知识库实践.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: thought

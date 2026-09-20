@@ -15,7 +15,7 @@ tags:
   - skill
   - workflow
 visibility: public
-sourceVaultPath: 60-Publish/KnowledgeVault 实践/我的 Obsidian 知识系统如何运行：从 Daily 到 Skill 协作.md
+sourceVaultPath: 60-Publish/Blog/KnowledgeVault 实践/我的 Obsidian 知识系统如何运行：从 Daily 到 Skill 协作.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: built

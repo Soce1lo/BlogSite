@@ -12,7 +12,7 @@ tags:
   - knowledge-management
   - task-management
 visibility: public
-sourceVaultPath: 60-Publish/KnowledgeVault 实践/用 Obsidian 管理任务：Daily、看板与项目进度的职责分离.md
+sourceVaultPath: 60-Publish/Blog/KnowledgeVault 实践/用 Obsidian 管理任务：Daily、看板与项目进度的职责分离.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: built

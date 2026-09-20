@@ -11,7 +11,7 @@ tags:
   - project-management
   - daily-first
 visibility: public
-sourceVaultPath: 60-Publish/KnowledgeVault 实践/让 Projects 回到真实项目：一次 Obsidian 项目边界重构.md
+sourceVaultPath: 60-Publish/Blog/KnowledgeVault 实践/让 Projects 回到真实项目：一次 Obsidian 项目边界重构.md
 managedBy: vault-sync
 sourcePublishStatus: published
 outputKind: revised
