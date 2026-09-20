@@ -18,9 +18,11 @@ pnpm build
 - `BLOGSITE_IMAGE_OUTPUT_PATH`
 - `BLOGSITE_REPORTS_PATH`
 
+当前 BlogSite 适配器只从 `publish.config.ts` 的 `10-Notes/`、`20-Projects/` 与 `60-Publish/Blog/` 读取候选。根目录按完整目录段匹配，不能用相似前缀扩大范围；该输入范围不改变 `contracts/publishing/v1/` 的通用字段模型。
+
 ## 同步流程
 
-1. 只读递归扫描 Markdown，跳过配置中的排除目录和 Daily 目录；`60-Publish/` 下的管理子文件夹随源路径一起扫描。
+1. 只读递归扫描 Markdown，跳过配置中的排除目录；只在三个配置来源根内评估候选，`60-Publish/Blog/` 下的任意管理子文件夹随源路径一起扫描。同步器仍可维护全 Vault 的已知目标索引，供未发布双链降级为文本时记录 warning，不会把它们当作已发布页面。
 2. 建立发布目标索引，只收录满足发布条件且 `publish_kind` 合法的内容。
 3. 将已发布目标双链转为适配 GitHub Pages 子路径的相对网页链接；未发布或不存在目标转为纯文本并记录 warning。
 4. 将本地图片复制到 `public/images/{publish_slug}/`；缺失图片转为文本并记录 warning。
@@ -35,8 +37,9 @@ pnpm build
 3. GitHub Actions 只构建仓库中已有的公开发布副本。
 4. 任何本机绝对路径都不得进入公开内容、报告或版本控制。
 5. 未明确标记为可发布的内容不得同步。
+6. 修改来源范围、运行 preview 或查看报告不构成写入正式公开副本的授权；正式 `pnpm sync:vault` 仍须在 preview 审阅后获得对应授权。
 
-同步器按照 `contracts/publishing/v1/` 中的允许值、默认行为和校验规则消费 `publish_kind`，并生成用于公开展示的 `outputKind`。公开稿源路径可以是 `60-Publish/<管理文件夹>/...`；完整的相对路径写入 `sourceVaultPath` 和 manifest 供对账，但生成的 `src/content/{collection}/{publish_slug}.md` 仍按 slug 扁平输出，管理文件夹不参与站点路由。系列导航由明确的 `publish_series` 和 `publish_series_order` 驱动，不由文件夹名推导。
+同步器按照 `contracts/publishing/v1/` 中的允许值、默认行为和校验规则消费 `publish_kind`，并生成用于公开展示的 `outputKind`。公开改写稿源路径可以是 `60-Publish/Blog/<管理文件夹>/...`；`10-Notes/` 与 `20-Projects/` 支持原位发布。完整的相对路径写入 `sourceVaultPath` 和 manifest 供对账，但生成的 `src/content/{collection}/{publish_slug}.md` 仍按 slug 扁平输出，管理文件夹不参与站点路由。系列导航由明确的 `publish_series` 和 `publish_series_order` 驱动，不由文件夹名推导。
 
 同步器拒绝把内容、图片或报告输出目录放到 Vault 内部。自动测试还会比较合成 Vault 同步前后的完整文件哈希。
 

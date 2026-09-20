@@ -2,7 +2,7 @@
 title: "合成 CLI 笔记"
 description: "仅用于验证 pnpm sync:vault 命令。"
 created: 2026-06-20
-updated: 2026-06-20
+updated: 2026-06-21
 tags:
   - fixture
 aliases:
@@ -14,5 +14,4 @@ publish_category: "测试"
 publish_visibility: public
 ---
 
-这是完全合成的测试内容，不来自真实 Vault。
-
+此文件用于合成同步测试。

@@ -21,6 +21,44 @@ export function assertOutputsOutsideVault(
   }
 }
 
+export function normalizeSourceRoots(sourceRoots: string[]): string[] {
+  if (!Array.isArray(sourceRoots) || sourceRoots.length === 0) {
+    throw new Error("来源根目录必须是非空数组");
+  }
+
+  return sourceRoots.map((sourceRoot) => {
+    if (typeof sourceRoot !== "string" || !sourceRoot || sourceRoot.trim() !== sourceRoot) {
+      throw new Error("来源根目录必须是非空安全相对目录前缀");
+    }
+    if (path.isAbsolute(sourceRoot) || path.win32.isAbsolute(sourceRoot)) {
+      throw new Error(`来源根目录不得是绝对路径: ${sourceRoot}`);
+    }
+    if (sourceRoot.includes("\\")) {
+      throw new Error(`来源根目录必须使用正斜杠: ${sourceRoot}`);
+    }
+
+    const segments = sourceRoot.split("/");
+    if (segments.at(-1) === "") {
+      segments.pop();
+    }
+    if (
+      segments.length === 0 ||
+      segments.some((segment) => !segment || segment === "." || segment === "..")
+    ) {
+      throw new Error(`来源根目录必须是安全目录前缀: ${sourceRoot}`);
+    }
+    return `${segments.join("/")}/`;
+  });
+}
+
+export function isPathInSourceRoots(
+  sourceVaultPath: string,
+  sourceRoots: string[],
+): boolean {
+  const normalizedPath = toPosixPath(sourceVaultPath);
+  return sourceRoots.some((sourceRoot) => normalizedPath.startsWith(sourceRoot));
+}
+
 export async function walkFiles(
   rootPath: string,
   options: {

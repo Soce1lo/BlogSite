@@ -5,6 +5,7 @@ const publishConfig = {
   imageOutputPath: process.env.BLOGSITE_IMAGE_OUTPUT_PATH ?? "public/images",
   reportsPath: process.env.BLOGSITE_REPORTS_PATH ?? "reports",
   defaultLang: "zh-CN",
+  sourceRoots: ["10-Notes/", "20-Projects/", "60-Publish/Blog/"],
   collections: {
     blog: "src/content/blog",
     notes: "src/content/notes",

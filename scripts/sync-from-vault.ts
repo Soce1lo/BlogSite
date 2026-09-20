@@ -18,7 +18,9 @@ import {
 } from "./utils/frontmatter";
 import {
   assertOutputsOutsideVault,
+  isPathInSourceRoots,
   isPathInside,
+  normalizeSourceRoots,
   toPosixPath,
   walkFiles,
 } from "./utils/path";
@@ -36,6 +38,7 @@ export interface SyncOptions {
   imageOutputPath: string;
   reportsPath: string;
   excludeVaultDirs: string[];
+  sourceRoots: string[];
   routes: Record<PublishTarget, string>;
 }
 
@@ -268,6 +271,7 @@ async function removeManagedOutputs(
 }
 
 export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> {
+  const sourceRoots = normalizeSourceRoots(options.sourceRoots);
   const vaultPath = path.resolve(options.vaultPath);
   const contentOutputPath = path.resolve(options.contentOutputPath);
   const imageOutputPath = path.resolve(options.imageOutputPath);
@@ -288,14 +292,25 @@ export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> 
     excludeDirectories: options.excludeVaultDirs,
     extensions: [".md"],
   });
+  const sourceMarkdownFiles = markdownFiles.filter((markdownFile) =>
+    isPathInSourceRoots(toPosixPath(path.relative(realVaultPath, markdownFile)), sourceRoots),
+  );
+  const sourceMarkdownFileSet = new Set(sourceMarkdownFiles);
   summary.scannedVaultFiles = markdownFiles.length;
 
   const documents: VaultDocument[] = [];
+  const knownTargetDocuments: VaultDocument[] = [];
   for (const markdownFile of markdownFiles) {
     try {
-      documents.push(await readVaultDocument(markdownFile, realVaultPath));
+      const document = await readVaultDocument(markdownFile, realVaultPath);
+      knownTargetDocuments.push(document);
+      if (sourceMarkdownFileSet.has(markdownFile)) {
+        documents.push(document);
+      }
     } catch {
-      summary.errors += 1;
+      if (sourceMarkdownFileSet.has(markdownFile)) {
+        summary.errors += 1;
+      }
     }
   }
 
@@ -365,7 +380,7 @@ export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> 
   );
   const index = createVaultIndex(
     uniqueCandidates.map((candidate) => candidate.entry),
-    collectKnownTargets(documents),
+    collectKnownTargets(knownTargetDocuments),
   );
   const assetCatalog = await buildAssetCatalog(realVaultPath);
 
@@ -472,6 +487,7 @@ function configuredOptions(): SyncOptions {
     imageOutputPath: publishConfig.imageOutputPath,
     reportsPath: publishConfig.reportsPath,
     excludeVaultDirs: [...publishConfig.excludeVaultDirs],
+    sourceRoots: [...publishConfig.sourceRoots],
     routes: { ...publishConfig.routes },
   };
 }
