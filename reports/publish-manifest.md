@@ -1,10 +1,10 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-09-20T16:28:05.640Z
-- scanned_vault_files: 825
-- publish_candidates: 21
-- synced: 21
+- generated_at: 2026-10-13T16:30:11.679Z
+- scanned_vault_files: 835
+- publish_candidates: 22
+- synced: 22
 - warnings: 21
 - errors: 0
 
@@ -12,6 +12,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 10-Notes/嵌入式与视觉/I2C 协议基础.md | notes | i2c-protocol-basics | /notes/i2c-protocol-basics/ | published | 2026-07-23 | learned | 0 |
 | 10-Notes/嵌入式与视觉/SPI 协议基础.md | notes | spi-protocol-basics | /notes/spi-protocol-basics/ | published | 2026-07-23 | learned | 0 |
+| 10-Notes/系统与工具/macOS/Mac 外接屏幕发热排查：一次微信 UDP 连接引发的 Clash 高占用.md | notes | mac-heat-clash-wechat-udp-investigation | /notes/mac-heat-clash-wechat-udp-investigation/ | published | 2026-10-14 | learned | 0 |
 | 10-Notes/系统与工具/知识管理/我的个人笔记如何分类：从个人信息管理研究到知识图谱.md | blog | personal-note-classification-knowledge-graph | /blog/personal-note-classification-knowledge-graph/ | published | 2026-08-24 | learned | 5 |
 | 10-Notes/编程语言/C/C语言专业级基础知识汇总.md | notes | c-language-professional-foundations | /notes/c-language-professional-foundations/ | published | 2026-07-12 | learned | 6 |
 | 10-Notes/编程语言/C/C语言专业编程技巧清单.md | notes | c-professional-programming-checklist | /notes/c-professional-programming-checklist/ | published | 2026-07-12 | learned | 3 |
