@@ -1,8 +1,8 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-10-13T16:30:11.679Z
-- scanned_vault_files: 835
+- generated_at: 2026-10-14T07:03:36.477Z
+- scanned_vault_files: 841
 - publish_candidates: 22
 - synced: 22
 - warnings: 21

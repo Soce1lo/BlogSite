@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1510" viewBox="0 0 1120 1510" role="img" aria-labelledby="title desc">
+<title id="title">个人知识系统：知识沉淀与短内容输出并行</title>
+<desc id="desc">生活、项目及经过人工检查的工作知识种子进入 Daily。概念经确认进入 Inbox 和 Notes；外部研究保存在 LLM Wiki，人工复核后才能进入正式知识。Daily 中被选中的片段进入 X 或小红书端口稿，由短内容工作台聚合唯一发布任务。Blog 与短内容各自经过公开授权和结果验证，反馈回到 Daily。项目和 Area 承担行动，视图不复制任务。</desc>
+<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="#64748b" stroke-width="1.5"/></marker><marker id="green" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="#168064" stroke-width="1.5"/></marker></defs>
+<style>text{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;fill:#173046} .heading{font-size:27px;font-weight:650}.body{font-size:22px}.small{font-size:19px;fill:#496174}.line{fill:none;stroke:#64748b;stroke-width:2;marker-end:url(#arrow)}.greenline{fill:none;stroke:#168064;stroke-width:2.5;marker-end:url(#green)}</style>
+<rect width="1120" height="1510" fill="#f8fafb"/>
+<text x="56" y="61" font-size="17" letter-spacing="3" fill="#168064">KNOWLEDGEVAULT · 2026.10</text>
+<text x="56" y="112" font-size="37" font-weight="700">让知识继续沉淀，让发现及时表达</text>
+<text x="56" y="151" class="body">Daily 是共同入口；沉淀与公开分别判断，反馈回到下一次思考。</text>
+
+<rect x="56" y="191" width="1008" height="106" rx="16" fill="#ffffff" stroke="#ccd8e2" stroke-width="1.5"/>
+<text x="81" y="230" class="heading">真实输入</text>
+<text x="81" y="267" class="body">生活 · 阅读 · 灵感 · 项目实践 · 人工检查后的工作知识种子</text>
+<path d="M560 297 V329" class="line"/>
+<rect x="56" y="333" width="1008" height="120" rx="16" fill="#ffffff" stroke="#ccd8e2" stroke-width="1.5"/>
+<text x="81" y="372" class="heading">Daily｜保留原始观察、疑问和表达</text>
+<text x="81" y="409" class="body">先记录，不要求预分类；选中输出也不改写或搬走原文。</text>
+<path d="M305 453 V519" class="line"/>
+<text x="116" y="493" class="small">确认值得继续理解</text>
+<path d="M805 453 V519" class="greenline"/>
+<rect x="639" y="468" width="329" height="30" fill="#f8fafb"/>
+<text x="657" y="491" class="small">选中片段、表达意图与平台</text>
+<rect x="56" y="523" width="484" height="145" rx="16" fill="#ffffff" stroke="#ccd8e2" stroke-width="1.5"/>
+<text x="81" y="562" class="heading">知识沉淀</text>
+<text x="81" y="599" class="body">Inbox：已确认的概念孵化</text>
+<text x="81" y="629" class="body">Notes：复核后的稳定理解</text>
+<rect x="580" y="523" width="484" height="145" rx="16" fill="#eaf7f1" stroke="#72b39c" stroke-width="1.5"/>
+<text x="605" y="562" class="heading">短内容端口稿｜本次新增</text>
+<text x="605" y="599" class="body">X / 小红书：先承接已选输入</text>
+<text x="605" y="629" class="body">正文可以稍后补，不必先成为 Notes</text>
+<rect x="56" y="710" width="484" height="143" rx="16" fill="#ffffff" stroke="#ccd8e2" stroke-width="1.5"/>
+<text x="81" y="749" class="heading">LLM Wiki｜研究缓存</text>
+<text x="81" y="786" class="body">外部资料、解释与待验证判断</text>
+<text x="81" y="816" class="body">经人工复核，再决定是否沉淀</text>
+<path d="M299 710 V675" class="line" stroke-dasharray="6 5"/>
+<path d="M823 668 V706" class="greenline"/>
+<rect x="580" y="710" width="484" height="143" rx="16" fill="#eaf7f1" stroke="#72b39c" stroke-width="1.5"/>
+<text x="605" y="749" class="heading">短内容工作台｜聚合视图</text>
+<text x="605" y="786" class="body">读取唯一发布任务，回到原稿继续</text>
+<text x="605" y="816" class="body">已有任务原地关联，不再复制</text>
+<rect x="56" y="895" width="1008" height="116" rx="16" fill="#ffffff" stroke="#ccd8e2" stroke-width="1.5"/>
+<text x="81" y="934" class="heading">行动与回顾｜Project · Area · Daily · 端口稿</text>
+<text x="81" y="971" class="body">任务保留一份 Markdown 真值；Tasks / Kanban / Bases 只作视图。</text>
+<text x="81" y="1000" class="small">项目推进带来新输入，Weekly 帮助回顾与决策，不自动提升或发布。</text>
+<rect x="56" y="1057" width="484" height="143" rx="16" fill="#ffffff" stroke="#ccd8e2" stroke-width="1.5"/>
+<text x="81" y="1096" class="heading">Blog｜系统性表达</text>
+<text x="81" y="1133" class="body">从已选知识、项目或独立公开稿出发</text>
+<text x="81" y="1163" class="body">保留完整过程、证据与长期说明</text>
+<rect x="580" y="1057" width="484" height="143" rx="16" fill="#eaf7f1" stroke="#72b39c" stroke-width="1.5"/>
+<text x="605" y="1096" class="heading">X / 小红书｜短内容表达</text>
+<text x="605" y="1133" class="body">围绕一次发现、结果或问题成稿</text>
+<text x="605" y="1163" class="body">各自维护表达、授权与发布结果</text>
+<path d="M56 602 H31 V1124 H49" class="line"/>
+<text x="62" y="1040" class="small">选定适合公开的材料</text>
+<path d="M1064 602 H1085 V1124 H1071" class="greenline"/>
+<path d="M299 1200 V1234 H540 V1256" class="line"/>
+<path d="M823 1200 V1234 H580 V1256" class="greenline"/>
+<rect x="56" y="1260" width="1008" height="111" rx="16" fill="#ffffff" stroke="#ccd8e2" stroke-width="1.5"/>
+<text x="81" y="1299" class="heading">公开与验收｜按明确授权执行</text>
+<text x="81" y="1336" class="body">只发送公开部分；核对真实页面及链接后记录结果，不把成稿当成已发布。</text>
+<path d="M560 1371 V1401" class="greenline"/>
+<text x="56" y="1437" class="heading">反馈 → 新问题 → Daily</text>
+<text x="56" y="1478" class="small">绿色为新增短内容支线 · 箭头表示可发生的流动，不表示自动运行 · 公众号后置</text>
+</svg>
