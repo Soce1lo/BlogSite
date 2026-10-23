@@ -1,0 +1,32 @@
+---
+import type { SiteEntry } from "../lib/content";
+import type { SeriesNavigation as SeriesNavigationData } from "../lib/series";
+import { withBase } from "../lib/site";
+
+interface Props {
+  navigation: SeriesNavigationData;
+}
+
+const { navigation } = Astro.props;
+
+function entryHref(entry: SiteEntry): string {
+  return withBase(`${entry.collection}/${entry.id}/`);
+}
+---
+
+{(navigation.previous || navigation.next) && (
+  <nav class="series-navigation__pager series-pager" aria-label="专题文章切换">
+    {navigation.previous && (
+      <a class="series-navigation__pager-link" href={entryHref(navigation.previous)}>
+        <span class="series-navigation__pager-label">上一篇</span>
+        <strong>{navigation.previous.data.title}</strong>
+      </a>
+    )}
+    {navigation.next && (
+      <a class="series-navigation__pager-link" href={entryHref(navigation.next)}>
+        <span class="series-navigation__pager-label">下一篇</span>
+        <strong>{navigation.next.data.title}</strong>
+      </a>
+    )}
+  </nav>
+)}

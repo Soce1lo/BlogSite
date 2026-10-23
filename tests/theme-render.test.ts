@@ -417,22 +417,33 @@ test("内容详情页使用 render headings 生成文章目录 rail", async () =
   }
 });
 
-test("文章详情页自动渲染系列目录和上一篇下一篇导航", async () => {
+test("文章专题默认收起，篇间导航保留在正文之后", async () => {
   const component = await readProjectFile("src/components/SeriesNavigation.astro");
+  const pager = await readProjectFile("src/components/SeriesPager.astro");
   const layout = await readProjectFile("src/layouts/ContentLayout.astro");
   const css = await readProjectFile("src/styles/global.css");
 
   assert.match(component, /class="series-navigation"/);
-  assert.match(component, /seriesOrder/);
+  assert.match(component, /<details class="series-navigation">/);
+  assert.doesNotMatch(component, /seriesOrder/);
   assert.match(component, /aria-current="page"/);
-  assert.match(component, /上一篇/);
-  assert.match(component, /下一篇/);
+  assert.match(pager, /上一篇/);
+  assert.match(pager, /下一篇/);
+  assert.doesNotMatch(pager, /placeholder|已经是/);
+  assert.match(pager, /withBase\(/);
   assert.match(component, /withBase\(/);
   assert.match(component, /entry\.collection/);
   assert.match(layout, /seriesNavigation\?: SeriesNavigation/);
   assert.match(layout, /SeriesNavigationComponent/);
   assert.match(css, /\.series-navigation/);
   assert.match(css, /\.series-navigation__pager/);
+
+  await buildProject();
+  const html = await readProjectFile("dist/blog/logseq-to-obsidian-migration/index.html");
+  assert.match(html, /<details class="series-navigation">/);
+  const bodyPosition = html.indexOf('class="prose content-body"');
+  const pagerPosition = html.indexOf('class="series-navigation__pager series-pager"');
+  assert.ok(bodyPosition >= 0 && pagerPosition > bodyPosition, "篇间导航必须位于正文之后");
 
   for (const route of [
     "src/pages/blog/[...slug].astro",

@@ -34,7 +34,7 @@
   --color-warning: var(--palette-warning);
   --color-border: color-mix(in srgb, var(--palette-slate) 24%, transparent);
   --color-border-strong: color-mix(in srgb, var(--palette-slate) 42%, transparent);
-  --color-rule: color-mix(in srgb, var(--palette-ink) 70%, transparent);
+  --color-rule: color-mix(in srgb, var(--palette-ink) 38%, transparent);
   --color-overlay: light-dark(rgb(16 20 17 / 42%), rgb(0 0 0 / 66%));
   --color-shadow: light-dark(rgb(30 36 31 / 12%), rgb(0 0 0 / 38%));
   --color-shadow-soft: light-dark(rgb(30 36 31 / 7%), rgb(0 0 0 / 26%));
@@ -53,6 +53,8 @@
   --text-3xl: 2rem;
   --text-4xl: 2.625rem;
   --text-5xl: 4.5rem;
+  --text-hero: 3.75rem;
+  --text-hero-mobile: 2.375rem;
   --text-display-code: 12rem;
   --text-display-code-mobile: 7.5rem;
 

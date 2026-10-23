@@ -7,6 +7,7 @@ import type { SeriesNavigation } from "../lib/series";
 import BaseLayout from "./BaseLayout.astro";
 import RelatedReadingComponent from "../components/RelatedReading.astro";
 import SeriesNavigationComponent from "../components/SeriesNavigation.astro";
+import SeriesPagerComponent from "../components/SeriesPager.astro";
 import GitHubComments from "../components/GitHubComments.astro";
 import VisitorCount from "../components/VisitorCount.astro";
 
@@ -69,21 +70,8 @@ function normalizeHtmlText(value: string): string {
     <article class="content-detail">
       <a class="back-link" href={sectionHref}>返回{sectionLabel}</a>
       <header class="article-header">
-        <p class="eyebrow">{sectionLabel} / {entry.data.category}</p>
+        <p class="eyebrow">{sectionLabel} / {entry.data.topic ?? entry.data.category}</p>
         <h1>{entry.data.title}</h1>
-        {
-          (entry.data.series || entry.data.topic) && (
-            <p class="content-detail__taxonomy">
-              {entry.data.series && (
-                <span>
-                  系列：{entry.data.series}
-                  {entry.data.seriesOrder !== undefined ? ` #${entry.data.seriesOrder}` : ""}
-                </span>
-              )}
-              {entry.data.topic && <span>主题：{entry.data.topic}</span>}
-            </p>
-          )
-        }
         <p class="lead">{entry.data.description}</p>
         <div class="content-detail__meta">
           <time datetime={entry.data.pubDate.toISOString()}>
@@ -105,22 +93,25 @@ function normalizeHtmlText(value: string): string {
       {
         tocHeadings.length > 1 && (
           <aside class="content-toc" aria-label="文章目录">
-            <p>目录</p>
-            <nav>
-              {tocHeadings.map((heading) => (
-                <a
-                  class={`content-toc__link content-toc__link--depth-${heading.depth}`}
-                  data-toc-link
-                  href={`#${heading.slug}`}
-                >
-                  {heading.text}
-                </a>
-              ))}
-            </nav>
+            <details class="content-toc__details" open>
+              <summary class="content-toc__summary">目录</summary>
+              <nav>
+                {tocHeadings.map((heading) => (
+                  <a
+                    class={`content-toc__link content-toc__link--depth-${heading.depth}`}
+                    data-toc-link
+                    href={`#${heading.slug}`}
+                  >
+                    {heading.text}
+                  </a>
+                ))}
+              </nav>
+            </details>
           </aside>
         )
       }
       <div class="prose content-body" set:html={bodyHtml} />
+      {seriesNavigation && <SeriesPagerComponent navigation={seriesNavigation} />}
       <RelatedReadingComponent entries={relatedReading} />
       {engagementAllowed && giscus && (
         <GitHubComments config={giscus} term={discussionTerm(entry.collection, entry.id)} />
@@ -128,3 +119,17 @@ function normalizeHtmlText(value: string): string {
     </article>
   </div>
 </BaseLayout>
+
+<script>
+  const tocDetails = document.querySelector(".content-toc__details");
+
+  if (tocDetails instanceof HTMLDetailsElement) {
+    const compactViewport = window.matchMedia("(max-width: 48rem)");
+    const syncTocOpenState = () => {
+      tocDetails.open = !compactViewport.matches;
+    };
+
+    syncTocOpenState();
+    compactViewport.addEventListener("change", syncTocOpenState);
+  }
+</script>

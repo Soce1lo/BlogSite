@@ -22,7 +22,7 @@ const { entries, emptyMessage = "暂无公开内容。" } = Astro.props;
             <time datetime={entry.data.pubDate.toISOString()}>
               {entry.data.pubDate.toLocaleDateString("zh-CN")}
             </time>
-            <span>{entry.data.category}</span>
+            {entry.data.topic && <span>{entry.data.topic}</span>}
           </p>
           <div class="content-card__body">
             <h2>
@@ -30,23 +30,10 @@ const { entries, emptyMessage = "暂无公开内容。" } = Astro.props;
                 {entry.data.title}
               </a>
             </h2>
-            {
-              (entry.data.series || entry.data.topic) && (
-                <p class="content-card__taxonomy">
-                  {entry.data.series && (
-                    <span>
-                      {entry.data.series}
-                      {entry.data.seriesOrder !== undefined ? ` #${entry.data.seriesOrder}` : ""}
-                    </span>
-                  )}
-                  {entry.data.topic && <span>{entry.data.topic}</span>}
-                </p>
-              )
-            }
             <p class="content-card__description">{entry.data.description}</p>
-            {entry.data.tags.length > 0 && (
+            {!entry.data.topic && entry.data.tags.length > 0 && (
               <ul class="tag-list" aria-label="标签">
-                {entry.data.tags.map((tag) => (
+                {entry.data.tags.slice(0, 2).map((tag) => (
                   <li>
                     <a href={`${withBase("tags/")}#${tagId(tag)}`}>{tag}</a>
                   </li>

@@ -20,7 +20,11 @@ const [blog, notes, projects] = await Promise.all([
   getCollection("projects"),
 ]);
 const entries: SiteEntry[] = [...blog, ...notes, ...projects];
-const outputGroups = buildOutputGroups(entries, 8);
+const outputGroups = buildOutputGroups(entries, 4);
+const earlierEntries = buildOutputGroups(entries, entries.length)
+  .flatMap((group) => group.entries)
+  .slice(4);
+const earlierOutputGroups = buildOutputGroups(earlierEntries, earlierEntries.length);
 const threads = resolveThreads(entries, siteProfile.threads);
 const featured = resolveFeaturedEntries(entries, siteProfile.featured);
 const kindLabels = {
@@ -38,8 +42,10 @@ const kindLabels = {
       <h1>{siteProfile.title}</h1>
       <p>{siteProfile.description}</p>
       <div class="growth-hero__actions">
+        {featured.length > 0 && (
+          <a class="text-link" href="#selected-heading">从精选开始 <span aria-hidden="true">↓</span></a>
+        )}
         <a class="text-link" href={withBase("about/")}>认识 Soce1lo <span aria-hidden="true">↗</span></a>
-        <a class="text-link" href={withBase("rss.xml")}>订阅 RSS <span aria-hidden="true">↗</span></a>
       </div>
     </div>
 
@@ -52,36 +58,32 @@ const kindLabels = {
 
   <section class="output-section" aria-labelledby="output-heading">
     <header class="home-section-heading">
-      <p class="eyebrow">OUTPUT LOG / 最近输出</p>
-      <h2 id="output-heading">沿着时间，看见思考如何形成</h2>
-      <p>同一条轨迹里，保留想明白的事、学会的方法、做出的项目，以及后来发生的修订。</p>
+      <p class="eyebrow">OUTPUT LOG</p>
+      <h2 id="output-heading">最近输出</h2>
+      <p>想明白的事、学会的方法，以及做出的项目。</p>
     </header>
     {
       outputGroups.length > 0
         ? <OutputLog groups={outputGroups} />
         : <p class="empty-state">暂无公开输出。</p>
     }
+    {earlierOutputGroups.length > 0 && (
+      <details class="output-history">
+        <summary>
+          <span class="output-history__show">查看更早的输出</span>
+          <span class="output-history__hide">收起更早的输出</span>
+        </summary>
+        <OutputLog groups={earlierOutputGroups} />
+      </details>
+    )}
   </section>
-
-  {
-    threads.length > 0 && (
-      <section class="threads-section" aria-labelledby="threads-heading">
-        <header class="home-section-heading">
-          <p class="eyebrow">LONG THREADS / 长期主题</p>
-          <h2 id="threads-heading">不是栏目，而是持续追踪的问题</h2>
-          <p>当一条问题线索不断返回，它会在这里长成可以回看的脉络。</p>
-        </header>
-        <LongThreads threads={threads} />
-      </section>
-    )
-  }
 
   {
     featured.length > 0 && (
       <section class="selected-section" aria-labelledby="selected-heading">
         <header class="home-section-heading">
           <p class="eyebrow">SELECTED / 精选</p>
-          <h2 id="selected-heading">从这里开始认识我的工作方式</h2>
+          <h2 id="selected-heading">从这几篇开始</h2>
         </header>
         <ol class="selected-list">
           {featured.map((entry) => (
@@ -104,10 +106,22 @@ const kindLabels = {
     )
   }
 
+  {
+    threads.length > 0 && (
+      <section class="threads-section" aria-labelledby="threads-heading">
+        <header class="home-section-heading">
+          <p class="eyebrow">LONG THREADS / 长期主题</p>
+          <h2 id="threads-heading">持续追踪的问题</h2>
+        </header>
+        <LongThreads threads={threads} />
+      </section>
+    )
+  }
+
   <section class="archive-section" aria-labelledby="archive-heading">
     <header class="home-section-heading">
       <p class="eyebrow">ARCHIVE / 档案</p>
-      <h2 id="archive-heading">按你关心的方式继续浏览</h2>
+      <h2 id="archive-heading">继续浏览</h2>
     </header>
     <nav class="archive-links" aria-label="内容档案">
       <a href={withBase("blog/")}>思考 <span aria-hidden="true">↗</span></a>
