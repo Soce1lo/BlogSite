@@ -155,6 +155,14 @@ test("合成生产构建为三类公开文章接入计数与独立留言，未�
   // The vendor scripts must not load directly from generated HTML.
   assert.doesNotMatch(home, /src="https:\/\/gc\.zgo\.at/);
 
+  const explorer = await read("explore/index.html");
+  assert.equal([...explorer.matchAll(/class="explore-row"/g)].length, 3);
+  assert.match(explorer, /data-explore-filters hidden/);
+  assert.doesNotMatch(explorer, /不应发送到第三方的未公开标题|不应生成的草稿|sourceVaultPath|fixtures\//);
+  for (const collection of ["blog", "notes", "projects"]) {
+    assert.ok(explorer.includes(`href="/BlogSite/${collection}/public-example/"`));
+  }
+
   for (const collection of ["blog", "notes", "projects"]) {
     const html = await read(`${collection}/public-example/index.html`);
     assert.match(html, new RegExp(`data-term="${collection}/public-example"`));

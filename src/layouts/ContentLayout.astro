@@ -10,6 +10,7 @@ import SeriesNavigationComponent from "../components/SeriesNavigation.astro";
 import SeriesPagerComponent from "../components/SeriesPager.astro";
 import GitHubComments from "../components/GitHubComments.astro";
 import VisitorCount from "../components/VisitorCount.astro";
+import ReadingTools from "../components/ReadingTools.astro";
 
 interface Props {
   entry: SiteEntry;
@@ -86,6 +87,7 @@ function normalizeHtmlText(value: string): string {
           }
           {engagementAllowed && goatcounter && <VisitorCount config={goatcounter} scope="page" />}
         </div>
+        <ReadingTools html={bodyHtml} />
         {seriesNavigation && (
           <SeriesNavigationComponent navigation={seriesNavigation} currentEntry={entry} />
         )}

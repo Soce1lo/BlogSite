@@ -17,10 +17,10 @@ export interface SiteProfile {
 
 export const siteProfile = {
   name: "Soce1lo",
-  eyebrow: "SOCE1LO / GROWTH OUTPUT LOG",
-  title: "记录我如何理解、学习与构建。",
+  eyebrow: "SOCE1LO / PERSONAL LAB",
+  title: "把好奇心，变成可验证的理解。",
   description:
-    "这里是我的知识管道的公开输出端。我把经历中的思考、学到的技术和做过的项目，整理成可复用、可追踪的长期记录。",
+    "我是一名研究型工程师。在代码、知识与日常系统之间，把问题拆开，用实践验证，再把值得留下的理解写在这里。",
   now: {
     label: "NOW / 当前关注",
     text: "正在把个人知识系统整理成可持续的成长输出管道。",
@@ -35,6 +35,19 @@ export const siteProfile = {
       series: ["KnowledgeVault 实践"],
       topics: ["Obsidian", "LLM Wiki"],
       tags: ["knowledge-management"],
+    },
+    {
+      id: "engineering-practice",
+      label: "工程实践",
+      description: "从通信协议到 C 编程，让理解接受代码与实践的检验。",
+      topics: ["I2C", "SPI", "C", "Algorithms", "Design Patterns"],
+    },
+    {
+      id: "home-lab",
+      label: "家庭实验室",
+      description: "在家庭网络与影音系统里，探索便利、可靠与边界。",
+      series: ["Home Lab"],
+      topics: ["家庭网络", "家庭影音自动化"],
     },
     {
       id: "investment-research",

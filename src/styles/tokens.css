@@ -1,16 +1,16 @@
 :root {
   color-scheme: light dark;
 
-  --palette-paper: light-dark(#f6f6f0, #101411);
-  --palette-sheet: light-dark(#ffffff, #171d19);
-  --palette-plate: light-dark(#ecefe7, #202720);
-  --palette-ink: light-dark(#1e241f, #eef2ea);
-  --palette-slate: light-dark(#59645b, #b5bfaf);
-  --palette-fog: light-dark(#667064, #99a591);
-  --palette-signal: light-dark(#006d8f, #7ac7e0);
-  --palette-signal-deep: light-dark(#2350a1, #b8d7ff);
-  --palette-plum: light-dark(#70509a, #c8b6e8);
-  --palette-annotation: light-dark(#8a5d12, #e1b86d);
+  --palette-paper: light-dark(#f3f6fa, #101923);
+  --palette-sheet: light-dark(#ffffff, #172330);
+  --palette-plate: light-dark(#e7edf5, #203140);
+  --palette-ink: light-dark(#1c2d42, #e6eef7);
+  --palette-slate: light-dark(#516279, #b3c3d5);
+  --palette-fog: light-dark(#5f7086, #93a7bd);
+  --palette-signal: light-dark(#245ac1, #92baff);
+  --palette-signal-deep: light-dark(#17469d, #bdd4ff);
+  --palette-plum: light-dark(#54619b, #b4bcea);
+  --palette-annotation: light-dark(#a14b25, #f0ae84);
   --palette-success: light-dark(#2f744d, #8fcf9d);
   --palette-warning: light-dark(#8a5d12, #e1b86d);
 
@@ -40,7 +40,7 @@
   --color-shadow-soft: light-dark(rgb(30 36 31 / 7%), rgb(0 0 0 / 26%));
   --color-focus-ring: var(--palette-signal);
 
-  --font-display: ui-serif, "Iowan Old Style", "Songti SC", "STSong", serif;
+  --font-display: "Avenir Next", "Trebuchet MS", "PingFang SC", "Microsoft YaHei", sans-serif;
   --font-body: Inter, "Noto Sans SC", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-utility: "SFMono-Regular", "Cascadia Code", Consolas, "Liberation Mono", Menlo, monospace;
 

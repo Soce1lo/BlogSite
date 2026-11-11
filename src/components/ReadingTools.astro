@@ -1,0 +1,50 @@
+---
+interface Props { html: string; }
+const plainText = Astro.props.html.replace(/<[^>]*>/g, " ").replace(/&[^;]+;/g, " ");
+const cjkCharacters = (plainText.match(/[\u3400-\u9fff]/g) ?? []).length;
+const otherWords = plainText.replace(/[\u3400-\u9fff]/g, " ").trim().split(/\s+/).filter(Boolean).length;
+const minutes = Math.max(1, Math.ceil(cjkCharacters / 350 + otherWords / 220));
+---
+
+<div class="reading-tools">
+  <span class="reading-tools__duration">约 {minutes} 分钟阅读</span>
+  <div class="reading-tools__actions" data-reading-actions hidden>
+    <button class="control-button" type="button" data-reading-focus aria-pressed="false">专注阅读</button>
+    <button class="control-button" type="button" data-copy-link>复制链接</button>
+  </div>
+  <p class="reading-tools__status" data-reading-status role="status"></p>
+  <label class="reading-tools__fallback" data-copy-fallback hidden>文章链接（已选中，可手动复制）<input type="text" readonly aria-label="文章链接" /></label>
+</div>
+
+<script>
+  const actions = document.querySelector<HTMLElement>("[data-reading-actions]");
+  const focusButton = document.querySelector<HTMLButtonElement>("[data-reading-focus]");
+  const copyButton = document.querySelector<HTMLButtonElement>("[data-copy-link]");
+  const status = document.querySelector<HTMLElement>("[data-reading-status]");
+  const fallback = document.querySelector<HTMLElement>("[data-copy-fallback]");
+  if (actions) actions.hidden = false;
+
+  focusButton?.addEventListener("click", () => {
+    const focused = document.documentElement.toggleAttribute("data-reading-focus");
+    focusButton.setAttribute("aria-pressed", String(focused));
+    window.dispatchEvent(new Event("resize"));
+  });
+
+  copyButton?.addEventListener("click", async () => {
+    const url = new URL(window.location.pathname, window.location.origin).href;
+    if (fallback) fallback.hidden = true;
+    try {
+      await navigator.clipboard.writeText(url);
+      if (status) status.textContent = "链接已复制";
+    } catch {
+      const input = fallback?.querySelector("input");
+      if (fallback && input) {
+        fallback.hidden = false;
+        input.value = url;
+        input.focus();
+        input.select();
+      }
+      if (status) status.textContent = "请手动复制下方链接";
+    }
+  });
+</script>

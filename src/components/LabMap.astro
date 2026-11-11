@@ -1,0 +1,69 @@
+---
+import type { ResolvedThread } from "../lib/output";
+import { withBase } from "../lib/site";
+
+interface Props {
+  threads: ResolvedThread[];
+}
+
+const threads = Astro.props.threads.slice(0, 3);
+---
+
+{threads.length > 0 && (
+  <section class="lab-map" aria-labelledby="lab-map-heading" data-lab-map>
+    <header class="lab-map__header">
+      <h2 id="lab-map-heading">探索坐标</h2>
+      <span>FIELD NOTES / {String(threads.length).padStart(2, "0")}</span>
+    </header>
+    <div class="lab-map__canvas">
+      <svg class="lab-map__wires" viewBox="0 0 500 280" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M 115 70 L 115 140 L 250 140 M 385 70 L 385 140 L 250 140 M 250 140 L 250 230" />
+        <circle cx="250" cy="140" r="62" />
+        <circle cx="250" cy="140" r="80" />
+      </svg>
+      <div class="lab-map__origin" aria-hidden="true"><span>从问题出发</span><strong>连接理解</strong><span>THINK ↔ BUILD</span></div>
+      {threads.map((thread, index) => (
+        <button
+          class={`lab-map__node lab-map__node--${index}`}
+          type="button"
+          aria-pressed={index === 0 ? "true" : "false"}
+          aria-controls={`lab-panel-${thread.id}`}
+          data-lab-select={thread.id}
+          hidden
+        >
+          <span class="lab-map__node-mark" aria-hidden="true">{index === 0 ? "⌘" : index === 1 ? "</>" : "⌂"}</span>
+          <span><strong>{thread.label}</strong><small>{thread.entries.length} 篇记录</small></span>
+        </button>
+      ))}
+      <span class="lab-map__axis" aria-hidden="true">IDEAS → PRACTICE</span>
+    </div>
+    <div class="lab-map__panels" aria-live="polite">
+      {threads.map((thread) => (
+        <section id={`lab-panel-${thread.id}`} class="lab-map__panel" data-lab-panel={thread.id}>
+          <p>{thread.description}</p>
+          <a class="lab-map__latest" href={withBase(`${thread.entries[0].collection}/${thread.entries[0].id}/`)}>
+            <span>最新记录</span><strong>{thread.entries[0].data.title}</strong><span aria-hidden="true">↗</span>
+          </a>
+          <a class="lab-map__all" href={`#thread-${thread.id}`}>沿这条线阅读 <span aria-hidden="true">↓</span></a>
+        </section>
+      ))}
+    </div>
+    <noscript><p class="lab-map__fallback">以下是各条探索方向的最新公开记录。</p></noscript>
+  </section>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-lab-map]").forEach((map) => {
+    const buttons = map.querySelectorAll<HTMLButtonElement>("[data-lab-select]");
+    const panels = map.querySelectorAll<HTMLElement>("[data-lab-panel]");
+    const select = (id: string | undefined) => {
+      buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.labSelect === id)));
+      panels.forEach((panel) => { panel.hidden = panel.dataset.labPanel !== id; });
+    };
+    buttons.forEach((button) => {
+      button.hidden = false;
+      button.addEventListener("click", () => select(button.dataset.labSelect));
+    });
+    select(buttons[0]?.dataset.labSelect);
+  });
+</script>

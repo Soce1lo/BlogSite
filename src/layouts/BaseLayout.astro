@@ -71,10 +71,14 @@ const isCurrentSection = (section: string): boolean => {
       <div class="site-header__inner">
         <div class="site-brand">
           <a class="site-title" href={withBase("")}>{siteProfile.name}</a>
-          <span>成长输出日志</span>
+          <span>个人实验室</span>
         </div>
         <div class="site-navigation">
           <nav aria-label="主导航">
+            <a
+              href={withBase("explore/")}
+              aria-current={isCurrentSection("explore") ? "page" : undefined}
+            >探索</a>
             <a
               href={withBase("blog/")}
               aria-current={isCurrentSection("blog") ? "page" : undefined}
@@ -99,7 +103,7 @@ const isCurrentSection = (section: string): boolean => {
         </div>
         <div class="site-actions">
           <button class="control-button" type="button" data-search-open aria-label="打开站内搜索">
-            搜索
+            搜索 <kbd class="search-shortcut" data-search-shortcut aria-hidden="true">Ctrl K</kbd>
           </button>
           <button class="control-button" type="button" data-theme-toggle aria-label="切换明暗主题">
             <span data-theme-label>主题</span>
@@ -111,6 +115,7 @@ const isCurrentSection = (section: string): boolean => {
       <slot />
     </main>
     <footer class="site-footer">
+      <div class="site-footer__identity"><strong>{siteProfile.name} / PERSONAL LAB</strong><span>理解，构建，保持好奇。</span></div>
       <p>{siteProfile.boundary} <a href={withBase("rss.xml")}>订阅 RSS</a></p>
       {engagementAllowed && goatcounter && <VisitorCount config={goatcounter} scope="site" />}
     </footer>
@@ -138,6 +143,10 @@ const isCurrentSection = (section: string): boolean => {
     <script is:inline>
       (() => {
         const root = document.documentElement;
+        const searchShortcut = document.querySelector("[data-search-shortcut]");
+        if (searchShortcut && /Mac|iPhone|iPad|iPod/.test(navigator.platform)) {
+          searchShortcut.textContent = "⌘ K";
+        }
         const themeButton = document.querySelector("[data-theme-toggle]");
         const themeLabel = document.querySelector("[data-theme-label]");
         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");

@@ -229,7 +229,7 @@ test("全站对外品牌与导航语义统一为 Soce1lo 成长输出", async ()
   assert.match(profile, /输入留在私人系统，输出经过选择后公开。/);
   assert.match(layout, /title = siteProfile\.name/);
   assert.match(layout, /class="site-title"[^>]*>\{siteProfile\.name\}</);
-  assert.match(layout, />成长输出日志</);
+  assert.match(layout, />个人实验室</);
   assert.match(layout, />思考</);
   assert.match(layout, />学习</);
   assert.match(layout, /const isCurrentSection\s*=/);
@@ -289,7 +289,7 @@ test("首页与 About 呈现 Soce1lo 的成长输出结构和公开管道", asyn
 
   assert.match(home, /siteProfile\.title/);
   assert.match(home, /class="growth-hero"/);
-  assert.match(home, /class="home-now"/);
+  assert.match(home, /<LabMap threads=\{threads\}/);
   assert.match(home, /<OutputLog groups=\{outputGroups\}/);
   assert.match(home, /<LongThreads threads=\{threads\}/);
   assert.match(home, /class="selected-section"/);
@@ -366,7 +366,7 @@ test("导航状态、搜索按钮和手机导航保持紧凑且可辨识", async
 
   assert.match(css, /\.site-navigation > nav a\[aria-current="page"\]/);
   assert.match(controlButton, /white-space:\s*nowrap;/);
-  assert.match(mobile, /grid-template-columns:\s*repeat\(5,\s*minmax\(0,\s*1fr\)\);/);
+  assert.match(mobile, /grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\);/);
 });
 
 test("搜索对话框恢复触发焦点并在可见控件间循环 Tab", async () => {
