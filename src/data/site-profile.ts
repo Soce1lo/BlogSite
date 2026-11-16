@@ -18,9 +18,9 @@ export interface SiteProfile {
 export const siteProfile = {
   name: "Soce1lo",
   eyebrow: "SOCE1LO / PERSONAL LAB",
-  title: "把好奇心，变成可验证的理解。",
+  title: "把好奇心变成可验证的理解。",
   description:
-    "我是一名研究型工程师。在代码、知识与日常系统之间，把问题拆开，用实践验证，再把值得留下的理解写在这里。",
+    "从具体的问题出发，追问事物背后的原理，在实践中检验自己的判断。把学习与思考写下来，让零散的经验逐渐连成脉络，也让今天的认识，成为日后继续探索的起点。",
   now: {
     label: "NOW / 当前关注",
     text: "正在把个人知识系统整理成可持续的成长输出管道。",

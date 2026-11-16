@@ -303,15 +303,10 @@ test("首页与 About 呈现 Soce1lo 的成长输出结构和公开管道", asyn
   assert.match(longThreads, /最近发布于/);
 
   assert.match(about, /关于 Soce1lo/);
-  assert.match(about, /我是一名长期建设者/);
-  assert.match(about, /研究型工程师/);
-  assert.match(about, /INTJ/);
-  assert.match(about, /C、STM32/);
-  assert.match(about, /量化研究/);
-  assert.match(about, /家庭组网/);
+  assert.match(about, /我是一名软件工程师/);
+  assert.doesNotMatch(about, /长期建设者|研究型工程师|INTJ|STM32|板上验证|板上实验/);
   assert.match(about, /class="about-trace"/);
   assert.match(about, /问题怎样被看清、验证/);
-  assert.match(about, /class="about-practice-grid"/);
   assert.match(about, /我如何把理解变成输出/);
   assert.match(about, /捕捉/);
   assert.match(about, /复盘/);
