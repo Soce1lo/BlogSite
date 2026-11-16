@@ -1,10 +1,10 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-10-14T07:03:36.477Z
-- scanned_vault_files: 841
-- publish_candidates: 22
-- synced: 22
+- generated_at: 2026-11-16T18:25:22.962Z
+- scanned_vault_files: 799
+- publish_candidates: 23
+- synced: 23
 - warnings: 21
 - errors: 0
 
@@ -19,6 +19,7 @@
 | 10-Notes/编程语言/C/C语言编程题常用代码模板.md | notes | c-programming-exam-templates | /notes/c-programming-exam-templates/ | published | 2026-07-12 | learned | 7 |
 | 20-Projects/LeetCode C 语言训练/LeetCode C 语言训练.md | projects | leetcode-c-language-training | /projects/leetcode-c-language-training/ | published | 2026-07-21 | built | 0 |
 | 20-Projects/卡码网设计模式编程课学习计划/卡码网设计模式编程课学习计划.md | projects | c-design-patterns-learning | /projects/c-design-patterns-learning/ | published | 2026-07-21 | built | 0 |
+| 60-Publish/Blog/AI工程实践/从OpenCode到DeepSeek-Harness-Agent框架演进.md | blog | agent-framework-evolution-opencode-deepseek-harness | /blog/agent-framework-evolution-opencode-deepseek-harness/ | published | 2026-11-17 | thought | 0 |
 | 60-Publish/Blog/Home Lab/从 PT 下载到 Jellyfin 入库：一套不破坏做种的动漫整理工作流.md | blog | pt-download-to-jellyfin-workflow | /blog/pt-download-to-jellyfin-workflow/ | published | 2026-08-13 | built | 0 |
 | 60-Publish/Blog/Home Lab/从远程访问 NAS 到多设备互联：我的家庭组网方案.md | blog | multi-device-home-network | /blog/multi-device-home-network/ | published | 2026-08-10 | built | 0 |
 | 60-Publish/Blog/KnowledgeVault 实践/Obsidian 入门：本地 Markdown、链接网络与我的知识库实践.md | blog | obsidian-local-markdown-knowledge-vault | /blog/obsidian-local-markdown-knowledge-vault/ | published | 2026-07-07 | thought | 0 |

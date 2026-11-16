@@ -1,10 +1,10 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-10-14T07:03:36.477Z",
+  "generatedAt": "2026-11-16T18:25:22.962Z",
   "summary": {
-    "scannedVaultFiles": 841,
-    "publishCandidates": 22,
-    "synced": 22,
+    "scannedVaultFiles": 799,
+    "publishCandidates": 23,
+    "synced": 23,
     "warnings": 21,
     "errors": 0
   },
@@ -151,6 +151,18 @@
       "visibility": "public",
       "outputKind": "built",
       "topic": "Design Patterns",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/Blog/AI工程实践/从OpenCode到DeepSeek-Harness-Agent框架演进.md",
+      "collection": "blog",
+      "slug": "agent-framework-evolution-opencode-deepseek-harness",
+      "url": "/blog/agent-framework-evolution-opencode-deepseek-harness/",
+      "title": "DeepSeek Harness：编程工具之外",
+      "draft": false,
+      "publishedDate": "2026-11-17",
+      "visibility": "public",
+      "outputKind": "thought",
       "warnings": []
     },
     {
