@@ -1,8 +1,7 @@
 ---
 import type { OutputGroup } from "../lib/output";
 import { getPublishedDate } from "../lib/content";
-import { getOutputKind, getPrimaryTopic } from "../lib/output";
-import type { OutputKind } from "../lib/output-kind";
+import { getOutputLabel, getPrimaryTopic } from "../lib/output";
 import { withBase } from "../lib/site";
 
 interface Props {
@@ -10,12 +9,6 @@ interface Props {
 }
 
 const { groups } = Astro.props;
-const kindLabels: Record<OutputKind, string> = {
-  thought: "THOUGHT",
-  learned: "LEARNED",
-  built: "BUILT",
-  revised: "REVISED",
-};
 ---
 
 <ol class="output-log">
@@ -37,7 +30,7 @@ const kindLabels: Record<OutputKind, string> = {
                         day: "2-digit",
                       })}
                     </time>
-                    <span>{kindLabels[getOutputKind(entry)]}</span>
+                    <span>{getOutputLabel(entry)}</span>
                     <span>{getPrimaryTopic(entry)}</span>
                   </p>
                   <h3>

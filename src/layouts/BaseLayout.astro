@@ -116,7 +116,7 @@ const isCurrentSection = (section: string): boolean => {
     </main>
     <footer class="site-footer">
       <div class="site-footer__identity"><strong>{siteProfile.name} / PERSONAL LAB</strong><span>理解，构建，保持好奇。</span></div>
-      <p>{siteProfile.boundary} <a href={withBase("rss.xml")}>订阅 RSS</a></p>
+      <p><a href={withBase("rss.xml")}>订阅 RSS</a></p>
       {engagementAllowed && goatcounter && <VisitorCount config={goatcounter} scope="site" />}
     </footer>
     {engagementAllowed && goatcounter && <VisitorAnalytics config={goatcounter} />}

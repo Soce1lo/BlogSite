@@ -4,6 +4,7 @@ import { getPublishedDate, type SiteEntry } from "../src/lib/content";
 import {
   buildOutputGroups,
   getOutputKind,
+  getOutputLabel,
   getPrimaryTopic,
   resolveFeaturedEntries,
   resolveThreads,
@@ -58,6 +59,28 @@ test("输出类型使用显式值并按集合提供稳定缺省值", () => {
   );
 });
 
+test("输出标签使用中文，仍在计划中的项目也标为项目", () => {
+  for (const [kind, label] of [
+    ["thought", "思考"],
+    ["learned", "学习"],
+    ["built", "构建"],
+    ["revised", "修订"],
+  ] as const) {
+    assert.equal(
+      getOutputLabel(makeEntry("blog", kind, "2026-07-01", { outputKind: kind })),
+      label,
+    );
+  }
+  const planned = makeEntry("projects", "planned-project", "2026-07-01");
+  assert.equal(getOutputLabel(planned), "项目");
+  assert.equal(
+    getOutputLabel(makeEntry("projects", "revised-project", "2026-07-01", {
+      outputKind: "revised",
+    })),
+    "项目",
+  );
+});
+
 test("最近输出按首次发布时间排序，修订时间不改变位置", () => {
   const older = makeEntry("blog", "older", "2026-06-20");
   const revised = makeEntry("notes", "revised", "2026-07-05", {
@@ -77,7 +100,7 @@ test("最近输出按首次发布时间排序，修订时间不改变位置", ()
   assert.equal(groups[0].label, "2026年7月");
 });
 
-test("长期主题按 series、topic 或 tag 关联公开输出并隐藏空主题", () => {
+test("长期主题汇总全部唯一公开条目，初读顺序只引用主题内公开条目", () => {
   const definitions: ThreadDefinition[] = [
     {
       id: "knowledge-systems",
@@ -86,6 +109,16 @@ test("长期主题按 series、topic 或 tag 关联公开输出并隐藏空主�
       series: ["KnowledgeVault 实践"],
       topics: ["Obsidian"],
       tags: ["knowledge-management"],
+      readingOrder: [
+        { label: "总览", collection: "blog", id: "series-match" },
+        { label: "草稿", collection: "blog", id: "private-match" },
+        { label: "未列出", collection: "notes", id: "hidden-match" },
+        { label: "无关", collection: "blog", id: "unmatched" },
+        { label: "不存在", collection: "blog", id: "missing" },
+        { label: "重复", collection: "blog", id: "series-match" },
+        { label: "日常运行", collection: "projects", id: "tag-match" },
+        { label: "具体方法", collection: "notes", id: "topic-match" },
+      ],
     },
     {
       id: "empty",
@@ -94,6 +127,11 @@ test("长期主题按 series、topic 或 tag 关联公开输出并隐藏空主�
       tags: ["missing"],
     },
   ];
+  const multiMatch = makeEntry("blog", "multi-match", "2026-07-05", {
+    series: "KnowledgeVault 实践",
+    topic: "Obsidian",
+    tags: ["knowledge-management"],
+  });
   const entries = [
     makeEntry("blog", "series-match", "2026-07-01", {
       series: "KnowledgeVault 实践",
@@ -107,19 +145,38 @@ test("长期主题按 series、topic 或 tag 关联公开输出并隐藏空主�
       tags: ["knowledge-management"],
       draft: true,
     }),
+    makeEntry("notes", "hidden-match", "2026-07-06", {
+      topic: "Obsidian",
+      visibility: "unlisted",
+    }),
+    makeEntry("blog", "unmatched", "2026-07-07"),
+    makeEntry("notes", "multi-match", "2026-07-04", { topic: "Obsidian" }),
+    multiMatch,
+    multiMatch,
   ];
 
   const threads = resolveThreads(entries, definitions);
 
   assert.deepEqual(threads.map((thread) => thread.id), ["knowledge-systems"]);
-  assert.deepEqual(threads[0].entries.map((entry) => entry.id), [
-    "topic-match",
-    "tag-match",
-    "series-match",
+  assert.equal(threads[0].entries.length, 5);
+  assert.deepEqual(threads[0].entries.map((entry) => `${entry.collection}/${entry.id}`), [
+    "blog/multi-match",
+    "notes/multi-match",
+    "notes/topic-match",
+    "projects/tag-match",
+    "blog/series-match",
   ]);
+  assert.deepEqual(
+    threads[0].readingOrder.map(({ label, entry }) => [label, entry.id]),
+    [
+      ["总览", "series-match"],
+      ["日常运行", "tag-match"],
+      ["具体方法", "topic-match"],
+    ],
+  );
   assert.equal(
     threads[0].latestPublishedDate.toISOString().slice(0, 10),
-    "2026-07-03",
+    "2026-07-05",
   );
 });
 

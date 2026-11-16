@@ -10,7 +10,6 @@ export interface SiteProfile {
     text: string;
     updated: string;
   };
-  boundary: string;
   threads: readonly ThreadDefinition[];
   featured: readonly PublicEntryRef[];
 }
@@ -26,15 +25,19 @@ export const siteProfile = {
     text: "正在把个人知识系统整理成可持续的成长输出管道。",
     updated: "2026-07-10",
   },
-  boundary: "输入留在私人系统，输出经过选择后公开。",
   threads: [
     {
       id: "knowledge-systems",
       label: "知识系统",
-      description: "本地知识、迁移、Agent 派生层与公开发布。",
+      description: "探索日常记录如何积累、彼此联系，并帮助理解新的问题。",
       series: ["KnowledgeVault 实践"],
       topics: ["Obsidian", "LLM Wiki"],
       tags: ["knowledge-management"],
+      readingOrder: [
+        { label: "总览", collection: "blog", id: "obsidian-personal-knowledge-management-skill" },
+        { label: "日常运行", collection: "blog", id: "obsidian-knowledge-system-skill-operating-guide" },
+        { label: "具体方法", collection: "blog", id: "obsidian-task-management-workflow" },
+      ],
     },
     {
       id: "engineering-practice",
@@ -60,7 +63,7 @@ export const siteProfile = {
   ],
   featured: [
     { collection: "blog", id: "obsidian-personal-knowledge-management-skill" },
-    { collection: "blog", id: "llm-wiki-derived-layer" },
-    { collection: "blog", id: "obsidian-local-markdown-knowledge-vault" },
+    { collection: "notes", id: "mac-heat-clash-wechat-udp-investigation" },
+    { collection: "blog", id: "electric-toothbrush-value-first-buying" },
   ],
 } as const satisfies SiteProfile;

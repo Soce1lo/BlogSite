@@ -14,6 +14,7 @@ export interface ThreadDefinition {
   series?: readonly string[];
   topics?: readonly string[];
   tags?: readonly string[];
+  readingOrder?: readonly (PublicEntryRef & { label: string })[];
 }
 
 export interface OutputGroup {
@@ -22,13 +23,25 @@ export interface OutputGroup {
   entries: SiteEntry[];
 }
 
-export interface ResolvedThread extends ThreadDefinition {
+export interface ResolvedThread extends Omit<ThreadDefinition, "readingOrder"> {
   entries: SiteEntry[];
   latestPublishedDate: Date;
+  readingOrder: { label: string; entry: SiteEntry }[];
 }
 
 export function getOutputKind(entry: SiteEntry): OutputKind {
   return entry.data.outputKind ?? defaultOutputKind(entry.collection);
+}
+
+const outputLabels: Record<OutputKind, string> = {
+  thought: "思考",
+  learned: "学习",
+  built: "构建",
+  revised: "修订",
+};
+
+export function getOutputLabel(entry: SiteEntry): string {
+  return entry.collection === "projects" ? "项目" : outputLabels[getOutputKind(entry)];
 }
 
 export function getPrimaryTopic(entry: SiteEntry): string {
@@ -88,24 +101,41 @@ function matchesThread(entry: SiteEntry, definition: ThreadDefinition): boolean 
   return seriesMatch || topicMatch || tagMatch;
 }
 
+function entryKey(ref: PublicEntryRef): string {
+  return `${ref.collection}/${ref.id}`;
+}
+
+function indexPublicEntries(entries: readonly SiteEntry[]): Map<string, SiteEntry> {
+  return new Map(entries.filter(isPublicEntry).map((entry) => [entryKey(entry), entry]));
+}
+
 export function resolveThreads(
   entries: readonly SiteEntry[],
   definitions: readonly ThreadDefinition[],
 ): ResolvedThread[] {
-  const publicEntries = entries.filter(isPublicEntry);
+  const publicEntries = [...indexPublicEntries(entries).values()];
 
-  return definitions.flatMap((definition) => {
+  return definitions.flatMap(({ readingOrder = [], ...definition }) => {
     const matchingEntries = publicEntries
       .filter((entry) => matchesThread(entry, definition))
       .sort(compareOutputs);
     if (matchingEntries.length === 0) {
       return [];
     }
+    const matchingByKey = new Map(matchingEntries.map((entry) => [entryKey(entry), entry]));
+    const readingSteps = readingOrder.flatMap((ref) => {
+      const key = entryKey(ref);
+      const entry = matchingByKey.get(key);
+      if (!entry) return [];
+      matchingByKey.delete(key);
+      return [{ label: ref.label, entry }];
+    });
     return [
       {
         ...definition,
         entries: matchingEntries,
         latestPublishedDate: getPublishedDate(matchingEntries[0]),
+        readingOrder: readingSteps,
       },
     ];
   });
@@ -115,14 +145,10 @@ export function resolveFeaturedEntries(
   entries: readonly SiteEntry[],
   refs: readonly PublicEntryRef[],
 ): SiteEntry[] {
-  const publicEntries = new Map<string, SiteEntry>(
-    entries
-      .filter(isPublicEntry)
-      .map((entry) => [`${entry.collection}/${entry.id}`, entry] as const),
-  );
+  const publicEntries = indexPublicEntries(entries);
 
   return refs.map((ref) => {
-    const key = `${ref.collection}/${ref.id}`;
+    const key = entryKey(ref);
     const entry = publicEntries.get(key);
     if (!entry) {
       throw new Error(`精选内容不存在或未公开: ${key}`);

@@ -1,0 +1,82 @@
+---
+import { getCollection } from "astro:content";
+import { siteProfile } from "../../data/site-profile";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getPublishedDate, isPublicEntry } from "../../lib/content";
+import { getOutputLabel, resolveThreads, type ResolvedThread } from "../../lib/output";
+import { withBase } from "../../lib/site";
+import "../../styles/explore.css";
+
+export async function getStaticPaths() {
+  const [blog, notes, projects] = await Promise.all([
+    getCollection("blog", isPublicEntry),
+    getCollection("notes", isPublicEntry),
+    getCollection("projects", isPublicEntry),
+  ]);
+
+  return resolveThreads([...blog, ...notes, ...projects], siteProfile.threads).map((thread) => ({
+    params: { thread: thread.id },
+    props: { thread },
+  }));
+}
+
+interface Props {
+  thread: ResolvedThread;
+}
+
+const { thread } = Astro.props;
+---
+
+<BaseLayout title={thread.label} description={thread.description}>
+  <header class="page-heading explore-heading">
+    <a class="text-link" href={withBase("explore/")}>返回探索档案</a>
+    <h1>{thread.label}</h1>
+    <p>{thread.description}</p>
+  </header>
+
+  <div class="explore">
+    {thread.readingOrder.length > 0 && (
+      <section class="explore-results" aria-labelledby="thread-reading-heading">
+        <header class="explore-results__header">
+          <h2 id="thread-reading-heading">初读顺序</h2>
+        </header>
+        <ol class="explore-list" role="list">
+          {thread.readingOrder.map(({ label, entry }, index) => (
+            <li class="explore-row">
+              <div class="explore-row__stamp">
+                <span class="explore-row__kind">{index + 1}. {label}</span>
+              </div>
+              <div class="explore-row__body">
+                <h3><a href={withBase(`${entry.collection}/${entry.id}/`)}>{entry.data.title}</a></h3>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )}
+
+    <section class="explore-results" aria-labelledby="thread-entries-heading">
+      <header class="explore-results__header">
+        <h2 id="thread-entries-heading">全部文章</h2>
+        <p>共 {thread.entries.length} 篇 · 按最新发布排序</p>
+      </header>
+      <ul class="explore-list" role="list">
+        {thread.entries.map((entry) => {
+          const date = getPublishedDate(entry).toISOString();
+          return (
+            <li class="explore-row">
+              <div class="explore-row__stamp">
+                <span class="explore-row__kind">{getOutputLabel(entry)}</span>
+                <time datetime={date}>{date.split("T")[0]}</time>
+              </div>
+              <div class="explore-row__body">
+                <h3><a href={withBase(`${entry.collection}/${entry.id}/`)}>{entry.data.title}</a></h3>
+                <p>{entry.data.description}</p>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

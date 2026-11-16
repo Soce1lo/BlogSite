@@ -163,6 +163,20 @@ test("合成生产构建为三类公开文章接入计数与独立留言，未�
     assert.ok(explorer.includes(`href="/BlogSite/${collection}/public-example/"`));
   }
 
+  const thread = await read("explore/fixture-thread/index.html");
+  assert.ok(home.includes('href="/BlogSite/explore/fixture-thread/"'));
+  assert.match(home, /查看全部 3 篇/);
+  assert.match(thread, /共 3 篇/);
+  assert.doesNotMatch(thread, /不应发送到第三方的未公开标题|不应生成的草稿|不应公开的导航|sourceVaultPath|fixtures\//);
+  const allEntries = thread.split('id="thread-entries-heading"')[1];
+  assert.ok(allEntries);
+  for (const collection of ["blog", "notes", "projects"]) {
+    assert.equal(allEntries.split(`href="/BlogSite/${collection}/public-example/"`).length - 1, 1);
+  }
+  const reading = thread.split('id="thread-reading-heading"')[1].split('id="thread-entries-heading"')[0];
+  const readingLinks = [...reading.matchAll(/href="([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(readingLinks, ["/BlogSite/notes/public-example/", "/BlogSite/blog/public-example/"]);
+
   for (const collection of ["blog", "notes", "projects"]) {
     const html = await read(`${collection}/public-example/index.html`);
     assert.match(html, new RegExp(`data-term="${collection}/public-example"`));

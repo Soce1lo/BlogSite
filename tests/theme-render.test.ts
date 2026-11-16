@@ -226,7 +226,7 @@ test("全站对外品牌与导航语义统一为 Soce1lo 成长输出", async ()
   const notesDetail = await readProjectFile("src/pages/notes/[...slug].astro");
 
   assert.match(profile, /name: "Soce1lo"/);
-  assert.match(profile, /输入留在私人系统，输出经过选择后公开。/);
+  assert.doesNotMatch(profile, /输入留在私人系统，输出经过选择后公开。/);
   assert.match(layout, /title = siteProfile\.name/);
   assert.match(layout, /class="site-title"[^>]*>\{siteProfile\.name\}</);
   assert.match(layout, />个人实验室</);
@@ -234,7 +234,7 @@ test("全站对外品牌与导航语义统一为 Soce1lo 成长输出", async ()
   assert.match(layout, />学习</);
   assert.match(layout, /const isCurrentSection\s*=/);
   assert.match(layout, /aria-current=\{isCurrentSection\("blog"\) \? "page" : undefined\}/);
-  assert.match(layout, /siteProfile\.boundary/);
+  assert.doesNotMatch(layout, /siteProfile\.boundary/);
   assert.match(blogIndex, /<h1>思考<\/h1>/);
   assert.match(notesIndex, /<h1>学习<\/h1>/);
   assert.match(projectsIndex, /<h1>项目<\/h1>/);
@@ -298,7 +298,7 @@ test("首页与 About 呈现 Soce1lo 的成长输出结构和公开管道", asyn
   assert.match(outputLog, /class="output-log"/);
   assert.match(outputLog, /class="output-log__marker"/);
   assert.match(outputLog, /getPublishedDate/);
-  assert.match(outputLog, /getOutputKind/);
+  assert.match(outputLog, /getOutputLabel/);
   assert.match(longThreads, /class="long-threads"/);
   assert.match(longThreads, /最近发布于/);
 
@@ -306,8 +306,8 @@ test("首页与 About 呈现 Soce1lo 的成长输出结构和公开管道", asyn
   assert.match(about, /我是一名软件工程师/);
   assert.doesNotMatch(about, /长期建设者|研究型工程师|INTJ|STM32|板上验证|板上实验/);
   assert.match(about, /class="about-trace"/);
-  assert.match(about, /问题怎样被看清、验证/);
-  assert.match(about, /我如何把理解变成输出/);
+  assert.doesNotMatch(about, /about-principle/);
+  assert.match(about, /关于这里的文字/);
   assert.match(about, /捕捉/);
   assert.match(about, /复盘/);
   assert.match(about, /公开什么/);

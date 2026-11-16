@@ -33,9 +33,16 @@ export default {
   eyebrow: "LOCAL PREVIEW / 合成验证",
   title: "记录我如何理解、学习与构建。",
   description: "此页面仅用于本地验证访问次数和 GitHub 留言。",
-  boundary: "输入留在私人系统，输出经过选择后公开。",
   now: { label: "预览", text: "使用合成内容验证页面。", updated: "2026-08-30" },
-  threads: [],
+  threads: [{
+    id: "fixture-thread", label: "合成主题", description: "跨集合主题验证",
+    series: ["fixture-series"], topics: ["fixture-topic"], tags: ["fixture"],
+    readingOrder: [
+      { label: "入门", collection: "notes", id: "public-example" },
+      { label: "实践", collection: "blog", id: "public-example" },
+      { label: "不应公开的导航", collection: "blog", id: "unlisted-example" },
+    ],
+  }],
   featured: [{ collection: "blog", id: "public-example" }],
 } as const;
 `);
@@ -49,7 +56,8 @@ title: ${visibility === "public" ? "一次可复用的实践记录" : "不应发
 description: 合成验证页面，仅用于检查排版、访问次数和留言交互。
 pubDate: 2026-08-30
 category: 验证
-tags: [fixture]
+tags: [${collection === "projects" ? "fixture" : "other"}]
+${collection === "blog" ? "series: fixture-series" : collection === "notes" ? "topic: fixture-topic" : ""}
 visibility: ${visibility}
 sourceVaultPath: fixtures/${collection}/${visibility}.md
 ---
@@ -66,6 +74,7 @@ sourceVaultPath: fixtures/${collection}/${visibility}.md
     await writeFile(path.join(directory, "draft-example.md"), `---
 title: 不应生成的草稿
 description: 合成草稿
+tags: [fixture]
 pubDate: 2026-08-30
 category: 验证
 visibility: public
