@@ -1,8 +1,8 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-11-17T17:33:09.856Z
-- scanned_vault_files: 871
+- generated_at: 2026-11-17T17:59:31.365Z
+- scanned_vault_files: 872
 - publish_candidates: 24
 - synced: 24
 - warnings: 21
@@ -37,4 +37,4 @@
 
 ## Scoped release
 
-本次仅更新 M4 文章；LeetCode 项目保留上一发布版本及其 manifest 条目。全量同步产生的额外进度变更未纳入本次发布。
+本次仅重写 M4 文章，保留首次发布日期、slug 和系列；LeetCode 项目保留上一发布版本及其 manifest 条目。全量同步产生的额外进度变更未纳入本次发布。
