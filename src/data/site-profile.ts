@@ -40,6 +40,12 @@ export const siteProfile = {
       ],
     },
     {
+      id: "technical-practice",
+      label: "技术实践",
+      description: "记录真实技术问题中的配置、验证与定位，随实践逐步补齐理解。",
+      series: ["技术实践"],
+    },
+    {
       id: "engineering-practice",
       label: "工程实践",
       description: "从通信协议到 C 编程，让理解接受代码与实践的检验。",

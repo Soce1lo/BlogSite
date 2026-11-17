@@ -1,10 +1,10 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-11-16T18:25:22.962Z",
+  "generatedAt": "2026-11-17T17:33:09.856Z",
   "summary": {
-    "scannedVaultFiles": 799,
-    "publishCandidates": 23,
-    "synced": 23,
+    "scannedVaultFiles": 871,
+    "publishCandidates": 24,
+    "synced": 24,
     "warnings": 21,
     "errors": 0
   },
@@ -341,6 +341,21 @@
       "visibility": "public",
       "outputKind": "built",
       "topic": "STM32",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/Blog/技术实践/从 MPU 配置到故障定位：一次 Cortex-M4 实践.md",
+      "collection": "blog",
+      "slug": "cortex-m4-mpu-fault-diagnosis",
+      "url": "/blog/cortex-m4-mpu-fault-diagnosis/",
+      "title": "从 MPU 配置到故障定位：一次 Cortex-M4 实践",
+      "draft": false,
+      "publishedDate": "2026-11-18",
+      "visibility": "public",
+      "outputKind": "built",
+      "series": "技术实践",
+      "seriesOrder": 1,
+      "topic": "内存保护与故障诊断",
       "warnings": []
     },
     {

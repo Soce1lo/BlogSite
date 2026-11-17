@@ -1,10 +1,10 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-11-16T18:25:22.962Z
-- scanned_vault_files: 799
-- publish_candidates: 23
-- synced: 23
+- generated_at: 2026-11-17T17:33:09.856Z
+- scanned_vault_files: 871
+- publish_candidates: 24
+- synced: 24
 - warnings: 21
 - errors: 0
 
@@ -32,4 +32,9 @@
 | 60-Publish/Blog/KnowledgeVault 实践/用 Obsidian 管理任务：Daily、看板与项目进度的职责分离.md | blog | obsidian-task-management-workflow | /blog/obsidian-task-management-workflow/ | published | 2026-07-28 | built | 0 |
 | 60-Publish/Blog/KnowledgeVault 实践/让 Projects 回到真实项目：一次 Obsidian 项目边界重构.md | blog | obsidian-project-boundary-refactor | /blog/obsidian-project-boundary-refactor/ | published | 2026-08-27 | revised | 0 |
 | 60-Publish/Blog/嵌入式/STM32 嵌入式部件全景速通计划.md | projects | stm32-embedded-components-survey | /projects/stm32-embedded-components-survey/ | draft | 2026-08-13 | built | 0 |
+| 60-Publish/Blog/技术实践/从 MPU 配置到故障定位：一次 Cortex-M4 实践.md | blog | cortex-m4-mpu-fault-diagnosis | /blog/cortex-m4-mpu-fault-diagnosis/ | published | 2026-11-18 | built | 0 |
 | 60-Publish/Blog/生活消费/买电动牙刷时，我如何把营销声量还原成实际价值.md | blog | electric-toothbrush-value-first-buying | /blog/electric-toothbrush-value-first-buying/ | published | 2026-07-27 | thought | 0 |
+
+## Scoped release
+
+本次仅更新 M4 文章；LeetCode 项目保留上一发布版本及其 manifest 条目。全量同步产生的额外进度变更未纳入本次发布。
