@@ -31,3 +31,17 @@
 ## 安全与配置边界
 
 不要提交 `.env`、本机绝对路径、真实 Vault 正文、私有附件或完整 Obsidian 数据。真实内容接入、同步和线上发布的唯一操作序列见 [`docs/publishing-guide.md`](docs/publishing-guide.md)；本文件只保留路由和边界。`sync:vault` 必须保持源 Vault 只读，输出目录不得位于 Vault 内；遇到源文 `publish_status: draft` 必须先确认，不要代替用户改成 `published`。GitHub Actions 只能构建仓库内已有公开副本，不应加入真实 Vault 同步步骤。
+
+## Agent skills
+
+### Issue tracker
+
+在 GitHub Issues 管理工单、规格和工单依赖。操作约定见 [工单跟踪](docs/agents/issue-tracker.md)。
+
+### Triage labels
+
+给工单分流时，按[分流标签表](docs/agents/triage-labels.md)选择 GitHub 标签。
+
+### Domain docs
+
+BlogSite 使用单上下文布局。探索代码、命名领域概念或提出架构变更前，按[领域文档约定](docs/agents/domain.md)查阅术语表和相关决策。
