@@ -6,6 +6,7 @@ import {
   readFile,
   readdir,
   rm,
+  symlink,
   writeFile,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -15,11 +16,21 @@ import matter from "gray-matter";
 import { checkPublishContent } from "../scripts/check-publish-content";
 import { normalizeMarkdown } from "../scripts/normalize-markdown";
 import { syncFromVault } from "../scripts/sync-from-vault";
-import { createVaultIndex } from "../scripts/utils/vault-index";
+import { collectKnownTargets, createVaultIndex } from "../scripts/utils/vault-index";
 
 async function writeText(filePath: string, content: string): Promise<void> {
   await mkdir(path.dirname(filePath), { recursive: true });
   await writeFile(filePath, content, "utf8");
+}
+
+async function syncAndApply(options: Parameters<typeof syncFromVault>[0]) {
+  const previewRoot = await mkdtemp(path.join(tmpdir(), "blogsite-preview-"));
+  try {
+    await syncFromVault(options, { mode: "preview", previewRoot });
+    return await syncFromVault(options, { mode: "apply", previewRoot });
+  } finally {
+    await rm(previewRoot, { recursive: true, force: true });
+  }
 }
 
 function publishableSource(
@@ -77,7 +88,7 @@ test("双链只为发布目标生成链接并记录降级 warning", async () => 
       visibility: "public",
       outputKind: "learned",
     },
-  ], ["私密页面"]);
+  ], [{ sourceVaultPath: "Private/secret.md", title: "私密页面", aliases: [] }]);
 
   const result = await normalizeMarkdown({
     markdown: [
@@ -112,6 +123,137 @@ test("双链只为发布目标生成链接并记录降级 warning", async () => 
       "block-anchor-dropped",
     ],
   );
+});
+
+test("双链名称按文档消歧，显式路径只匹配所指文件", async () => {
+  const publicNote = {
+    title: "共享标题",
+    aliases: ["共享标题", "Alias", "共享文件名", "唯一别名", "唯一别名"],
+    sourceVaultPath: "10-Notes/共享文件名.md",
+    publishTarget: "notes",
+    publishSlug: "public-note",
+    publishStatus: "published",
+    publishedDate: "2026-06-01",
+    visibility: "unlisted",
+    outputKind: "learned",
+  } as const;
+  const index = createVaultIndex(
+    [
+      { ...publicNote, aliases: [...publicNote.aliases] },
+      {
+        ...publicNote,
+        title: "草稿标题",
+        aliases: ["草稿别名", "草稿同名"],
+        sourceVaultPath: "10-Notes/Draft.md",
+        publishSlug: "draft",
+        publishStatus: "draft",
+      },
+      {
+        ...publicNote,
+        title: "草稿同名",
+        aliases: [],
+        sourceVaultPath: "10-Notes/Published.md",
+        publishSlug: "published",
+        visibility: "public",
+      },
+    ],
+    collectKnownTargets([
+      {
+        absolutePath: "/synthetic/10-Notes/共享文件名.md",
+        sourceVaultPath: publicNote.sourceVaultPath,
+        data: { title: publicNote.title, aliases: publicNote.aliases },
+        content: "",
+      },
+      {
+        absolutePath: "/synthetic/00-Inbox/共享文件名.md",
+        sourceVaultPath: "00-Inbox/共享文件名.md",
+        data: { title: "非来源同文件名", aliases: ["Alias"] },
+        content: "",
+      },
+      {
+        absolutePath: "/synthetic/10-Notes/Private.md",
+        sourceVaultPath: "10-Notes/Private.md",
+        data: { title: "私有文档", aliases: ["共享标题"] },
+        content: "",
+      },
+    ]),
+  );
+  const result = await normalizeMarkdown({
+    markdown: [
+      "[[共享标题]]",
+      "[[Alias|别名]]",
+      "[[共享文件名]]",
+      "[[草稿同名]]",
+      "[[10-Notes/共享文件名|未列出页面]]",
+      "[[../10-Notes/共享文件名.md|相对路径]]",
+      "[[00-Inbox/共享文件名]]",
+      "[[不存在/共享文件名]]",
+      "[[10-Notes/共享标题]]",
+      "[[草稿别名]]",
+      "[[10-Notes/Draft]]",
+      "[[Published]]",
+      "[[唯一别名]]",
+    ].join("\n"),
+    index,
+    sourceVaultPath: "00-Inbox/Origin.md",
+    outputPath: "blog/example.md",
+  });
+
+  assert.deepEqual(result.markdown.split("\n"), [
+    "共享标题",
+    "别名",
+    "共享文件名",
+    "草稿同名",
+    "[未列出页面](../../notes/public-note/)",
+    "[相对路径](../../notes/public-note/)",
+    "共享文件名",
+    "共享文件名",
+    "共享标题",
+    "草稿别名",
+    "Draft",
+    "[Published](../../notes/published/)",
+    "[唯一别名](../../notes/public-note/)",
+  ]);
+  assert.deepEqual(result.wikilinkWarnings.map(({ line, reason }) => [line, reason]), [
+    [1, "target-ambiguous"],
+    [2, "target-ambiguous"],
+    [3, "target-ambiguous"],
+    [4, "target-ambiguous"],
+    [7, "target-not-published"],
+    [8, "target-not-found"],
+    [9, "target-not-found"],
+    [10, "target-not-published"],
+    [11, "target-not-published"],
+  ]);
+});
+
+test("双链警告记录原始正文行号及每次出现的原词", async () => {
+  const result = await normalizeMarkdown({
+    markdown: [
+      "",
+      "> [!note] 标题",
+      "~~~md",
+      "[[缺失/目标#小节|显示名]]",
+      "~~~",
+      "![图片](image.png)",
+      "[[缺失/目标#小节|显示名]] 和 [[缺失/目标#小节|显示名]]",
+      "[[缺失/目标#小节|显示名]]",
+    ].join("\r\n"),
+    index: createVaultIndex([]),
+    outputPath: "blog/example.md",
+    assetHandler: async () => ({ markdown: "一行\n另一行", warnings: [] }),
+  });
+
+  assert.deepEqual(result.wikilinkWarnings, [7, 7, 8].map((line) => ({
+    file: "blog/example.md",
+    line,
+    link: "[[缺失/目标#小节|显示名]]",
+    target: "缺失/目标",
+    action: "converted-to-text",
+    reason: "target-not-found",
+  })));
+  assert.match(result.markdown, /> \*\*标题\*\*/);
+  assert.match(result.markdown, /一行\n另一行/);
 });
 
 test("归一化保留代码围栏内容并只转换正文 Markdown", async () => {
@@ -234,7 +376,7 @@ publish_topic: "Knowledge Management"
 publish_kind: revised
 ---
 
-链接到 [[公开笔记|笔记别名]]、[[私密页面]] 和 [[不存在页面]]。
+链接到 [[公开笔记|笔记别名]]、[[私密页面]]、[[不存在页面]] 和 [[10-Notes/Draft#小节|草稿引用]]。
 
 ![[diagram.png|架构图]]
 
@@ -253,7 +395,7 @@ updated: 2026-05-02
 tags: [note]
 aliases: ["笔记别名"]
 publish_target: notes
-publish_status: draft
+publish_status: published
 publish_slug: public-note
 publish_category: "测试"
 publish_visibility: unlisted
@@ -261,6 +403,10 @@ publish_visibility: unlisted
 
 合成笔记正文。
 `,
+  );
+  await writeText(
+    path.join(vaultPath, "10-Notes", "Draft.md"),
+    publishableSource("未定稿笔记", "draft-note").replace("publish_status: published", "publish_status: draft"),
   );
   await writeText(
     path.join(vaultPath, "10-Notes", "Private.md"),
@@ -348,7 +494,7 @@ sourceVaultPath: "examples/manual.md"
   );
 
   const beforeDigest = await digestDirectory(vaultPath);
-  const summary = await syncFromVault({
+  const summary = await syncAndApply({
     vaultPath,
     contentOutputPath,
     imageOutputPath,
@@ -360,7 +506,7 @@ sourceVaultPath: "examples/manual.md"
   const afterDigest = await digestDirectory(vaultPath);
 
   assert.equal(afterDigest, beforeDigest, "同步前后 Vault 文件哈希必须一致");
-  assert.equal(summary.synced, 2);
+  assert.equal(summary.synced, 3);
   assert.equal(summary.skippedPrivate, 1);
   assert.equal(summary.skippedMissingSlug, 1);
   assert.equal(summary.skippedDaily, 0);
@@ -383,6 +529,8 @@ sourceVaultPath: "examples/manual.md"
   assert.match(article, /\[笔记别名\]\(\.\.\/\.\.\/notes\/public-note\/\)/);
   assert.match(article, /私密页面/);
   assert.doesNotMatch(article, /\[私密页面\]\(/);
+  assert.match(article, /草稿引用/);
+  assert.doesNotMatch(article, /\[草稿引用\]\(|10-Notes\/Draft/u);
   assert.doesNotMatch(article, /\[\[/);
   assert.match(article, /!\[架构图\]\(\/images\/public-article\/diagram\.png\)/);
   assert.match(article, /!\[另一个图\]\(\/images\/public-article\/other\.png\)/);
@@ -399,6 +547,11 @@ sourceVaultPath: "examples/manual.md"
     await readFile(path.join(contentOutputPath, "notes", "public-note.md"), "utf8"),
   );
   assert.equal(publicNote.data.outputKind, "learned");
+  assert.equal(publicNote.data.visibility, "unlisted");
+  const draftNote = matter(
+    await readFile(path.join(contentOutputPath, "notes", "draft-note.md"), "utf8"),
+  );
+  assert.equal(draftNote.data.draft, true);
   await assert.rejects(readFile(path.join(contentOutputPath, "notes", "private-note.md")));
   await assert.rejects(readFile(path.join(contentOutputPath, "blog", "daily-example.md")));
 
@@ -417,12 +570,12 @@ sourceVaultPath: "examples/manual.md"
   );
   const assetReport = await readFile(path.join(reportsPath, "asset-warnings.md"), "utf8");
   const manifest = JSON.parse(publishManifestJson);
-  assert.match(syncReport, /synced: 2/);
+  assert.match(syncReport, /synced: 3/);
   assert.equal(manifest.contractVersion, "v1");
   assert.equal(typeof manifest.generatedAt, "string");
   assert.equal(manifest.summary.scannedVaultFiles, summary.scannedVaultFiles);
-  assert.equal(manifest.summary.synced, 2);
-  assert.equal(manifest.entries.length, 2);
+  assert.equal(manifest.summary.synced, 3);
+  assert.equal(manifest.entries.length, 3);
   assert.deepEqual(
     manifest.entries.find((entry: { slug: string }) => entry.slug === "public-article"),
     {
@@ -441,6 +594,7 @@ sourceVaultPath: "examples/manual.md"
       warnings: [
         "wikilink: target-not-published",
         "wikilink: target-not-found",
+        "wikilink: target-not-published",
         "asset: missing-asset",
       ],
     },
@@ -449,8 +603,9 @@ sourceVaultPath: "examples/manual.md"
   assert.match(publishManifestMarkdown, /\/blog\/public-article\//);
   assert.match(publishManifestMarkdown, /revised/);
   assert.match(publishManifestMarkdown, /contract_version: v1/);
-  assert.match(wikilinkReport, /target-not-published/);
-  assert.match(wikilinkReport, /target-not-found/);
+  assert.match(wikilinkReport, /file: `blog\/public-article\.md`; line: 2; reason: target-not-published/u);
+  assert.match(wikilinkReport, /file: `blog\/public-article\.md`; line: 2; reason: target-not-found/u);
+  assert.doesNotMatch(wikilinkReport, /\[\[|私密页面|不存在页面|Draft|草稿引用|link:|target:/u);
   assert.match(assetReport, /missing-asset/);
   assert.doesNotMatch(
     syncReport + publishManifestJson + publishManifestMarkdown + wikilinkReport + assetReport,
@@ -462,6 +617,74 @@ sourceVaultPath: "examples/manual.md"
     publicPath: path.join(root, "public"),
   });
   assert.deepEqual(checkResult.errors, []);
+});
+
+test("笔记嵌入降级为链接或文本，附件目录只收到预期图片", async (t) => {
+  const root = await mkdtemp(path.join(tmpdir(), "blogsite-note-embeds-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const vaultPath = path.join(root, "vault");
+  const previewRoot = await mkdtemp(path.join(root, "preview-"));
+  const sourceRoot = path.join(vaultPath, "10-Notes");
+  const privateSource = path.join(vaultPath, "00-Inbox", "Confidential Source.md");
+  const privateEmbed = "![[00-Inbox/Confidential Source.md#Confidential Heading|内部说明]]";
+  const draftEmbed = "![[DraftFile|草稿说明]]";
+  const content = [
+    "![[10-Notes/Published.md|正式笔记]]",
+    "![[diagram.png|图示]]",
+    privateEmbed,
+    draftEmbed,
+    "![图片说明](<../00-Inbox/Confidential%20Source%2Emd> \"title\")",
+    "![图片说明](../00-Inbox/Confidential.mdx)",
+    "![[linked-note.png|链接图片说明]]",
+  ].join("\n");
+  await writeText(path.join(sourceRoot, "Article.md"), publishableSource("示例", "example", "blog", content));
+  await writeText(path.join(sourceRoot, "Published.md"), publishableSource("发布目标", "published"));
+  await writeText(
+    path.join(sourceRoot, "DraftFile.md"),
+    publishableSource("草稿目标", "draft", "notes", "fixture draft body")
+      .replace("publish_status: published", "publish_status: draft"),
+  );
+  await writeText(privateSource, "fixture private Markdown body");
+  await writeText(path.join(vaultPath, "00-Inbox", "Confidential.mdx"), "fixture private MDX body");
+  await writeText(path.join(sourceRoot, "diagram.png"), "fixture image");
+  await symlink(privateSource, path.join(sourceRoot, "linked-note.png"));
+
+  const options = {
+    vaultPath,
+    contentOutputPath: path.join(root, "content"),
+    imageOutputPath: path.join(root, "public", "images"),
+    reportsPath: path.join(root, "reports"),
+    excludeVaultDirs: [],
+    sourceRoots: ["10-Notes/"],
+    routes: { blog: "/blog", notes: "/notes", projects: "/projects" },
+  };
+  const preview = await syncFromVault(options, { mode: "preview", previewRoot });
+  assert.equal(preview.errors, 0);
+  const diagnostics = JSON.parse(await readFile(path.join(previewRoot, "local-diagnostics.json"), "utf8"));
+  assert.deepEqual(
+    diagnostics.wikilinks.map(({ line, link }: { line: number; link: string }) => [line, link]),
+    [[4, privateEmbed], [5, draftEmbed]],
+  );
+  await syncFromVault(options, { mode: "apply", previewRoot });
+
+  const article = matter(await readFile(path.join(options.contentOutputPath, "blog", "example.md"), "utf8"));
+  assert.deepEqual(article.content.trim().split("\n"), [
+    "[正式笔记](../../notes/published/)",
+    "![图示](/images/example/diagram.png)",
+    "内部说明",
+    "草稿说明",
+    "图片说明",
+    "图片说明",
+    "链接图片说明",
+  ]);
+  assert.deepEqual(await readdir(options.imageOutputPath, { recursive: true }), ["example", "example/diagram.png"]);
+  assert.equal(await readFile(path.join(options.imageOutputPath, "example", "diagram.png"), "utf8"), "fixture image");
+  const wikilinkReport = await readFile(path.join(options.reportsPath, "wikilink-warnings.md"), "utf8");
+  const assetReport = await readFile(path.join(options.reportsPath, "asset-warnings.md"), "utf8");
+  assert.match(wikilinkReport, /line: 4; reason: target-not-published/u);
+  assert.match(wikilinkReport, /line: 5; reason: target-not-published/u);
+  assert.equal(assetReport.match(/unsupported-markdown-source/gu)?.length, 3);
+  assert.doesNotMatch(wikilinkReport + assetReport, /Confidential|DraftFile|00-Inbox|linked-note|!\[\[/u);
 });
 
 test("同步只评估配置来源，保留全 Vault 已知目标而不输出其他端口", async (t) => {
@@ -485,7 +708,7 @@ test("同步只评估配置来源，保留全 Vault 已知目标而不输出其�
       "博客改写稿",
       "nested-blog",
       "blog",
-      "链接到 [[其他端口页面]]。",
+      "链接到 [[其他端口页面]]、[[Article|有多个来源]]、[[Broken|格式异常目标]] 和 [[./Article|当前稿]]。",
     ),
   );
   await writeText(
@@ -501,7 +724,7 @@ test("同步只评估配置来源，保留全 Vault 已知目标而不输出其�
     "---\ntitle: [未闭合\n---\n不应阻断博客同步。\n",
   );
 
-  const summary = await syncFromVault({
+  const summary = await syncAndApply({
     vaultPath,
     contentOutputPath,
     imageOutputPath: path.join(root, "public", "images"),
@@ -518,12 +741,14 @@ test("同步只评估配置来源，保留全 Vault 已知目标而不输出其�
   await readFile(path.join(contentOutputPath, "projects", "deep-project.md"));
   const blogArticle = await readFile(path.join(contentOutputPath, "blog", "nested-blog.md"), "utf8");
   assert.match(blogArticle, /其他端口页面/);
-  assert.doesNotMatch(blogArticle, /\[其他端口页面\]\(/);
+  assert.doesNotMatch(blogArticle, /\[(?:其他端口页面|有多个来源|格式异常目标)\]\(/u);
+  assert.match(blogArticle, /\[当前稿\]\(\.\/\)/u);
   await assert.rejects(readFile(path.join(contentOutputPath, "blog", "other-port.md")));
   await assert.rejects(readFile(path.join(contentOutputPath, "notes", "prefix-collision.md")));
-  assert.match(
-    await readFile(path.join(reportsPath, "wikilink-warnings.md"), "utf8"),
-    /target-not-published/,
+  const wikilinkReport = await readFile(path.join(reportsPath, "wikilink-warnings.md"), "utf8");
+  assert.deepEqual(
+    wikilinkReport.match(/reason: target-[\w-]+/gu),
+    ["reason: target-not-published", "reason: target-ambiguous", "reason: target-not-published"],
   );
 });
 
@@ -542,6 +767,7 @@ test("同步拒绝不安全的来源根目录", async (t) => {
     ["/10-Notes/"],
     ["C:\\Vault\\10-Notes"],
   ]) {
+    const previewRoot = await mkdtemp(path.join(root, "preview-"));
     await assert.rejects(
       syncFromVault({
         vaultPath,
@@ -551,7 +777,7 @@ test("同步拒绝不安全的来源根目录", async (t) => {
         excludeVaultDirs: [],
         sourceRoots,
         routes: { blog: "/blog", notes: "/notes", projects: "/projects" },
-      }),
+      }, { mode: "preview", previewRoot }),
       /来源根目录/,
     );
   }
@@ -579,12 +805,12 @@ test("来源迁移或删除时更新或清理受管输出，保留手工内容",
   await writeText(originalPath, publishableSource("迁移来源", "stable-slug", "notes"));
   await writeText(manualPath, "---\ntitle: 手工内容\n---\n保留。\n");
 
-  await syncFromVault(options);
+  await syncAndApply(options);
   assert.equal(matter(await readFile(outputPath, "utf8")).data.sourceVaultPath, "10-Notes/Nested/Moved.md");
 
   await rm(originalPath);
   await writeText(movedPath, publishableSource("迁移来源", "stable-slug", "notes"));
-  await syncFromVault(options);
+  await syncAndApply(options);
   const movedOutput = matter(await readFile(outputPath, "utf8"));
   assert.equal(movedOutput.data.sourceVaultPath, "20-Projects/Nested/Moved.md");
   const movedManifest = JSON.parse(
@@ -593,7 +819,7 @@ test("来源迁移或删除时更新或清理受管输出，保留手工内容",
   assert.equal(movedManifest.entries[0].url, "/notes/stable-slug/");
 
   await rm(movedPath);
-  await syncFromVault(options);
+  await syncAndApply(options);
   await assert.rejects(readFile(outputPath));
   await readFile(manualPath);
 });
@@ -604,7 +830,7 @@ test("同步报告为缺少 publish_slug 的合成 fixture 提供安全修复提
 
   const vaultPath = path.resolve("tests/fixtures/vault");
   const reportsPath = path.join(root, "reports");
-  const summary = await syncFromVault({
+  const summary = await syncAndApply({
     vaultPath,
     contentOutputPath: path.join(root, "content"),
     imageOutputPath: path.join(root, "public", "images"),
@@ -638,6 +864,8 @@ test("同步拒绝非法 publish_kind 且为缺省 kind 使用集合映射", asy
   const contentOutputPath = path.join(root, "content");
   const imageOutputPath = path.join(root, "public", "images");
   const reportsPath = path.join(root, "reports");
+  const previewRoot = path.join(root, "preview");
+  await mkdir(previewRoot);
 
   await writeText(
     path.join(vaultPath, "10-Notes", "Valid.md"),
@@ -685,16 +913,17 @@ publish_kind: speculative
     excludeVaultDirs: [".git", ".obsidian", "80-Archive", "_system", "90-Attachments"],
     sourceRoots: ["10-Notes/"],
     routes: { blog: "/blog", notes: "/notes", projects: "/projects" },
-  });
+  }, { mode: "preview", previewRoot });
 
   assert.equal(summary.synced, 1);
   assert.equal(summary.errors, 1);
+  const previewContentPath = path.join(previewRoot, "content");
   const published = matter(
-    await readFile(path.join(contentOutputPath, "blog", "default-output-kind.md"), "utf8"),
+    await readFile(path.join(previewContentPath, "blog", "default-output-kind.md"), "utf8"),
   );
   assert.equal(published.data.outputKind, "thought");
   await assert.rejects(
-    readFile(path.join(contentOutputPath, "notes", "invalid-output-kind.md")),
+    readFile(path.join(previewContentPath, "notes", "invalid-output-kind.md")),
   );
 });
 
@@ -706,6 +935,8 @@ test("同步将非法 publish_series_order 计入 errors 且不生成副本", as
   const contentOutputPath = path.join(root, "content");
   const imageOutputPath = path.join(root, "public", "images");
   const reportsPath = path.join(root, "reports");
+  const previewRoot = path.join(root, "preview");
+  await mkdir(previewRoot);
 
   await writeText(
     path.join(vaultPath, "10-Notes", "Quoted.md"),
@@ -749,15 +980,16 @@ publish_series_order: 2
     excludeVaultDirs: [".git", ".obsidian", "80-Archive", "_system", "90-Attachments"],
     sourceRoots: ["10-Notes/"],
     routes: { blog: "/blog", notes: "/notes", projects: "/projects" },
-  });
+  }, { mode: "preview", previewRoot });
 
   assert.equal(summary.synced, 0);
   assert.equal(summary.errors, 2);
+  const previewContentPath = path.join(previewRoot, "content");
   await assert.rejects(
-    readFile(path.join(contentOutputPath, "blog", "quoted-series-order.md")),
+    readFile(path.join(previewContentPath, "blog", "quoted-series-order.md")),
   );
   await assert.rejects(
-    readFile(path.join(contentOutputPath, "notes", "missing-series.md")),
+    readFile(path.join(previewContentPath, "notes", "missing-series.md")),
   );
 });
 
@@ -765,7 +997,9 @@ test("同步拒绝把输出目录放进 Vault", async (t) => {
   const root = await mkdtemp(path.join(tmpdir(), "blogsite-path-"));
   t.after(() => rm(root, { recursive: true, force: true }));
   const vaultPath = path.join(root, "vault");
+  const previewRoot = path.join(root, "preview");
   await mkdir(vaultPath, { recursive: true });
+  await mkdir(previewRoot);
 
   await assert.rejects(
     syncFromVault({
@@ -776,7 +1010,7 @@ test("同步拒绝把输出目录放进 Vault", async (t) => {
       excludeVaultDirs: [],
       sourceRoots: ["10-Notes/"],
       routes: { blog: "/blog", notes: "/notes", projects: "/projects" },
-    }),
+    }, { mode: "preview", previewRoot }),
     /输出目录不得位于 Vault 内部/,
   );
 });

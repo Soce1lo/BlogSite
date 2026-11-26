@@ -1,513 +1,213 @@
-import { mkdir, readFile, realpath, rm, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { chmod, lstat, mkdir, mkdtemp, readFile, readdir, realpath, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
-import matter from "gray-matter";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import publishConfig from "../publish.config";
-import { PUBLISH_CONTRACT_VERSION } from "./contracts/publishing-v1";
-import { buildAssetCatalog, createAssetHandler } from "./copy-assets";
-import {
-  normalizeMarkdown,
-  type AssetWarning,
-  type WikilinkWarning,
-} from "./normalize-markdown";
-import {
-  readVaultDocument,
-  serializePublishedMarkdown,
-  toPublishedFrontmatter,
-  type VaultDocument,
-} from "./utils/frontmatter";
-import {
-  assertOutputsOutsideVault,
-  isPathInSourceRoots,
-  isPathInside,
-  normalizeSourceRoots,
-  toPosixPath,
-  walkFiles,
-} from "./utils/path";
-import {
-  collectKnownTargets,
-  createVaultIndex,
-  evaluatePublishCandidate,
-  type PublishIndexEntry,
-} from "./utils/vault-index";
-import type { PublishTarget } from "./utils/vault-index";
+import { prepareVaultSync, type SyncDiagnostics, type SyncOptions, type SyncSummary } from "./prepare-vault-sync";
+import { applyPreparedOutputs, type OutputLocations } from "./sync-outputs";
+import { isPathInside, toPosixPath, walkFiles } from "./utils/path";
 
-export interface SyncOptions {
-  vaultPath: string;
-  contentOutputPath: string;
-  imageOutputPath: string;
-  reportsPath: string;
-  excludeVaultDirs: string[];
-  sourceRoots: string[];
-  routes: Record<PublishTarget, string>;
+export type { SyncOptions, SyncSummary };
+export interface SyncRun {
+  mode: "preview" | "apply";
+  previewRoot: string;
 }
 
-export interface SyncSummary {
-  scannedVaultFiles: number;
-  publishCandidates: number;
-  synced: number;
-  skippedPrivate: number;
-  skippedMissingSlug: number;
-  skippedMissingDescription: number;
-  skippedMissingTitle: number;
-  skippedDaily: number;
-  warnings: number;
-  errors: number;
-  outputs: Record<PublishTarget, number>;
-}
+const repoRoot = fileURLToPath(new URL("../", import.meta.url));
+const receiptName = "review-receipt.json";
+const diagnosticsName = "local-diagnostics.json";
 
-interface Candidate {
-  document: VaultDocument;
-  entry: PublishIndexEntry;
-}
-
-interface SkippedContentEntry {
-  sourceVaultPath: string;
-  reason: "missing-slug";
-  fix: string;
-}
-
-interface PublishManifestSummary {
-  scannedVaultFiles: number;
-  publishCandidates: number;
-  synced: number;
-  warnings: number;
-  errors: number;
-}
-
-interface PublishManifestEntry {
-  sourceVaultPath: string;
-  collection: PublishTarget;
-  slug: string;
-  url: string;
-  title: string;
-  draft: boolean;
-  publishedDate: string;
-  visibility: PublishIndexEntry["visibility"];
-  outputKind: PublishIndexEntry["outputKind"];
-  series?: string;
-  seriesOrder?: number;
-  topic?: string;
-  warnings: string[];
-}
-
-interface PublishManifest {
-  contractVersion: typeof PUBLISH_CONTRACT_VERSION;
-  generatedAt: string;
-  summary: PublishManifestSummary;
-  entries: PublishManifestEntry[];
-}
-
-function createEmptySummary(): SyncSummary {
+function previewOutputs(root: string): OutputLocations {
   return {
-    scannedVaultFiles: 0,
-    publishCandidates: 0,
-    synced: 0,
-    skippedPrivate: 0,
-    skippedMissingSlug: 0,
-    skippedMissingDescription: 0,
-    skippedMissingTitle: 0,
-    skippedDaily: 0,
-    warnings: 0,
-    errors: 0,
-    outputs: { blog: 0, notes: 0, projects: 0 },
+    contentOutputPath: path.join(root, "content"),
+    imageOutputPath: path.join(root, "public", "images"),
+    reportsPath: path.join(root, "reports"),
   };
 }
 
-function shortInline(value: string): string {
-  return value.replaceAll("`", "'").replace(/\s+/gu, " ").slice(0, 160);
+// Resolve existing ancestors too, so a new output underneath a symlink cannot enter the Vault.
+async function resolveLocation(location: string): Promise<string> {
+  const absolute = path.resolve(location);
+  try {
+    return await realpath(absolute);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    const info = await lstat(absolute).catch((cause: NodeJS.ErrnoException) => {
+      if (cause.code !== "ENOENT") throw cause;
+    });
+    if (info?.isSymbolicLink()) throw new Error(`目录是无效的符号链接: ${absolute}`);
+    return path.join(await resolveLocation(path.dirname(absolute)), path.basename(absolute));
+  }
 }
 
-function wikilinkReport(warnings: WikilinkWarning[]): string {
-  const details = warnings.length
-    ? warnings.map(
-        (warning) =>
-          `- file: \`${shortInline(warning.file)}\`; link: \`${shortInline(warning.link)}\`; target: \`${shortInline(warning.target)}\`; action: ${warning.action}; reason: ${warning.reason}`,
-      )
-    : ["暂无记录。"];
-  return `# Wikilink Warnings\n\n${details.join("\n")}\n`;
+function overlap(a: string, b: string): boolean {
+  return isPathInside(a, b) || isPathInside(b, a);
 }
 
-function assetReport(warnings: AssetWarning[]): string {
-  const details = warnings.length
-    ? warnings.map(
-        (warning) =>
-          `- file: \`${shortInline(warning.file)}\`; asset: \`${shortInline(warning.asset)}\`; action: ${warning.action}; reason: ${warning.reason}`,
-      )
-    : ["暂无记录。"];
-  return `# Asset Warnings\n\n${details.join("\n")}\n`;
+async function canonicalOutputs(options: OutputLocations): Promise<OutputLocations> {
+  const [contentOutputPath, imageOutputPath, reportsPath] = await Promise.all([
+    resolveLocation(options.contentOutputPath),
+    resolveLocation(options.imageOutputPath),
+    resolveLocation(options.reportsPath),
+  ]);
+  return { contentOutputPath, imageOutputPath, reportsPath };
 }
 
-function syncReport(
-  summary: SyncSummary,
-  wikilinkWarnings: WikilinkWarning[],
-  assetWarnings: AssetWarning[],
-  skippedContent: SkippedContentEntry[],
-): string {
-  const unpublishedLinks = wikilinkWarnings.filter((warning) =>
-    warning.reason.startsWith("target-"),
-  ).length;
-  const droppedAnchors = wikilinkWarnings.length - unpublishedLinks;
-  const missingImages = assetWarnings.filter(
-    (warning) => warning.reason === "missing-asset",
-  ).length;
-  const skippedContentDetails = skippedContent.length
-    ? skippedContent.map(
-        (entry) =>
-          `- source: \`${shortInline(entry.sourceVaultPath)}\`; reason: \`${entry.reason}\`; fix: ${entry.fix}`,
-      )
-    : ["暂无记录。"];
-  return `# Sync Report
-
-## Summary
-
-- scanned_vault_files: ${summary.scannedVaultFiles}
-- publish_candidates: ${summary.publishCandidates}
-- synced: ${summary.synced}
-- skipped_private: ${summary.skippedPrivate}
-- skipped_missing_slug: ${summary.skippedMissingSlug}
-- skipped_missing_title: ${summary.skippedMissingTitle}
-- skipped_missing_description: ${summary.skippedMissingDescription}
-- skipped_daily: ${summary.skippedDaily}
-- warnings: ${summary.warnings}
-- errors: ${summary.errors}
-
-## Outputs
-
-- blog: ${summary.outputs.blog}
-- notes: ${summary.outputs.notes}
-- projects: ${summary.outputs.projects}
-
-## Skipped Content
-
-${skippedContentDetails.join("\n")}
-
-## Warnings
-
-- unpublished_wikilinks_converted_to_text: ${unpublishedLinks}
-- missing_images: ${missingImages}
-- anchors_dropped: ${droppedAnchors}
-
-## Detail Files
-
-- wikilink warnings: \`reports/wikilink-warnings.md\`
-- asset warnings: \`reports/asset-warnings.md\`
-`;
-}
-
-function createManifestSummary(summary: SyncSummary): PublishManifestSummary {
-  return {
-    scannedVaultFiles: summary.scannedVaultFiles,
-    publishCandidates: summary.publishCandidates,
-    synced: summary.synced,
-    warnings: summary.warnings,
-    errors: summary.errors,
-  };
-}
-
-function createManifestMarkdown(manifest: PublishManifest): string {
-  const rows = manifest.entries.map((entry) =>
-    [
-      entry.sourceVaultPath,
-      entry.collection,
-      entry.slug,
-      entry.url,
-      entry.draft ? "draft" : "published",
-      entry.publishedDate,
-      entry.outputKind,
-      String(entry.warnings.length),
-    ].map((value) => value.replaceAll("|", "\\|")).join(" | "),
-  );
-
-  return `# Publish Manifest
-
-- contract_version: ${manifest.contractVersion}
-- generated_at: ${manifest.generatedAt}
-- scanned_vault_files: ${manifest.summary.scannedVaultFiles}
-- publish_candidates: ${manifest.summary.publishCandidates}
-- synced: ${manifest.summary.synced}
-- warnings: ${manifest.summary.warnings}
-- errors: ${manifest.summary.errors}
-
-| Source | Collection | Slug | URL | Status | First published | Kind | Warnings |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-${rows.length ? rows.map((row) => `| ${row} |`).join("\n") : "| 暂无 | - | - | - | - | - | - | - |"}
-`;
-}
-
-async function assertExistingOutputsOutsideVault(
-  realVaultPath: string,
-  outputPaths: string[],
-): Promise<void> {
-  for (const outputPath of outputPaths) {
-    try {
-      const realOutputPath = await realpath(outputPath);
-      if (isPathInside(realVaultPath, realOutputPath)) {
-        throw new Error(`输出目录不得位于 Vault 内部: ${outputPath}`);
-      }
-    } catch (error) {
-      if (error instanceof Error && error.message.startsWith("输出目录不得")) {
-        throw error;
-      }
+// Review the planned public result. Scan counts and generation time can change without changing a page.
+async function outputDigest(outputs: OutputLocations): Promise<string> {
+  const entries: [string, string][] = [];
+  for (const [prefix, root] of [["content", outputs.contentOutputPath], ["images", outputs.imageOutputPath]]) {
+    for (const file of await walkFiles(root)) {
+      const name = `${prefix}/${toPosixPath(path.relative(root, file))}`;
+      entries.push([name, createHash("sha256").update(await readFile(file)).digest("hex")]);
     }
   }
+  entries.sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0);
+  const readReport = (name: string) => readFile(path.join(outputs.reportsPath, name), "utf8");
+  const [json, manifestMarkdown, syncReport, wikilinks, assets] = await Promise.all([
+    "publish-manifest.json", "publish-manifest.md", "sync-report.md", "wikilink-warnings.md", "asset-warnings.md",
+  ].map(readReport));
+  const manifest = JSON.parse(json);
+  delete manifest.generatedAt;
+  delete manifest.summary.scannedVaultFiles;
+  // Skip counters can reflect unrelated private notes. Keep every detail row reviewers can read.
+  const stableSyncReport = syncReport.replace(/^- (?:scanned_vault_files|skipped_\w+): \d+$/gmu, "");
+  const stableManifest = manifestMarkdown.replace(/^- (?:generated_at|scanned_vault_files): .*$/gmu, "");
+  return createHash("sha256")
+    .update(JSON.stringify([entries, manifest, stableManifest, stableSyncReport, wikilinks, assets]))
+    .digest("hex");
 }
 
-async function removeManagedOutputs(
-  contentOutputPath: string,
-  imageOutputPath: string,
-): Promise<void> {
-  const files = await walkFiles(contentOutputPath, { extensions: [".md", ".mdx"] });
-  for (const file of files) {
-    const parsed = matter(await readFile(file, "utf8"));
-    if (parsed.data.managedBy === "vault-sync") {
-      await rm(file, { force: true });
-      await rm(path.join(imageOutputPath, path.basename(file, path.extname(file))), {
-        recursive: true,
-        force: true,
-      });
-    }
-  }
+async function prepare(
+  options: SyncOptions, destination: OutputLocations, root: string, diagnostics: SyncDiagnostics,
+): Promise<SyncSummary> {
+  const prepared = previewOutputs(root);
+  return prepareVaultSync({ ...options, ...prepared }, destination, diagnostics);
 }
 
-export async function syncFromVault(options: SyncOptions): Promise<SyncSummary> {
-  const sourceRoots = normalizeSourceRoots(options.sourceRoots);
-  const vaultPath = path.resolve(options.vaultPath);
-  const contentOutputPath = path.resolve(options.contentOutputPath);
-  const imageOutputPath = path.resolve(options.imageOutputPath);
-  const reportsPath = path.resolve(options.reportsPath);
-  const outputPaths = [contentOutputPath, imageOutputPath, reportsPath];
-  assertOutputsOutsideVault(vaultPath, outputPaths);
+async function writeDiagnostics(root: string, diagnostics: SyncDiagnostics): Promise<void> {
+  await writeFile(path.join(root, diagnosticsName), JSON.stringify(diagnostics, null, 2) + "\n", { mode: 0o600 });
+}
 
-  const realVaultPath = await realpath(vaultPath);
-  await assertExistingOutputsOutsideVault(realVaultPath, outputPaths);
-  for (const collection of ["blog", "notes", "projects"] as const) {
-    await mkdir(path.join(contentOutputPath, collection), { recursive: true });
+async function createReview(
+  options: SyncOptions, destination: OutputLocations, root: string,
+): Promise<SyncSummary> {
+  await mkdir(root, { recursive: true, mode: 0o700 });
+  if ((await readdir(root)).length) throw new Error("预演需要一个新的空目录。");
+  await chmod(root, 0o700);
+  const receiptFile = path.join(root, receiptName);
+  // Reserve the directory before writing any output, including when two previews start together.
+  await writeFile(receiptFile, "{}\n", { flag: "wx", mode: 0o600 });
+  const diagnostics: SyncDiagnostics = { errors: [], wikilinks: [], retiredPages: [] };
+  let summary: SyncSummary;
+  try {
+    summary = await prepare(options, destination, root, diagnostics);
+  } catch (error) {
+    diagnostics.errors.push(String(error));
+    throw error;
+  } finally {
+    await writeDiagnostics(root, diagnostics);
   }
-  await mkdir(imageOutputPath, { recursive: true });
-  await mkdir(reportsPath, { recursive: true });
-
-  const summary = createEmptySummary();
-  const markdownFiles = await walkFiles(realVaultPath, {
-    excludeDirectories: options.excludeVaultDirs,
-    extensions: [".md"],
-  });
-  const sourceMarkdownFiles = markdownFiles.filter((markdownFile) =>
-    isPathInSourceRoots(toPosixPath(path.relative(realVaultPath, markdownFile)), sourceRoots),
-  );
-  const sourceMarkdownFileSet = new Set(sourceMarkdownFiles);
-  summary.scannedVaultFiles = markdownFiles.length;
-
-  const documents: VaultDocument[] = [];
-  const knownTargetDocuments: VaultDocument[] = [];
-  for (const markdownFile of markdownFiles) {
-    try {
-      const document = await readVaultDocument(markdownFile, realVaultPath);
-      knownTargetDocuments.push(document);
-      if (sourceMarkdownFileSet.has(markdownFile)) {
-        documents.push(document);
-      }
-    } catch {
-      if (sourceMarkdownFileSet.has(markdownFile)) {
-        summary.errors += 1;
-      }
-    }
+  if (!summary.errors) {
+    const digest = await outputDigest(previewOutputs(root));
+    const receipt = { destination: await canonicalOutputs(destination), digest, retiredPages: diagnostics.retiredPages };
+    await writeFile(receiptFile, JSON.stringify(receipt) + "\n");
   }
-
-  const candidates: Candidate[] = [];
-  const skippedContent: SkippedContentEntry[] = [];
-  for (const document of documents) {
-    const evaluation = evaluatePublishCandidate(document);
-    if (evaluation.entry) {
-      const route = options.routes[evaluation.entry.publishTarget].replace(/\/$/u, "");
-      candidates.push({
-        document,
-        entry: {
-          ...evaluation.entry,
-          url: `${route}/${evaluation.entry.publishSlug}/`,
-        },
-      });
-      continue;
-    }
-    switch (evaluation.reason) {
-      case "private":
-        summary.skippedPrivate += 1;
-        break;
-      case "missing-slug":
-        summary.skippedMissingSlug += 1;
-        skippedContent.push({
-          sourceVaultPath: document.sourceVaultPath,
-          reason: "missing-slug",
-          fix: "在 frontmatter 中添加 `publish_slug: <unique-kebab-case>`。",
-        });
-        break;
-      case "missing-title":
-        summary.skippedMissingTitle += 1;
-        break;
-      case "missing-description":
-        summary.skippedMissingDescription += 1;
-        break;
-      case "daily":
-        summary.skippedDaily += 1;
-        break;
-      case "invalid-slug":
-      case "invalid-publish-kind":
-      case "invalid-publish-date":
-      case "invalid-series-order":
-      case "missing-date":
-        summary.errors += 1;
-        break;
-      case "not-publish-target":
-        break;
-    }
-  }
-  summary.publishCandidates = candidates.length;
-
-  const duplicateKeys = new Set<string>();
-  const seenKeys = new Set<string>();
-  for (const candidate of candidates) {
-    const key = candidate.entry.publishSlug;
-    if (seenKeys.has(key)) {
-      duplicateKeys.add(key);
-    }
-    seenKeys.add(key);
-  }
-  if (duplicateKeys.size > 0) {
-    summary.errors += duplicateKeys.size;
-  }
-  const uniqueCandidates = candidates.filter(
-    (candidate) => !duplicateKeys.has(candidate.entry.publishSlug),
-  );
-  const index = createVaultIndex(
-    uniqueCandidates.map((candidate) => candidate.entry),
-    collectKnownTargets(knownTargetDocuments),
-  );
-  const assetCatalog = await buildAssetCatalog(realVaultPath);
-
-  await removeManagedOutputs(contentOutputPath, imageOutputPath);
-
-  const wikilinkWarnings: WikilinkWarning[] = [];
-  const assetWarnings: AssetWarning[] = [];
-  const manifestEntries: PublishManifestEntry[] = [];
-  for (const candidate of uniqueCandidates) {
-    const { document, entry } = candidate;
-    const outputRelativePath = `${entry.publishTarget}/${entry.publishSlug}.md`;
-    const outputPath = path.join(contentOutputPath, outputRelativePath);
-    try {
-      const assetHandler = await createAssetHandler({
-        vaultPath: realVaultPath,
-        sourceAbsolutePath: document.absolutePath,
-        imageOutputPath,
-        publishSlug: entry.publishSlug,
-        outputPath: toPosixPath(outputRelativePath),
-        catalog: assetCatalog,
-      });
-      const normalized = await normalizeMarkdown({
-        markdown: document.content,
-        index,
-        outputPath: toPosixPath(outputRelativePath),
-        assetHandler,
-      });
-      const frontmatter = toPublishedFrontmatter(document, entry);
-      await writeFile(
-        outputPath,
-        serializePublishedMarkdown(frontmatter, normalized.markdown),
-        "utf8",
-      );
-      wikilinkWarnings.push(...normalized.wikilinkWarnings);
-      assetWarnings.push(...normalized.assetWarnings);
-      const entryWarnings = [
-        ...normalized.wikilinkWarnings.map((warning) => `wikilink: ${warning.reason}`),
-        ...normalized.assetWarnings.map((warning) => `asset: ${warning.reason}`),
-      ];
-      manifestEntries.push({
-        sourceVaultPath: document.sourceVaultPath,
-        collection: entry.publishTarget,
-        slug: entry.publishSlug,
-        url: entry.url ?? `/${entry.publishTarget}/${entry.publishSlug}/`,
-        title: entry.title,
-        draft: entry.publishStatus === "draft",
-        publishedDate: entry.publishedDate,
-        visibility: entry.visibility,
-        outputKind: entry.outputKind,
-        ...(entry.series ? { series: entry.series } : {}),
-        ...(entry.series && entry.seriesOrder !== undefined
-          ? { seriesOrder: entry.seriesOrder }
-          : {}),
-        ...(entry.topic ? { topic: entry.topic } : {}),
-        warnings: entryWarnings,
-      });
-      summary.synced += 1;
-      summary.outputs[entry.publishTarget] += 1;
-    } catch {
-      summary.errors += 1;
-    }
-  }
-
-  summary.warnings = wikilinkWarnings.length + assetWarnings.length;
-  const publishManifest: PublishManifest = {
-    contractVersion: PUBLISH_CONTRACT_VERSION,
-    generatedAt: new Date().toISOString(),
-    summary: createManifestSummary(summary),
-    entries: manifestEntries,
-  };
-  await writeFile(
-    path.join(reportsPath, "wikilink-warnings.md"),
-    wikilinkReport(wikilinkWarnings),
-    "utf8",
-  );
-  await writeFile(
-    path.join(reportsPath, "asset-warnings.md"),
-    assetReport(assetWarnings),
-    "utf8",
-  );
-  await writeFile(
-    path.join(reportsPath, "sync-report.md"),
-    syncReport(summary, wikilinkWarnings, assetWarnings, skippedContent),
-    "utf8",
-  );
-  await writeFile(
-    path.join(reportsPath, "publish-manifest.json"),
-    `${JSON.stringify(publishManifest, null, 2)}\n`,
-    "utf8",
-  );
-  await writeFile(
-    path.join(reportsPath, "publish-manifest.md"),
-    createManifestMarkdown(publishManifest),
-    "utf8",
-  );
-
   return summary;
 }
 
-function configuredOptions(): SyncOptions {
-  return {
-    vaultPath: publishConfig.vaultPath,
-    contentOutputPath: publishConfig.contentOutputPath,
-    imageOutputPath: publishConfig.imageOutputPath,
-    reportsPath: publishConfig.reportsPath,
-    excludeVaultDirs: [...publishConfig.excludeVaultDirs],
-    sourceRoots: [...publishConfig.sourceRoots],
-    routes: { ...publishConfig.routes },
-  };
-}
-
-function isDirectExecution(): boolean {
-  return Boolean(
-    process.argv[1] &&
-      import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href,
-  );
-}
-
-if (isDirectExecution()) {
+async function applyReview(
+  options: SyncOptions, destination: OutputLocations, reviewRoot: string,
+): Promise<SyncSummary> {
+  const attempt = await mkdtemp(path.join(await realpath(tmpdir()), "blogsite-apply-"));
+  const stage = path.join(attempt, "prepared");
+  const prepared = previewOutputs(stage);
+  const diagnostics: SyncDiagnostics = { errors: [], wikilinks: [], retiredPages: [] };
+  let failed = false;
   try {
-    const summary = await syncFromVault(configuredOptions());
-    console.log(
-      `同步完成: scanned=${summary.scannedVaultFiles}, synced=${summary.synced}, warnings=${summary.warnings}, errors=${summary.errors}`,
-    );
-    if (summary.errors > 0) {
-      process.exitCode = 1;
+    const receipt = await readFile(path.join(reviewRoot, receiptName), "utf8")
+      .then((s) => JSON.parse(s)).catch(() => null);
+    const currentDestination = await canonicalOutputs(destination);
+    if (typeof receipt?.digest !== "string" || !Array.isArray(receipt.retiredPages) ||
+        JSON.stringify(receipt.destination) !== JSON.stringify(currentDestination)) {
+      throw new Error("正式同步需要针对当前目的地的成功预演，请先运行 --preview。");
     }
+    if (receipt.digest !== await outputDigest(previewOutputs(reviewRoot))) {
+      throw new Error("预演目录的待发布内容已改变，请重新预演。");
+    }
+    const summary = await prepare(options, destination, stage, diagnostics);
+    if (summary.errors) throw new Error(`正式同步发现 ${summary.errors} 个错误。`);
+    if (receipt.digest !== await outputDigest(prepared)) {
+      throw new Error("待发布内容与已审预演不同，请重新预演。");
+    }
+    await applyPreparedOutputs(prepared, destination, receipt.retiredPages);
+    return summary;
+  } catch (error) {
+    failed = true;
+    diagnostics.errors.push(String(error));
+    await writeDiagnostics(attempt, diagnostics);
+    throw new Error(`${error instanceof Error ? error.message : error} 本次诊断: ${path.join(attempt, diagnosticsName)}`, { cause: error });
+  } finally {
+    const discard = failed ? stage : attempt;
+    await rm(discard, { recursive: true, force: true }).catch((error: unknown) =>
+      console.warn(`请清理本机暂存目录 ${discard}: ${String(error)}`),
+    );
+  }
+}
+
+export async function syncFromVault(options: SyncOptions, run: SyncRun): Promise<SyncSummary> {
+  if (!run?.previewRoot || !["preview", "apply"].includes(run.mode)) {
+    throw new Error("请指定 --preview <空目录> 或 --apply <已审预演目录>。");
+  }
+  const vaultPath = await realpath(options.vaultPath);
+  const checked = await canonicalOutputs(options);
+  const destination: OutputLocations = {
+    contentOutputPath: path.resolve(options.contentOutputPath),
+    imageOutputPath: path.resolve(options.imageOutputPath),
+    reportsPath: path.resolve(options.reportsPath),
+  };
+  const reviewRoot = await resolveLocation(run.previewRoot);
+  const outputs = Object.values(checked);
+  if (outputs.some((p) => overlap(p, vaultPath))) throw new Error("输出目录不得位于 Vault 内部或包含 Vault。");
+  if (outputs.some((p, i) => outputs.slice(i + 1).some((other) => overlap(p, other)))) {
+    throw new Error("内容、图片和报告需要使用互不重叠的输出目录。");
+  }
+  if ([vaultPath, await realpath(repoRoot), ...outputs].some((p) => overlap(p, reviewRoot))) {
+    throw new Error("预演目录必须与仓库、Vault 和正式输出目录分开。");
+  }
+  const tempRoot = await realpath(tmpdir());
+  if (run.mode === "apply" && [vaultPath, await realpath(repoRoot), ...outputs, reviewRoot].some((p) => isPathInside(p, tempRoot))) {
+    throw new Error("系统临时目录不可位于仓库、Vault、预演或正式输出内。");
+  }
+  const resolved = { ...options, vaultPath };
+  return run.mode === "preview"
+    ? createReview(resolved, destination, reviewRoot)
+    : applyReview(resolved, destination, reviewRoot);
+}
+
+function cliRun(args: string[]): SyncRun {
+  const [flag, previewRoot] = args;
+  if (args.length === 2 && previewRoot && (flag === "--preview" || flag === "--apply")) {
+    return { mode: flag === "--preview" ? "preview" : "apply", previewRoot };
+  }
+  if (!args.length && process.env.BLOGSITE_REVIEWED_PREVIEW) {
+    return { mode: "apply", previewRoot: process.env.BLOGSITE_REVIEWED_PREVIEW };
+  }
+  throw new Error("用法: pnpm sync:vault --preview <空目录> 或 --apply <已审预演目录>。");
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+  try {
+    const run = cliRun(process.argv.slice(2));
+    const summary = await syncFromVault({
+      ...publishConfig,
+      excludeVaultDirs: [...publishConfig.excludeVaultDirs],
+      sourceRoots: [...publishConfig.sourceRoots],
+    }, run);
+    console.log(`${run.mode === "preview" ? "预演" : "正式同步"}完成: synced=${summary.synced}, warnings=${summary.warnings}, errors=${summary.errors}`);
+    if (run.mode === "preview") console.log(`本地诊断: ${path.resolve(run.previewRoot, diagnosticsName)}`);
+    if (summary.errors) process.exitCode = 1;
   } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;

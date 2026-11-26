@@ -40,7 +40,8 @@ export async function readVaultDocument(
   vaultPath: string,
 ): Promise<VaultDocument> {
   const source = await readFile(absolutePath, "utf8");
-  const parsed = matter(source);
+  // gray-matter caches before parsing. Disable that cache so malformed YAML fails on every run.
+  const parsed = matter(source, {});
   return {
     absolutePath,
     sourceVaultPath: toPosixPath(path.relative(vaultPath, absolutePath)),

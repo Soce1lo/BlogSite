@@ -11,19 +11,15 @@
 1. MUST 先运行 `git status --short --branch`，确认当前分支、未提交改动和是否有用户正在编辑的文件。
 2. MUST 读取 `docs/publishing-guide.md`、`docs/vault-sync-guide.md` 和 `docs/codex-maintenance-guide.md`，再开始真实发布。
 3. MUST 先在真实 Vault 运行其当前合同与 frontmatter 检查，再做只读候选扫描。BlogSite 只从 `10-Notes/`、`20-Projects/` 和 `60-Publish/Blog/` 读取候选；前两者支持原位发布，独立公开改写稿应位于 `60-Publish/Blog/` 下至少一级管理子文件夹。文件夹只承担源稿管理，不自动决定分类或系列。当前来源为 `publish_status: published` 时必须具有 `publish_date`；`draft` 可以省略，但必须得到显式授权后才能改为 `published`，且转换时记录首次发布日期。
-4. MUST 先做临时目录 preview sync，不直接写入正式公开副本。示例：
+4. MUST 先在新的空临时目录中运行预演。该目录必须位于仓库、Vault 和正式输出目录之外。以下命令假定已设置 `BLOGSITE_VAULT_PATH`：
 
 ```bash
 preview_root="$(mktemp -d)"
-BLOGSITE_VAULT_PATH="/path/to/Obsidian Vault" \
-BLOGSITE_CONTENT_OUTPUT_PATH="$preview_root/content" \
-BLOGSITE_IMAGE_OUTPUT_PATH="$preview_root/public/images" \
-BLOGSITE_REPORTS_PATH="$preview_root/reports" \
-pnpm sync:vault
+pnpm sync:vault --preview "$preview_root"
 ```
 
-5. MUST 检查 preview 输出中的 `reports/sync-report.md`、`reports/publish-manifest.json` 和 `reports/publish-manifest.md`。只有 `summary.errors === 0` 才能继续；warning 可以发布，但必须在报告、提交说明或发布记录里说明原因。
-6. MUST 在 preview 通过并得到正式同步授权后，才运行正式 `pnpm sync:vault`。来源范围配置、preview 和报告审阅本身不授权写入正式公开副本。
+5. MUST 检查预演的 `content/`、`public/images/` 和 `reports/`，核对公开副本、正文链接、图片、同步报告和 manifest。预演有错误时仍可检查已生成的部分产物。只有 `summary.errors === 0` 才能继续。预演会指出正式目的地中占用同一路由的手工内容路径。告警可以随发布保留，须在报告或发布记录中说明原因。可提交的双链告警只记录公开副本文件、原文正文行号和原因，完整目标见预演根目录的本机 `local-diagnostics.json`。
+6. MUST 在预演通过并得到正式同步授权后，运行 `pnpm sync:vault --apply "$preview_root"`。也可为无参数 `pnpm sync:vault` 或 `pnpm prepare:publish` 设置 `BLOGSITE_REVIEWED_PREVIEW="$preview_root"`。正式同步会在暂存区重新生成产物并比对已审阅的内容副本、图片、正文链接和公开报告明细。仅扫描数、跳过计数或生成时间变化时可继续。若公开产物变化，重新预演和审阅后再同步。有错误或手工内容占用同一路由时，整批同步失败，保留旧公开副本、图片和 manifest。正式运行的失败诊断保存在系统临时目录。来源范围配置、预演和报告审阅本身不授权写入正式公开副本。
 7. MUST 在正式同步后运行：
 
 ```bash
@@ -32,7 +28,7 @@ pnpm check:publish
 pnpm build
 ```
 
-8. MUST 提交范围只包含公开副本、公开图片、报告、文档和代码改动。DO NOT 提交 `.env`、真实 Vault、私有附件、本机绝对路径或未授权草稿正文。
+8. MUST 提交范围只包含公开副本、公开图片、报告、文档和代码改动。DO NOT 提交预演收据、本机诊断、`.env`、真实 Vault、私有附件、本机绝对路径或未授权草稿正文。
 9. 如果需要线上发布，MUST 推送后检查 GitHub Actions，并用 live URL 验证首页、目标文章页和 RSS。
 10. DO NOT 在 `check:publish` 有 error 时发布。DO NOT 通过删除检查规则绕过隐私边界；路径规则调整必须有测试覆盖。
 11. UI 或主题变更发布时，MUST 额外验证搜索入口、明暗主题、文章目录、阅读进度、桌面/移动无横向溢出和 GitHub Pages 子路径。
@@ -77,7 +73,7 @@ sourceVaultPath: "relative/path/example.md"
 - `pubDate` 由 Vault 的 `publish_date` 映射，表示首次发布时间，是首页时间线、内容列表和 RSS 的排序依据；发布后更新正文时不得覆盖它。当前 `published` 来源必须提供该字段；V1 旧内容缺失时才由适配器暂时回退到 `created`。
 - `updatedDate` 只表示最近修订时间，可在详情页独立展示，但不改变内容在时间线中的位置。
 - `draft: true` 的内容不生成生产详情页，也不进入列表或 RSS。
-- `visibility: unlisted` 的非草稿内容生成详情页，但不进入首页、列表和 RSS。
+- `visibility: unlisted` 的非草稿内容生成详情页，公开正文可以显式链接到它。首页、列表、RSS 和自动阅读导航均不收录它。
 - `outputKind` 是当前 Astro 适配器生成的公开展示字段；对应 Vault 来源字段的允许值、默认映射与校验规则以 `contracts/publishing/v1/` 为准。
 - 不要提交私人内容、完整 Vault、真实私有附件或 `.env.local`。
 

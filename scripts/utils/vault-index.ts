@@ -12,7 +12,12 @@ import {
   type VaultDocument,
 } from "./frontmatter";
 import { isDailySourcePath } from "./path";
-import { isSafePublishSlug, normalizeLookupKey } from "./slug";
+import {
+  isSafePublishSlug,
+  normalizeLookupKey,
+  resolveWikilinkPath,
+  withoutMarkdownExtension,
+} from "./slug";
 
 export type PublishTarget = "blog" | "notes" | "projects";
 export type PublishStatus = "draft" | "published";
@@ -35,47 +40,75 @@ export interface PublishIndexEntry {
 }
 
 export interface VaultIndex {
-  entries: PublishIndexEntry[];
-  knownTargets: Set<string>;
-  publishedByKey: Map<string, PublishIndexEntry>;
+  pathsByName: Map<string, Set<string>>;
+  pathsByVaultPath: Map<string, Set<string>>;
+  publishedUrlsByPath: Map<string, string>;
 }
+
+type KnownTarget = Pick<PublishIndexEntry, "sourceVaultPath" | "title" | "aliases">;
 
 export function createVaultIndex(
   entries: PublishIndexEntry[],
-  knownTargets: string[] = [],
+  knownTargets: KnownTarget[] = [],
 ): VaultIndex {
-  const publishedByKey = new Map<string, PublishIndexEntry>();
-  const normalizedKnownTargets = new Set<string>();
+  const pathsByName = new Map<string, Set<string>>();
+  const pathsByVaultPath = new Map<string, Set<string>>();
+  const publishedUrlsByPath = new Map<string, string>();
 
-  for (const target of knownTargets) {
-    normalizedKnownTargets.add(normalizeLookupKey(target));
+  function addPath(map: Map<string, Set<string>>, key: string, sourceVaultPath: string): void {
+    const paths = map.get(key) ?? new Set<string>();
+    paths.add(sourceVaultPath);
+    map.set(key, paths);
   }
-  for (const entry of entries) {
-    const completedEntry = {
-      ...entry,
-      url: entry.url ?? `/${entry.publishTarget}/${entry.publishSlug}/`,
-    };
-    for (const key of [entry.title, ...entry.aliases, path.basename(entry.sourceVaultPath, ".md")]) {
-      const normalizedKey = normalizeLookupKey(key);
-      normalizedKnownTargets.add(normalizedKey);
-      if (!publishedByKey.has(normalizedKey)) {
-        publishedByKey.set(normalizedKey, completedEntry);
+
+  for (const { sourceVaultPath, title, aliases } of [...knownTargets, ...entries]) {
+    addPath(pathsByVaultPath, withoutMarkdownExtension(sourceVaultPath), sourceVaultPath);
+    for (const name of [title, ...aliases, path.posix.basename(sourceVaultPath)]) {
+      const key = normalizeLookupKey(name);
+      if (key) {
+        addPath(pathsByName, key, sourceVaultPath);
       }
     }
   }
+  for (const entry of entries) {
+    if (entry.publishStatus === "published") {
+      publishedUrlsByPath.set(
+        entry.sourceVaultPath,
+        entry.url ?? `/${entry.publishTarget}/${entry.publishSlug}/`,
+      );
+    }
+  }
 
-  return { entries, knownTargets: normalizedKnownTargets, publishedByKey };
+  return { pathsByName, pathsByVaultPath, publishedUrlsByPath };
 }
 
-export function lookupPublishedTarget(
+type UnlinkedTargetReason = "target-not-published" | "target-not-found" | "target-ambiguous";
+
+export function resolveWikilinkTarget(
   index: VaultIndex,
   target: string,
-): PublishIndexEntry | undefined {
-  return index.publishedByKey.get(normalizeLookupKey(target));
-}
-
-export function isKnownVaultTarget(index: VaultIndex, target: string): boolean {
-  return index.knownTargets.has(normalizeLookupKey(target));
+  sourceVaultPath?: string,
+): { url: string; reason?: never } | { url?: never; reason: UnlinkedTargetReason } {
+  const isPath = /[/\\]/u.test(target);
+  const key = isPath ? resolveWikilinkPath(target, sourceVaultPath) : normalizeLookupKey(target);
+  if (!key) {
+    return { reason: "target-not-found" };
+  }
+  const pathKey = withoutMarkdownExtension(key);
+  const paths = isPath
+    ? index.pathsByVaultPath.get(pathKey)
+    : index.pathsByName.get(key);
+  const includesExtension = isPath && key !== pathKey;
+  if (!paths?.size || (includesExtension && !paths.has(key))) {
+    return { reason: "target-not-found" };
+  }
+  if (!includesExtension && paths.size > 1) {
+    return { reason: "target-ambiguous" };
+  }
+  const [onlyPath] = paths;
+  const matchedPath = includesExtension ? key : onlyPath;
+  const url = index.publishedUrlsByPath.get(matchedPath);
+  return url ? { url } : { reason: "target-not-published" };
 }
 
 export type CandidateSkipReason =
@@ -181,10 +214,10 @@ export function evaluatePublishCandidate(document: VaultDocument): CandidateEval
   };
 }
 
-export function collectKnownTargets(documents: VaultDocument[]): string[] {
-  return documents.flatMap((document) => [
-    getString(document.data, "title"),
-    ...getStringArray(document.data, "aliases"),
-    path.basename(document.sourceVaultPath, ".md"),
-  ]).filter(Boolean);
+export function collectKnownTargets(documents: VaultDocument[]): KnownTarget[] {
+  return documents.map(({ sourceVaultPath, data }) => ({
+    sourceVaultPath,
+    title: getString(data, "title"),
+    aliases: getStringArray(data, "aliases"),
+  }));
 }

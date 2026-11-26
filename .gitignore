@@ -5,4 +5,6 @@ dist/
 .env.local
 .DS_Store
 .omo
+.vault-sync-work-*/
+.vault-sync-lock/
 

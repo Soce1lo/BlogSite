@@ -1,6 +1,6 @@
 import { copyFile, mkdir, realpath, stat } from "node:fs/promises";
 import path from "node:path";
-import type { AssetHandler, AssetWarning } from "./normalize-markdown";
+import type { AssetHandler, AssetReplacement, AssetWarning } from "./normalize-markdown";
 import { isPathInside, walkFiles } from "./utils/path";
 
 export type AssetCatalog = Map<string, string[]>;
@@ -18,9 +18,13 @@ function assetKey(fileName: string): string {
   return fileName.normalize("NFKC").toLocaleLowerCase("en-US");
 }
 
+export function isMarkdownSourcePath(filePath: string): boolean {
+  return /\.mdx?$/iu.test(filePath);
+}
+
 function stripReferenceDecorations(reference: string): string {
   const withoutTitle = reference.trim().split(/\s+["'][^"']*["']\s*$/u, 1)[0];
-  const withoutQuery = withoutTitle.split(/[?#]/u, 1)[0];
+  const withoutQuery = withoutTitle.replace(/^<|>$/gu, "").split(/[?#]/u, 1)[0];
   try {
     return decodeURIComponent(withoutQuery);
   } catch {
@@ -77,6 +81,18 @@ export async function createAssetHandler(
   return async (request) => {
     const cleanedReference = stripReferenceDecorations(request.reference);
     const fileName = path.basename(cleanedReference.replaceAll("\\", "/"));
+    const blockedMarkdown = (): AssetReplacement => ({
+      markdown: request.alt,
+      warnings: [{
+        file: options.outputPath,
+        asset: "Markdown",
+        action: "converted-to-text",
+        reason: "unsupported-markdown-source",
+      }],
+    });
+    if (isMarkdownSourcePath(fileName)) {
+      return blockedMarkdown();
+    }
     if (/^file:/iu.test(cleanedReference)) {
       return {
         markdown: `[missing image: ${fileName || "local file"}]`,
@@ -115,6 +131,9 @@ export async function createAssetHandler(
         markdown: `[missing image: ${fileName || request.reference}]`,
         warnings: [warning],
       };
+    }
+    if (isMarkdownSourcePath(sourceAsset)) {
+      return blockedMarkdown();
     }
 
     const destinationDirectory = path.join(options.imageOutputPath, options.publishSlug);

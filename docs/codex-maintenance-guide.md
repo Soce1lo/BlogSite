@@ -9,7 +9,6 @@ BlogSite 当前是 **Soce1lo 个人实验室**：以交互探索坐标、成长�
 ```bash
 pnpm install
 pnpm test
-pnpm sync:vault
 pnpm check:publish
 pnpm build
 pnpm dev
@@ -21,7 +20,7 @@ pnpm dev
 2. 页面链接必须通过 `withBase()` 生成，以兼容 GitHub Pages 子路径。
 3. 公开列表和 RSS 必须继续过滤草稿与 unlisted 内容。
 4. workflow 不得添加 `sync:vault` 或任何私人路径访问。
-5. 报告和 manifest 只能记录相对路径、短链接片段、动作、URL、状态和原因，不得粘贴正文。
+5. 报告和 manifest 只记录公开产物的元数据。可提交的双链告警仅包含公开副本文件、原文正文行号和原因，完整链接目标保留在本机预演的 `local-diagnostics.json`。
 6. 提交前运行全部测试、正式发布检查、Astro 类型检查和生产构建。
 7. UI 或主题变更要同时核对桌面和移动视口，不得引入横向溢出、重复标题或 GitHub Pages 子路径错误。
 8. 首页 Profile、长期主题和精选引用只在 `src/data/site-profile.ts` 中人工维护，不得从 Daily、任务列表或 git 状态自动生成。公开数量、最近发布日期和探索档案只从 `isPublicEntry` 筛选后的公开集合派生。

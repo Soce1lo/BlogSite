@@ -21,6 +21,7 @@
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
     "astro": "^6.4.8",
+    "github-slugger": "2.0.0",
     "gray-matter": "^4.0.3"
   },
   "devDependencies": {

@@ -105,7 +105,7 @@ export async function checkPublishContent(
     const source = await readFile(absolutePath, "utf8");
     let parsed: matter.GrayMatterFile<string>;
     try {
-      parsed = matter(source);
+      parsed = matter(source, {});
     } catch {
       addIssue(errors, relativePath, "invalid-frontmatter", "frontmatter 无法解析");
       continue;

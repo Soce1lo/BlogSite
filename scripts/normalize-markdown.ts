@@ -1,15 +1,17 @@
 import path from "node:path";
-import type { VaultIndex } from "./utils/vault-index";
-import { isKnownVaultTarget, lookupPublishedTarget } from "./utils/vault-index";
+import { isMarkdownSourcePath } from "./copy-assets";
+import { resolveWikilinkTarget, type VaultIndex } from "./utils/vault-index";
 import { splitFencedCodeSegments } from "./utils/markdown";
-import { splitWikilink } from "./utils/slug";
+import { splitWikilink, withoutMarkdownExtension } from "./utils/slug";
 
 export interface WikilinkWarning {
   file: string;
+  line: number;
   link: string;
   target: string;
   action: "converted-to-text" | "anchor-dropped";
   reason:
+    | "target-ambiguous"
     | "target-not-published"
     | "target-not-found"
     | "heading-anchor-dropped"
@@ -20,6 +22,7 @@ export interface NormalizeMarkdownOptions {
   markdown: string;
   index: VaultIndex;
   outputPath: string;
+  sourceVaultPath?: string;
   assetHandler?: AssetHandler;
 }
 
@@ -27,7 +30,7 @@ export interface AssetWarning {
   file: string;
   asset: string;
   action: "copied" | "converted-to-text";
-  reason: "missing-asset" | "size-attribute-dropped";
+  reason: "missing-asset" | "size-attribute-dropped" | "unsupported-markdown-source";
 }
 
 export interface AssetRequest {
@@ -50,32 +53,55 @@ export interface NormalizeMarkdownResult {
   assetWarnings: AssetWarning[];
 }
 
+const markdownImagePattern = /!\[([^\]]*)\]\(([^)]+)\)/gu;
+const obsidianEmbedPattern = /!\[\[(?<embed>[^\]]+)\]\]/gu;
+const wikilinkPattern = /(?<!!)\[\[(?<wikilink>[^\]]+)\]\]/gu;
+const wikilinkAndEmbedPattern = new RegExp(
+  `${obsidianEmbedPattern.source}|${wikilinkPattern.source}`,
+  "gu",
+);
+const wikilinkAndImagePattern = new RegExp(
+  `${markdownImagePattern.source}|${wikilinkAndEmbedPattern.source}`,
+  "gu",
+);
+
 async function replaceAsync(
   source: string,
   pattern: RegExp,
-  replacement: (match: RegExpExecArray) => Promise<string>,
+  replacement: (match: RegExpExecArray, line: number) => Promise<string>,
+  firstLine: number,
 ): Promise<string> {
   let output = "";
   let cursor = 0;
+  let line = firstLine;
+  let previousMatchIndex = 0;
   for (const match of source.matchAll(pattern)) {
-    const index = match.index ?? 0;
+    const index = match.index;
+    line += countLineBreaks(source.slice(previousMatchIndex, index));
+    previousMatchIndex = index;
     output += source.slice(cursor, index);
-    output += await replacement(match);
+    output += await replacement(match, line);
     cursor = index + match[0].length;
   }
   return output + source.slice(cursor);
 }
 
+function countLineBreaks(source: string): number {
+  return (source.match(/\n/gu) ?? []).length;
+}
+
 async function replaceOutsideFencedCode(
   source: string,
   pattern: RegExp,
-  replacement: (match: RegExpExecArray) => Promise<string>,
+  replacement: (match: RegExpExecArray, line: number) => Promise<string>,
 ): Promise<string> {
   let output = "";
+  let line = 1;
   for (const segment of splitFencedCodeSegments(source)) {
     output += segment.fencedCode
       ? segment.content
-      : await replaceAsync(segment.content, pattern, replacement);
+      : await replaceAsync(segment.content, pattern, replacement, line);
+    line += countLineBreaks(segment.content);
   }
   return output;
 }
@@ -84,7 +110,7 @@ function wikilinkLabel(target: string, alias?: string): string {
   if (alias) {
     return alias;
   }
-  return path.posix.basename(target.replaceAll("\\", "/")).replace(/\.md$/i, "");
+  return withoutMarkdownExtension(path.posix.basename(target.replaceAll("\\", "/")));
 }
 
 function calloutLabel(type: string, title?: string): string {
@@ -123,71 +149,33 @@ export async function normalizeMarkdown(
   const wikilinkWarnings: WikilinkWarning[] = [];
   const assetWarnings: AssetWarning[] = [];
   const assetHandler = options.assetHandler;
-  let markdown = options.markdown;
 
-  if (assetHandler) {
-    markdown = await replaceOutsideFencedCode(
-      markdown,
-      /!\[([^\]]*)\]\(([^)]+)\)/g,
-      async (match) => {
-        const reference = match[2].trim().replace(/^<|>$/g, "");
-        if (/^(?:https?:|data:)/i.test(reference)) {
-          return match[0];
-        }
-        const result = await assetHandler({
-          reference,
-          alt: match[1].trim(),
-          original: match[0],
-        });
-        assetWarnings.push(...result.warnings);
-        return result.markdown;
-      },
-    );
+  // Resolve links while source line positions are intact. Image references remain opaque.
+  let markdown = await replaceOutsideFencedCode(
+    options.markdown,
+    assetHandler ? wikilinkAndImagePattern : wikilinkAndEmbedPattern,
+    async (match, line) => {
+      const embed = match.groups?.embed;
+      const wikilink = match.groups?.wikilink ?? embed;
+      if (!wikilink) {
+        return match[0];
+      }
 
-    markdown = await replaceOutsideFencedCode(
-      markdown,
-      /!\[\[([^\]]+)\]\]/g,
-      async (match) => {
-        const [referencePart, modifierPart] = match[1].split("|", 2);
-        const reference = referencePart.trim();
-        const modifier = modifierPart?.trim();
-        const isSize = modifier ? /^\d+(?:x\d+)?$/i.test(modifier) : false;
-        const defaultAlt = path.posix.basename(reference).replace(/\.[^.]+$/, "");
-        const result = await assetHandler({
-          reference,
-          alt: modifier && !isSize ? modifier : defaultAlt,
-          original: match[0],
-          ...(isSize ? { sizeAttribute: modifier } : {}),
-        });
-        assetWarnings.push(...result.warnings);
-        return result.markdown;
-      },
-    );
-  }
-
-  markdown = await replaceOutsideFencedCode(
-    markdown,
-    /^>[ \t]*\[!([A-Za-z0-9_-]+)\](?:[+-])?(?:[ \t]+([^\r\n]+))?[ \t]*$/gmu,
-    async (match) => `> **${calloutLabel(match[1], match[2])}**\n>`,
-  );
-
-  markdown = await replaceOutsideFencedCode(
-    markdown,
-    /(?<!!)\[\[([^\]]+)\]\]/g,
-    async (match) => {
-      const { target, alias, anchor } = splitWikilink(match[1]);
+      const { target, alias, anchor } = splitWikilink(wikilink);
+      if (embed && path.posix.extname(target.replaceAll("\\", "/")) && !isMarkdownSourcePath(target)) {
+        return match[0];
+      }
       const label = wikilinkLabel(target, alias);
-      const publishedTarget = lookupPublishedTarget(options.index, target);
+      const resolution = resolveWikilinkTarget(options.index, target, options.sourceVaultPath);
 
-      if (!publishedTarget) {
+      if (resolution.reason) {
         wikilinkWarnings.push({
           file: options.outputPath,
+          line,
           link: match[0],
           target,
           action: "converted-to-text",
-          reason: isKnownVaultTarget(options.index, target)
-            ? "target-not-published"
-            : "target-not-found",
+          reason: resolution.reason,
         });
         return label;
       }
@@ -195,6 +183,7 @@ export async function normalizeMarkdown(
       if (anchor) {
         wikilinkWarnings.push({
           file: options.outputPath,
+          line,
           link: match[0],
           target,
           action: "anchor-dropped",
@@ -203,8 +192,46 @@ export async function normalizeMarkdown(
             : "heading-anchor-dropped",
         });
       }
-      return `[${label}](${relativePublishedUrl(options.outputPath, publishedTarget.url ?? "")})`;
+      return `[${label}](${relativePublishedUrl(options.outputPath, resolution.url)})`;
     },
+  );
+
+  if (assetHandler) {
+    markdown = await replaceOutsideFencedCode(markdown, markdownImagePattern, async (match) => {
+      const reference = match[2].trim().replace(/^<|>$/g, "");
+      if (/^(?:https?:|data:)/i.test(reference)) {
+        return match[0];
+      }
+      const result = await assetHandler({
+        reference,
+        alt: match[1].trim(),
+        original: match[0],
+      });
+      assetWarnings.push(...result.warnings);
+      return result.markdown;
+    });
+
+    markdown = await replaceOutsideFencedCode(markdown, obsidianEmbedPattern, async (match) => {
+      const [referencePart, modifierPart] = match[1].split("|", 2);
+      const reference = referencePart.trim();
+      const modifier = modifierPart?.trim();
+      const isSize = modifier ? /^\d+(?:x\d+)?$/i.test(modifier) : false;
+      const defaultAlt = path.posix.basename(reference).replace(/\.[^.]+$/, "");
+      const result = await assetHandler({
+        reference,
+        alt: modifier && !isSize ? modifier : defaultAlt,
+        original: match[0],
+        ...(isSize ? { sizeAttribute: modifier } : {}),
+      });
+      assetWarnings.push(...result.warnings);
+      return result.markdown;
+    });
+  }
+
+  markdown = await replaceOutsideFencedCode(
+    markdown,
+    /^>[ \t]*\[!([A-Za-z0-9_-]+)\](?:[+-])?(?:[ \t]+([^\r\n]+))?[ \t]*$/gmu,
+    async (match) => `> **${calloutLabel(match[1], match[2])}**\n>`,
   );
 
   return { markdown, wikilinkWarnings, assetWarnings };

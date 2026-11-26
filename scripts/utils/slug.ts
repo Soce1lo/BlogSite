@@ -1,9 +1,26 @@
 import path from "node:path";
 
 export function normalizeLookupKey(value: string): string {
-  const normalizedPath = value.trim().replaceAll("\\", "/");
-  const basename = path.posix.basename(normalizedPath).replace(/\.md$/i, "");
-  return basename.normalize("NFKC").toLocaleLowerCase("en-US");
+  return withoutMarkdownExtension(value.trim()).normalize("NFKC").toLocaleLowerCase("en-US");
+}
+
+export function withoutMarkdownExtension(value: string): string {
+  return value.replace(/\.md$/iu, "");
+}
+
+export function resolveWikilinkPath(target: string, sourceVaultPath?: string): string | undefined {
+  const normalizedTarget = target.replaceAll("\\", "/");
+  const isRelative = /^\.{1,2}\//u.test(normalizedTarget);
+  const vaultPath = isRelative
+    ? sourceVaultPath && path.posix.join(path.posix.dirname(sourceVaultPath), normalizedTarget)
+    : normalizedTarget.replace(/^\//u, "");
+  if (
+    !vaultPath ||
+    vaultPath.split("/").some((segment) => !segment || segment === "." || segment === "..")
+  ) {
+    return undefined;
+  }
+  return vaultPath;
 }
 
 export function isSafePublishSlug(value: string): boolean {
