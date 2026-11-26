@@ -32,6 +32,8 @@
 
 不要提交 `.env`、本机绝对路径、真实 Vault 正文、私有附件或完整 Obsidian 数据。真实内容接入、同步和线上发布的唯一操作序列见 [`docs/publishing-guide.md`](docs/publishing-guide.md)；本文件只保留路由和边界。`sync:vault` 必须保持源 Vault 只读，输出目录不得位于 Vault 内；遇到源文 `publish_status: draft` 必须先确认，不要代替用户改成 `published`。GitHub Actions 只能构建仓库内已有公开副本，不应加入真实 Vault 同步步骤。
 
+涉及页面视觉设计或改版时，若 `.agents/references/frontend-design/SKILL.md` 存在，则按需读取并遵循该参考，同时沿用本项目已有的视觉系统。
+
 ## Agent skills
 
 ### Issue tracker
