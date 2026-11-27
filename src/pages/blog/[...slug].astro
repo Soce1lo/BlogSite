@@ -1,41 +1,16 @@
 ---
-import { getCollection, render, type CollectionEntry } from "astro:content";
+import type { InferGetStaticPropsType } from "astro";
+import { render } from "astro:content";
 import ContentLayout from "../../layouts/ContentLayout.astro";
-import { isGeneratedEntry, isPublicEntry } from "../../lib/content";
-import { resolveRelatedReading, type RelatedReadingEntry } from "../../lib/related";
-import { resolveSeriesNavigation, type SeriesNavigation } from "../../lib/series";
+import { buildDetailPaths } from "../../lib/detail-paths";
 
-export async function getStaticPaths() {
-  const [blogEntries, noteEntries, projectEntries] = await Promise.all([
-    getCollection("blog"),
-    getCollection("notes"),
-    getCollection("projects"),
-  ]);
-  const entries = blogEntries.filter(isGeneratedEntry);
-  const allEntries = [
-    ...entries,
-    ...noteEntries.filter(isGeneratedEntry),
-    ...projectEntries.filter(isGeneratedEntry),
-  ];
-  const publicEntries = allEntries.filter(isPublicEntry);
-
-  return entries.map((entry) => ({
-    params: { slug: entry.id },
-    props: {
-      entry,
-      seriesNavigation: resolveSeriesNavigation(entry, allEntries),
-      relatedReading: resolveRelatedReading(entry, publicEntries),
-    },
-  }));
+export function getStaticPaths() {
+  return buildDetailPaths("blog");
 }
 
-interface Props {
-  entry: CollectionEntry<"blog">;
-  seriesNavigation?: SeriesNavigation;
-  relatedReading?: RelatedReadingEntry[];
-}
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
-const { entry, seriesNavigation, relatedReading = [] } = Astro.props;
+const { entry, seriesNavigation, relatedReading } = Astro.props;
 const { Content, headings } = await render(entry);
 ---
 
