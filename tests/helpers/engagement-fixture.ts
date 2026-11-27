@@ -47,17 +47,25 @@ export default {
 } as const;
 `);
 
-  for (const collection of ["blog", "notes", "projects"]) {
+  const collections = [
+    { collection: "blog", title: "一次可复用的实践记录", metadata: "series: fixture-series\nseriesOrder: 1" },
+    { collection: "notes", title: "一则可复用的学习笔记", metadata: "series: fixture-series\nseriesOrder: 2\ntopic: fixture-topic" },
+    { collection: "projects", title: "一个可复用的实验项目", metadata: "topic: fixture-topic" },
+  ];
+  for (const { collection, title, metadata } of collections) {
     const directory = path.join(root, "src/content", collection);
     await mkdir(directory, { recursive: true });
     for (const visibility of ["public", "unlisted"]) {
+      const relationshipFields = visibility === "public"
+        ? metadata
+        : "series: fixture-series\nseriesOrder: 3\ntopic: fixture-topic";
       await writeFile(path.join(directory, `${visibility}-example.md`), `---
-title: ${visibility === "public" ? "一次可复用的实践记录" : "不应发送到第三方的未公开标题"}
+title: ${visibility === "public" ? title : `不应发送到第三方的未公开标题（${collection}）`}
 description: 合成验证页面，仅用于检查排版、访问次数和留言交互。
-pubDate: 2026-08-30
+pubDate: ${collection === "projects" ? "2026-08-31" : "2026-08-30"}
 category: 验证
 tags: [${collection === "projects" ? "fixture" : "other"}]
-${collection === "blog" ? "series: fixture-series" : collection === "notes" ? "topic: fixture-topic" : ""}
+${relationshipFields}
 visibility: ${visibility}
 sourceVaultPath: fixtures/${collection}/${visibility}.md
 ---
@@ -72,11 +80,14 @@ sourceVaultPath: fixtures/${collection}/${visibility}.md
 `);
     }
     await writeFile(path.join(directory, "draft-example.md"), `---
-title: 不应生成的草稿
+title: 不应生成的草稿（${collection}）
 description: 合成草稿
 tags: [fixture]
 pubDate: 2026-08-30
 category: 验证
+series: fixture-series
+seriesOrder: 4
+topic: fixture-topic
 visibility: public
 draft: true
 sourceVaultPath: fixtures/${collection}/draft.md

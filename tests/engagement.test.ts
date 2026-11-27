@@ -25,6 +25,14 @@ const configured = {
   PUBLIC_GISCUS_CATEGORY_ID: "DIC_fixture",
 };
 
+function linkTargets(html: string): string[] {
+  return [...html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)].map((match) => match[1]);
+}
+
+const seriesSection = /<nav\b[^>]*aria-label="fixture-series目录"[^>]*>([\s\S]*?)<\/nav>/;
+const pagerSection = /<nav\b[^>]*aria-label="专题文章切换"[^>]*>([\s\S]*?)<\/nav>/;
+const relatedSection = /<section\b[^>]*aria-labelledby="related-reading-title"[^>]*>([\s\S]*?)<\/section>/;
+
 test("未配置或配置不完整时不启用对应第三方服务", () => {
   assert.deepEqual(resolveEngagementConfig({}), { goatcounter: null, giscus: null });
   assert.deepEqual(resolveEngagementConfig({ PUBLIC_GISCUS_REPO: "fixture/comments" }), {
@@ -145,7 +153,7 @@ test("评论消息同时核对 origin、具体 iframe 和载荷结构", () => {
   }
 });
 
-test("合成生产构建为三类公开文章接入计数与独立留言，未公开页面不接入", async (t) => {
+test("合成生产构建保留三类详情页的路由、阅读导航和互动边界", async (t) => {
   const root = await buildEngagementFixture();
   t.after(() => rm(root, { recursive: true, force: true }));
   const read = (file: string) => readFile(path.join(root, "dist", file), "utf8");
@@ -174,11 +182,25 @@ test("合成生产构建为三类公开文章接入计数与独立留言，未�
     assert.equal(allEntries.split(`href="/BlogSite/${collection}/public-example/"`).length - 1, 1);
   }
   const reading = thread.split('id="thread-reading-heading"')[1].split('id="thread-entries-heading"')[0];
-  const readingLinks = [...reading.matchAll(/href="([^"]+)"/g)].map((match) => match[1]);
-  assert.deepEqual(readingLinks, ["/BlogSite/notes/public-example/", "/BlogSite/blog/public-example/"]);
+  assert.deepEqual(linkTargets(reading), ["/BlogSite/notes/public-example/", "/BlogSite/blog/public-example/"]);
 
-  for (const collection of ["blog", "notes", "projects"]) {
+  const blogHref = "/BlogSite/blog/public-example/";
+  const noteHref = "/BlogSite/notes/public-example/";
+  const projectHref = "/BlogSite/projects/public-example/";
+  const detailPages = [
+    { collection: "blog", label: "思考", title: "一次可复用的实践记录", seriesHref: noteHref, relatedHrefs: [noteHref] },
+    { collection: "notes", label: "学习", title: "一则可复用的学习笔记", seriesHref: blogHref, relatedHrefs: [blogHref, projectHref] },
+    { collection: "projects", label: "项目", title: "一个可复用的实验项目", seriesHref: null, relatedHrefs: [noteHref] },
+  ];
+  for (const { collection, label, title, seriesHref, relatedHrefs } of detailPages) {
+    const backLink = new RegExp(`<a\\b[^>]* href="/BlogSite/${collection}/"[^>]*>\\s*返回${label}\\s*</a>`);
     const html = await read(`${collection}/public-example/index.html`);
+    assert.match(html, backLink);
+    assert.ok(html.includes(`<h1>${title}</h1>`), `${collection} 显示本栏目的详情标题`);
+    for (const heading of ["留下可复用的理解", "从阅读到交流"]) {
+      assert.match(html, new RegExp(`<h2 id="${heading}">${heading}</h2>`));
+      assert.match(html, new RegExp(`href="#${heading}">\\s*${heading}\\s*</a>`));
+    }
     assert.match(html, new RegExp(`data-term="${collection}/public-example"`));
     assert.match(html, new RegExp(`counter/%2FBlogSite%2F${collection}%2Fpublic-example%2F\\.json`));
     assert.match(html, /data-production="true"/);
@@ -187,10 +209,57 @@ test("合成生产构建为三类公开文章接入计数与独立留言，未�
     assert.doesNotMatch(html, /src="https:\/\/giscus\.app\/client\.js"/);
     assert.doesNotMatch(html, /fixtures\//);
 
+    const series = html.match(seriesSection);
+    const pager = html.match(pagerSection);
+    const related = html.match(relatedSection);
+    if (seriesHref) {
+      assert.ok(series, `${collection} 展示专题目录`);
+      assert.ok(pager, `${collection} 展示篇间导航`);
+      assert.deepEqual(linkTargets(series[1]), [seriesHref]);
+      assert.deepEqual(linkTargets(pager[1]), [seriesHref]);
+      if (collection === "blog") {
+        assert.match(series[1], /一则可复用的学习笔记/);
+        assert.match(pager[1], /下一篇[\s\S]*一则可复用的学习笔记/);
+        assert.doesNotMatch(pager[1], /上一篇/);
+      }
+    } else {
+      assert.equal(series, null);
+      assert.equal(pager, null);
+    }
+    assert.ok(related, `${collection} 展示延伸阅读`);
+    assert.deepEqual(linkTargets(related[1]), relatedHrefs);
+
     const unlisted = await read(`${collection}/unlisted-example/index.html`);
+    assert.match(unlisted, backLink);
+    assert.ok(unlisted.includes(`<h1>不应发送到第三方的未公开标题（${collection}）</h1>`));
+    assert.doesNotMatch(unlisted, /aria-label="fixture-series目录"|aria-label="专题文章切换"|>延伸阅读<\/h2>/);
     assert.doesNotMatch(unlisted, /data-visitor-count=|data-visitor-analytics|data-github-comments|giscus:backlink/);
     assert.equal(existsSync(path.join(root, "dist", collection, "draft-example/index.html")), false);
   }
+
+  const note = await read("notes/public-example/index.html");
+  const series = note.match(seriesSection);
+  assert.ok(series, "笔记展示专题目录");
+  const seriesItems = [...series[1].matchAll(/<li\b[^>]*>([\s\S]*?)<\/li>/g)].map((match) => match[1]);
+  assert.equal(seriesItems.length, 2);
+  const [blogItem, noteItem] = seriesItems;
+  assert.match(blogItem, /一次可复用的实践记录/);
+  assert.doesNotMatch(blogItem, /aria-current="page"/);
+  assert.deepEqual(linkTargets(blogItem), [blogHref]);
+  assert.match(noteItem, /aria-current="page"[^>]*>[\s\S]*一则可复用的学习笔记/);
+  assert.equal([...series[1].matchAll(/aria-current="page"/g)].length, 1);
+  assert.deepEqual(linkTargets(noteItem), []);
+
+  const pager = note.match(pagerSection);
+  assert.ok(pager, "笔记展示篇间导航");
+  const bodyEnd = note.indexOf("真正有用的交流，仍然围绕正文中的具体问题展开。</p>");
+  assert.ok(bodyEnd >= 0 && note.indexOf(pager[0]) > bodyEnd, "篇间导航位于正文最后一段之后");
+  assert.match(pager[1], /上一篇[\s\S]*一次可复用的实践记录/);
+  assert.doesNotMatch(pager[1], /下一篇/);
+  const related = note.match(relatedSection);
+  assert.ok(related, "笔记展示延伸阅读");
+  assert.match(related[1], /同系列[\s\S]*一次可复用的实践记录[\s\S]*同主题[\s\S]*一个可复用的实验项目/);
+
   assert.doesNotMatch(await read("404.html"), /data-visitor-count=|data-visitor-analytics|data-github-comments/);
   for (const theme of ["light", "dark"]) {
     const css = await read(`giscus/${theme}.css`);

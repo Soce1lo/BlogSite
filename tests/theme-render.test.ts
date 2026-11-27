@@ -222,8 +222,6 @@ test("全站对外品牌与导航语义统一为 Soce1lo 成长输出", async ()
   const blogIndex = await readProjectFile("src/pages/blog/index.astro");
   const notesIndex = await readProjectFile("src/pages/notes/index.astro");
   const projectsIndex = await readProjectFile("src/pages/projects/index.astro");
-  const blogDetail = await readProjectFile("src/pages/blog/[...slug].astro");
-  const notesDetail = await readProjectFile("src/pages/notes/[...slug].astro");
 
   assert.match(profile, /name: "Soce1lo"/);
   assert.doesNotMatch(profile, /输入留在私人系统，输出经过选择后公开。/);
@@ -238,8 +236,6 @@ test("全站对外品牌与导航语义统一为 Soce1lo 成长输出", async ()
   assert.match(blogIndex, /<h1>思考<\/h1>/);
   assert.match(notesIndex, /<h1>学习<\/h1>/);
   assert.match(projectsIndex, /<h1>项目<\/h1>/);
-  assert.match(blogDetail, /sectionLabel="思考"/);
-  assert.match(notesDetail, /sectionLabel="学习"/);
   assert.match(search, /blog: "思考"/);
   assert.match(search, /notes: "学习"/);
   assert.match(tags, /<h1>主题<\/h1>/);
@@ -398,18 +394,6 @@ test("内容详情页使用 render headings 生成文章目录 rail", async () =
     css,
     /grid-template-columns:\s*minmax\(0,\s*var\(--content-width\)\)\s*minmax\(var\(--toc-min-width\),\s*var\(--toc-width\)\)/,
   );
-
-  for (const route of [
-    "src/pages/blog/[...slug].astro",
-    "src/pages/notes/[...slug].astro",
-    "src/pages/projects/[...slug].astro",
-  ]) {
-    const page = await readProjectFile(route);
-    assert.match(page, /const \{ Content, headings \} = await render\(entry\);/);
-    assert.match(page, /<ContentLayout[\s\S]*entry=\{entry\}/);
-    assert.match(page, /sectionLabel="[^"]+"/);
-    assert.match(page, /headings=\{headings\}/);
-  }
 });
 
 test("文章专题默认收起，篇间导航保留在正文之后", async () => {
@@ -439,16 +423,6 @@ test("文章专题默认收起，篇间导航保留在正文之后", async () =>
   const bodyPosition = html.indexOf('class="prose content-body"');
   const pagerPosition = html.indexOf('class="series-navigation__pager series-pager"');
   assert.ok(bodyPosition >= 0 && pagerPosition > bodyPosition, "篇间导航必须位于正文之后");
-
-  for (const route of [
-    "src/pages/blog/[...slug].astro",
-    "src/pages/notes/[...slug].astro",
-    "src/pages/projects/[...slug].astro",
-  ]) {
-    const page = await readProjectFile(route);
-    assert.match(page, /resolveSeriesNavigation/);
-    assert.match(page, /seriesNavigation=/);
-  }
 });
 
 test("主题样式覆盖首页、列表、标签、404、阅读和 reduced motion", async () => {
