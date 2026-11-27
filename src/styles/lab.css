@@ -83,10 +83,6 @@
 }
 
 .lab-map__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
   padding: var(--space-4) var(--space-5);
   border-bottom: var(--border-width) solid var(--border);
 }
@@ -96,17 +92,16 @@
   font-size: var(--text-sm);
   font-weight: 600;
 }
-.lab-map__header > span {
-  color: var(--subtle);
-  font: var(--text-xs) var(--font-utility);
-}
-
 .lab-map__canvas {
   position: relative;
   height: 17.5rem;
   background-color: var(--color-surface-wash);
   background-image: radial-gradient(var(--border-strong) 0.65px, transparent 0.65px);
   background-size: 1rem 1rem;
+}
+
+.lab-map:not([data-lab-ready]) .lab-map__canvas {
+  display: none;
 }
 
 .lab-map__wires {
@@ -177,17 +172,21 @@
 .lab-map__node[aria-pressed="true"] {
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
-.lab-map__node--0 {
-  top: 25%;
-  left: 23%;
-}
+.lab-map__node--0,
 .lab-map__node--1 {
   top: 25%;
-  left: 77%;
 }
+.lab-map__node--2,
+.lab-map__node--3 {
+  top: 75%;
+}
+.lab-map__node--0,
 .lab-map__node--2 {
-  top: 82%;
-  left: 50%;
+  left: 25%;
+}
+.lab-map__node--1,
+.lab-map__node--3 {
+  left: 75%;
 }
 .lab-map__node-mark {
   font: var(--text-lg) var(--font-utility);
@@ -219,6 +218,16 @@
   min-height: 10rem;
   padding: var(--space-4) var(--space-5);
 }
+.lab-map:not([data-lab-ready]) .lab-map__panel + .lab-map__panel {
+  border-top: var(--border-width) solid var(--border);
+}
+.lab-map__panel-heading {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm);
+}
+.lab-map[data-lab-ready] .lab-map__panel-heading {
+  display: none;
+}
 .lab-map__panel > p {
   margin: 0 0 var(--space-3);
   color: var(--muted);
@@ -248,12 +257,6 @@
   font-size: var(--text-xs);
   text-decoration: none;
 }
-.lab-map__fallback {
-  padding: var(--space-4);
-  color: var(--muted);
-  font-size: var(--text-sm);
-}
-
 .lab-status {
   display: flex;
   flex-wrap: wrap;

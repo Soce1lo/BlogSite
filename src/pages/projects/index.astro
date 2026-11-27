@@ -5,6 +5,21 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { isPublicEntry, sortNewestFirst } from "../../lib/content";
 
 const entries = (await getCollection("projects")).filter(isPublicEntry).sort(sortNewestFirst);
+
+const groups = [
+  { id: "programming", label: "C 编程与软件设计", topics: ["C", "Algorithms", "Design Patterns"] },
+  { id: "embedded-systems", label: "嵌入式与系统实验", topics: ["嵌入式与系统实验"] },
+  { id: "investment", label: "投资学习", topics: ["投资学习"] },
+].map((group) => ({ ...group, entries: [] as typeof entries }));
+const otherGroup = { id: "other", label: "其他项目", entries: [] as typeof entries };
+
+for (const entry of entries) {
+  const topic = entry.data.topic;
+  const group = groups.find(({ topics }) => topic && topics.includes(topic)) ?? otherGroup;
+  group.entries.push(entry);
+}
+
+const visibleGroups = [...groups, otherGroup].filter((group) => group.entries.length > 0);
 ---
 
 <BaseLayout title="项目" description="Soce1lo 的公开项目与阶段复盘。">
@@ -13,5 +28,29 @@ const entries = (await getCollection("projects")).filter(isPublicEntry).sort(sor
     <h1>项目</h1>
     <p>项目目标、关键决策、实施结果和阶段复盘。</p>
   </header>
-  <ContentList entries={entries} />
+  {visibleGroups.length > 0 ? (
+    visibleGroups.map(({ id, label, entries: groupEntries }) => (
+      <section class="project-group" aria-labelledby={`project-group-${id}`}>
+        <h2 id={`project-group-${id}`}>{label}</h2>
+        <ContentList entries={groupEntries} headingLevel={3} />
+      </section>
+    ))
+  ) : (
+    <ContentList entries={entries} emptyMessage="暂无公开项目。" />
+  )}
 </BaseLayout>
+
+<style>
+  .project-group + .project-group {
+    margin-top: var(--space-10);
+  }
+
+  .project-group h2 {
+    margin: 0;
+    font-size: var(--text-xl);
+  }
+
+  .project-group :global(.content-list) {
+    margin-top: var(--space-4);
+  }
+</style>

@@ -6,18 +6,18 @@ interface Props {
   threads: ResolvedThread[];
 }
 
-const threads = Astro.props.threads.slice(0, 3);
+const { threads } = Astro.props;
+const nodeMarks = ["⌘", "</>", "↗", "⌂"];
 ---
 
 {threads.length > 0 && (
   <section class="lab-map" aria-labelledby="lab-map-heading" data-lab-map>
     <header class="lab-map__header">
       <h2 id="lab-map-heading">探索坐标</h2>
-      <span>FIELD NOTES / {String(threads.length).padStart(2, "0")}</span>
     </header>
     <div class="lab-map__canvas">
       <svg class="lab-map__wires" viewBox="0 0 500 280" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M 115 70 L 115 140 L 250 140 M 385 70 L 385 140 L 250 140 M 250 140 L 250 230" />
+        <path d="M 125 70 V 140 H 375 V 70 M 125 210 V 140 M 375 210 V 140" />
         <circle cx="250" cy="140" r="62" />
         <circle cx="250" cy="140" r="80" />
       </svg>
@@ -31,7 +31,7 @@ const threads = Astro.props.threads.slice(0, 3);
           data-lab-select={thread.id}
           hidden
         >
-          <span class="lab-map__node-mark" aria-hidden="true">{index === 0 ? "⌘" : index === 1 ? "</>" : "⌂"}</span>
+          <span class="lab-map__node-mark" aria-hidden="true">{nodeMarks[index]}</span>
           <span><strong>{thread.label}</strong><small>{thread.entries.length} 篇记录</small></span>
         </button>
       ))}
@@ -39,7 +39,13 @@ const threads = Astro.props.threads.slice(0, 3);
     </div>
     <div class="lab-map__panels" aria-live="polite">
       {threads.map((thread) => (
-        <section id={`lab-panel-${thread.id}`} class="lab-map__panel" data-lab-panel={thread.id}>
+        <section
+          id={`lab-panel-${thread.id}`}
+          class="lab-map__panel"
+          data-lab-panel={thread.id}
+          aria-labelledby={`lab-panel-heading-${thread.id}`}
+        >
+          <h3 id={`lab-panel-heading-${thread.id}`} class="lab-map__panel-heading">{thread.label}</h3>
           <p>{thread.description}</p>
           <a class="lab-map__latest" href={withBase(`${thread.entries[0].collection}/${thread.entries[0].id}/`)}>
             <span>最新记录</span><strong>{thread.entries[0].data.title}</strong><span aria-hidden="true">↗</span>
@@ -48,7 +54,6 @@ const threads = Astro.props.threads.slice(0, 3);
         </section>
       ))}
     </div>
-    <noscript><p class="lab-map__fallback">以下是各条探索方向的最新公开记录。</p></noscript>
   </section>
 )}
 
@@ -65,5 +70,6 @@ const threads = Astro.props.threads.slice(0, 3);
       button.addEventListener("click", () => select(button.dataset.labSelect));
     });
     select(buttons[0]?.dataset.labSelect);
+    map.dataset.labReady = "";
   });
 </script>

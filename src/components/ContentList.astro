@@ -6,9 +6,11 @@ import { tagId } from "../lib/tags";
 interface Props {
   entries: SiteEntry[];
   emptyMessage?: string;
+  headingLevel?: 2 | 3;
 }
 
-const { entries, emptyMessage = "暂无公开内容。" } = Astro.props;
+const { entries, emptyMessage = "暂无公开内容。", headingLevel = 2 } = Astro.props;
+const Heading = headingLevel === 3 ? "h3" : "h2";
 ---
 
 {
@@ -25,11 +27,11 @@ const { entries, emptyMessage = "暂无公开内容。" } = Astro.props;
             {entry.data.topic && <span>{entry.data.topic}</span>}
           </p>
           <div class="content-card__body">
-            <h2>
+            <Heading class="content-card__title">
               <a href={withBase(`${entry.collection}/${entry.id}/`)}>
                 {entry.data.title}
               </a>
-            </h2>
+            </Heading>
             <p class="content-card__description">{entry.data.description}</p>
             {!entry.data.topic && entry.data.tags.length > 0 && (
               <ul class="tag-list" aria-label="标签">

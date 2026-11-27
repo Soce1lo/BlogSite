@@ -998,7 +998,7 @@ img {
   min-width: 0;
 }
 
-.content-card h2 {
+.content-card__title {
   margin: 0;
   font-family: var(--font-display);
   font-size: var(--text-2xl);
@@ -1008,12 +1008,12 @@ img {
   overflow-wrap: anywhere;
 }
 
-.content-card h2 a {
+.content-card__title a {
   color: var(--text);
   text-decoration: none;
 }
 
-.content-card h2 a:hover {
+.content-card__title a:hover {
   color: var(--accent);
 }
 
@@ -2257,7 +2257,7 @@ html[data-reading-focus] .content-body {
     flex-direction: row;
   }
 
-  .content-card h2,
+  .content-card__title,
   .output-log__item h3,
   .selected-list h3 {
     font-size: var(--text-xl);

@@ -163,8 +163,48 @@ test("合成生产构建保留三类详情页的路由、阅读导航和互动�
   // The vendor scripts must not load directly from generated HTML.
   assert.doesNotMatch(home, /src="https:\/\/gc\.zgo\.at/);
 
+  await t.test("从首页浏览四个方向、精选和按主线分组的公开项目", async () => {
+    const directions = [
+      ["technical-practice", "职业实践", "blog/cortex-m4-mpu-fault-diagnosis"],
+      ["engineering-practice", "工程能力", "projects/qemu-machine-device-lab"],
+      ["investment-research", "投资学习", "projects/trading-basics-strategy-replay"],
+      ["knowledge-systems", "个人知识系统", "blog/obsidian-personal-knowledge-management-skill"],
+    ];
+    assert.deepEqual([...home.matchAll(/data-lab-select="([^"]+)"/g)].map(m => m[1]), directions.map(d => d[0]));
+    for (const [id, title, entry] of directions) {
+      const topic = await read(`explore/${id}/index.html`);
+      assert.ok(topic.includes(`<h1>${title}</h1>`));
+      assert.ok(linkTargets(home).includes(`/BlogSite/explore/${id}/`));
+      assert.ok(linkTargets(topic).includes(`/BlogSite/${entry}/`));
+    }
+    assert.ok(linkTargets(home).includes("/BlogSite/explore/home-lab/"));
+    assert.ok(linkTargets(await read("explore/home-lab/index.html")).includes("/BlogSite/blog/home-fixture/"));
+    const selected = home.match(/<ol class="selected-list"[^>]*>([\s\S]*?)<\/ol>/);
+    assert.ok(selected);
+    assert.deepEqual(linkTargets(selected[1]), [
+      "/BlogSite/blog/obsidian-personal-knowledge-management-skill/",
+      "/BlogSite/notes/mac-heat-clash-wechat-udp-investigation/",
+      "/BlogSite/projects/qemu-machine-device-lab/",
+    ]);
+    const index = await read("projects/index.html");
+    const groups = [
+      ["C 编程与软件设计", ["leetcode-c-language-training", "c-design-patterns-learning"]],
+      ["嵌入式与系统实验", ["stm32-embedded-components-survey", "qemu-machine-device-lab"]],
+      ["投资学习", ["trading-basics-strategy-replay"]],
+      ["其他项目", ["public-example"]],
+    ] as const;
+    for (const [title, ids] of groups) {
+      const start = index.indexOf(`>${title}</h2>`);
+      assert.ok(start >= 0, title);
+      const section = index.slice(start, index.indexOf("</section>", start));
+      const actual = linkTargets(section).filter(href => href.startsWith("/BlogSite/projects/"));
+      assert.deepEqual(actual.sort(), ids.map(id => `/BlogSite/projects/${id}/`).sort());
+    }
+    assert.doesNotMatch(index, /draft-example|unlisted-example|fixtures\//);
+  });
+
   const explorer = await read("explore/index.html");
-  assert.equal([...explorer.matchAll(/class="explore-row"/g)].length, 3);
+  assert.equal([...explorer.matchAll(/class="explore-row"/g)].length, 12);
   assert.match(explorer, /data-explore-filters hidden/);
   assert.doesNotMatch(explorer, /不应发送到第三方的未公开标题|不应生成的草稿|sourceVaultPath|fixtures\//);
   for (const collection of ["blog", "notes", "projects"]) {

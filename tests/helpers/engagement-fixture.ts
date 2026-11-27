@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { cp, mkdir, mkdtemp, realpath, rm, symlink, writeFile } from "node:fs/promises";
+import { cp, mkdir, mkdtemp, realpath, rename, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
@@ -28,13 +28,12 @@ export default {
   await symlink(path.join(projectRoot, "node_modules"), path.join(root, "node_modules"), "dir");
   await mkdir(path.join(root, "public"));
   await cp(path.join(projectRoot, "public/favicon.svg"), path.join(root, "public/favicon.svg"));
-  await writeFile(path.join(root, "src/data/site-profile.ts"), `export const siteProfile = {
-  name: "Soce1lo",
-  eyebrow: "LOCAL PREVIEW / 合成验证",
-  title: "记录我如何理解、学习与构建。",
-  description: "此页面仅用于本地验证访问次数和 GitHub 留言。",
-  now: { label: "预览", text: "使用合成内容验证页面。", updated: "2026-08-30" },
-  threads: [{
+  const profilePath = path.join(root, "src/data/site-profile.ts");
+  await rename(profilePath, path.join(root, "src/data/production-profile.ts"));
+  await writeFile(profilePath, `import { siteProfile as production } from "./production-profile";
+export const siteProfile = {
+  ...production,
+  threads: [...production.threads, {
     id: "fixture-thread", label: "合成主题", description: "跨集合主题验证",
     series: ["fixture-series"], topics: ["fixture-topic"], tags: ["fixture"],
     readingOrder: [
@@ -43,7 +42,6 @@ export default {
       { label: "不应公开的导航", collection: "blog", id: "unlisted-example" },
     ],
   }],
-  featured: [{ collection: "blog", id: "public-example" }],
 } as const;
 `);
 
@@ -93,6 +91,32 @@ draft: true
 sourceVaultPath: fixtures/${collection}/draft.md
 ---
 草稿。
+`);
+  }
+
+  // Exercise the configured public navigation with synthetic bodies in an isolated collection.
+  const navigationEntries = [
+    ["blog", "obsidian-personal-knowledge-management-skill", "series: KnowledgeVault 实践"],
+    ["notes", "mac-heat-clash-wechat-udp-investigation", "topic: macOS 排障"],
+    ["blog", "cortex-m4-mpu-fault-diagnosis", "series: 技术实践"],
+    ["blog", "home-fixture", "series: Home Lab"],
+    ["projects", "leetcode-c-language-training", "topic: Algorithms"],
+    ["projects", "c-design-patterns-learning", "topic: Design Patterns"],
+    ["projects", "qemu-machine-device-lab", "topic: 嵌入式与系统实验"],
+    ["projects", "stm32-embedded-components-survey", "topic: 嵌入式与系统实验"],
+    ["projects", "trading-basics-strategy-replay", "topic: 投资学习"],
+  ];
+  for (const [collection, slug, classification] of navigationEntries) {
+    await writeFile(path.join(root, "src/content", collection, slug + ".md"), `---
+title: 合成页面 ${slug}
+description: 公开导航验收用的合成材料。
+pubDate: 2026-11-27
+category: 验证
+${classification}
+visibility: public
+sourceVaultPath: fixtures/${collection}/${slug}.md
+---
+这段文字只用于导航验收。
 `);
   }
 

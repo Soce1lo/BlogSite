@@ -30,6 +30,8 @@ const earlierEntries = buildOutputGroups(entries, entries.length)
   .slice(4);
 const earlierOutputGroups = buildOutputGroups(earlierEntries, earlierEntries.length);
 const threads = resolveThreads(entries, siteProfile.threads);
+const mapThreadIds = new Set<string>(siteProfile.mapThreadIds);
+const mapThreads = threads.filter((thread) => mapThreadIds.has(thread.id));
 const featured = resolveFeaturedEntries(entries, siteProfile.featured);
 ---
 
@@ -53,7 +55,7 @@ const featured = resolveFeaturedEntries(entries, siteProfile.featured);
         <a href={withBase("about/")} aria-label="认识 Soce1lo">认识我 <span aria-hidden="true">↗</span></a>
       </div>
     </div>
-    <LabMap threads={threads} />
+    <LabMap threads={mapThreads} />
   </section>
 
   <aside class="lab-status" aria-label="公开记录概况">

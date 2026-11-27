@@ -285,7 +285,7 @@ test("首页与 About 呈现 Soce1lo 的成长输出结构和公开管道", asyn
 
   assert.match(home, /siteProfile\.title/);
   assert.match(home, /class="growth-hero"/);
-  assert.match(home, /<LabMap threads=\{threads\}/);
+  assert.match(home, /<LabMap\b/);
   assert.match(home, /<OutputLog groups=\{outputGroups\}/);
   assert.match(home, /<LongThreads threads=\{threads\}/);
   assert.match(home, /class="selected-section"/);

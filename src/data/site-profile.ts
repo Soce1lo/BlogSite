@@ -11,6 +11,7 @@ export interface SiteProfile {
     updated: string;
   };
   threads: readonly ThreadDefinition[];
+  mapThreadIds: readonly string[];
   featured: readonly PublicEntryRef[];
 }
 
@@ -27,29 +28,36 @@ export const siteProfile = {
   },
   threads: [
     {
+      id: "technical-practice",
+      label: "职业实践",
+      description: "从真实的嵌入式问题出发，记录配置、验证和故障定位中的判断。",
+      series: ["技术实践"],
+    },
+    {
+      id: "engineering-practice",
+      label: "工程能力",
+      description: "从 C 编程、通信协议到排障和嵌入式实验，用代码与实验检验理解。",
+      topics: ["I2C", "SPI", "C", "Algorithms", "Design Patterns", "嵌入式与系统实验", "macOS 排障"],
+    },
+    {
+      id: "investment-research",
+      label: "投资学习",
+      description: "从基础理解、日线研究到可复核的判断与复盘。",
+      topics: ["投资", "投资学习"],
+      tags: ["investment-research"],
+    },
+    {
       id: "knowledge-systems",
-      label: "知识系统",
+      label: "个人知识系统",
       description: "探索日常记录如何积累、彼此联系，并帮助理解新的问题。",
       series: ["KnowledgeVault 实践"],
       topics: ["Obsidian", "LLM Wiki"],
       tags: ["knowledge-management"],
       readingOrder: [
         { label: "总览", collection: "blog", id: "obsidian-personal-knowledge-management-skill" },
-        { label: "日常运行", collection: "blog", id: "obsidian-knowledge-system-skill-operating-guide" },
-        { label: "具体方法", collection: "blog", id: "obsidian-task-management-workflow" },
+        { label: "现行运行说明", collection: "blog", id: "obsidian-knowledge-system-skill-operating-guide" },
+        { label: "任务工具案例", collection: "blog", id: "obsidian-task-management-workflow" },
       ],
-    },
-    {
-      id: "technical-practice",
-      label: "技术实践",
-      description: "记录真实技术问题中的配置、验证与定位，随实践逐步补齐理解。",
-      series: ["技术实践"],
-    },
-    {
-      id: "engineering-practice",
-      label: "工程实践",
-      description: "从通信协议到 C 编程，让理解接受代码与实践的检验。",
-      topics: ["I2C", "SPI", "C", "Algorithms", "Design Patterns"],
     },
     {
       id: "home-lab",
@@ -58,18 +66,11 @@ export const siteProfile = {
       series: ["Home Lab"],
       topics: ["家庭网络", "家庭影音自动化"],
     },
-    {
-      id: "investment-research",
-      label: "投资",
-      description: "从基础理解、日线研究到可复核的判断与复盘。",
-      series: [],
-      topics: ["投资"],
-      tags: ["investment-research"],
-    },
   ],
+  mapThreadIds: ["technical-practice", "engineering-practice", "investment-research", "knowledge-systems"],
   featured: [
     { collection: "blog", id: "obsidian-personal-knowledge-management-skill" },
     { collection: "notes", id: "mac-heat-clash-wechat-udp-investigation" },
-    { collection: "blog", id: "electric-toothbrush-value-first-buying" },
+    { collection: "projects", id: "qemu-machine-device-lab" },
   ],
 } as const satisfies SiteProfile;
