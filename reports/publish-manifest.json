@@ -1,10 +1,10 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-11-17T17:59:31.365Z",
+  "generatedAt": "2026-11-27T03:32:37.312Z",
   "summary": {
-    "scannedVaultFiles": 872,
-    "publishCandidates": 24,
-    "synced": 24,
+    "scannedVaultFiles": 879,
+    "publishCandidates": 26,
+    "synced": 26,
     "warnings": 21,
     "errors": 0
   },
@@ -336,11 +336,11 @@
       "slug": "stm32-embedded-components-survey",
       "url": "/projects/stm32-embedded-components-survey/",
       "title": "STM32 嵌入式部件全景速通计划",
-      "draft": true,
-      "publishedDate": "2026-08-13",
+      "draft": false,
+      "publishedDate": "2026-11-27",
       "visibility": "public",
       "outputKind": "built",
-      "topic": "STM32",
+      "topic": "嵌入式与系统实验",
       "warnings": []
     },
     {
@@ -359,6 +359,19 @@
       "warnings": []
     },
     {
+      "sourceVaultPath": "60-Publish/Blog/投资学习/交易入门：从读图到策略回放.md",
+      "collection": "projects",
+      "slug": "trading-basics-strategy-replay",
+      "url": "/projects/trading-basics-strategy-replay/",
+      "title": "交易入门：从读图到策略回放",
+      "draft": false,
+      "publishedDate": "2026-11-27",
+      "visibility": "public",
+      "outputKind": "thought",
+      "topic": "投资学习",
+      "warnings": []
+    },
+    {
       "sourceVaultPath": "60-Publish/Blog/生活消费/买电动牙刷时，我如何把营销声量还原成实际价值.md",
       "collection": "blog",
       "slug": "electric-toothbrush-value-first-buying",
@@ -369,6 +382,19 @@
       "visibility": "public",
       "outputKind": "thought",
       "topic": "消费决策",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/Blog/虚拟化/QEMU 设备模型实验.md",
+      "collection": "projects",
+      "slug": "qemu-machine-device-lab",
+      "url": "/projects/qemu-machine-device-lab/",
+      "title": "QEMU 设备模型实验",
+      "draft": false,
+      "publishedDate": "2026-11-27",
+      "visibility": "public",
+      "outputKind": "built",
+      "topic": "嵌入式与系统实验",
       "warnings": []
     }
   ]

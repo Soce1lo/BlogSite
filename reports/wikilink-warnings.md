@@ -1,25 +1,23 @@
 # Wikilink Warnings
 
-本次历史同步未记录正文行号。
-
-- file: `blog/personal-note-classification-knowledge-graph.md`; reason: target-not-published
-- file: `blog/personal-note-classification-knowledge-graph.md`; reason: target-not-published
-- file: `blog/personal-note-classification-knowledge-graph.md`; reason: target-not-published
-- file: `blog/personal-note-classification-knowledge-graph.md`; reason: target-not-published
-- file: `blog/personal-note-classification-knowledge-graph.md`; reason: target-not-published
-- file: `notes/c-language-professional-foundations.md`; reason: target-not-published
-- file: `notes/c-language-professional-foundations.md`; reason: target-not-published
-- file: `notes/c-language-professional-foundations.md`; reason: target-not-published
-- file: `notes/c-language-professional-foundations.md`; reason: target-not-published
-- file: `notes/c-language-professional-foundations.md`; reason: target-not-published
-- file: `notes/c-language-professional-foundations.md`; reason: target-not-published
-- file: `notes/c-professional-programming-checklist.md`; reason: target-not-published
-- file: `notes/c-professional-programming-checklist.md`; reason: target-not-published
-- file: `notes/c-professional-programming-checklist.md`; reason: target-not-published
-- file: `notes/c-programming-exam-templates.md`; reason: target-not-published
-- file: `notes/c-programming-exam-templates.md`; reason: target-not-published
-- file: `notes/c-programming-exam-templates.md`; reason: target-not-published
-- file: `notes/c-programming-exam-templates.md`; reason: target-not-published
-- file: `notes/c-programming-exam-templates.md`; reason: target-not-published
-- file: `notes/c-programming-exam-templates.md`; reason: target-not-published
-- file: `notes/c-programming-exam-templates.md`; reason: target-not-published
+- file: `blog/personal-note-classification-knowledge-graph.md`; line: 27; reason: target-not-published
+- file: `blog/personal-note-classification-knowledge-graph.md`; line: 114; reason: target-not-published
+- file: `blog/personal-note-classification-knowledge-graph.md`; line: 135; reason: target-not-published
+- file: `blog/personal-note-classification-knowledge-graph.md`; line: 136; reason: target-not-published
+- file: `blog/personal-note-classification-knowledge-graph.md`; line: 137; reason: target-not-published
+- file: `notes/c-language-professional-foundations.md`; line: 780; reason: target-not-published
+- file: `notes/c-language-professional-foundations.md`; line: 781; reason: target-not-published
+- file: `notes/c-language-professional-foundations.md`; line: 782; reason: target-not-published
+- file: `notes/c-language-professional-foundations.md`; line: 783; reason: target-not-published
+- file: `notes/c-language-professional-foundations.md`; line: 784; reason: target-not-published
+- file: `notes/c-language-professional-foundations.md`; line: 785; reason: target-not-published
+- file: `notes/c-professional-programming-checklist.md`; line: 8; reason: target-not-published
+- file: `notes/c-professional-programming-checklist.md`; line: 258; reason: target-not-published
+- file: `notes/c-professional-programming-checklist.md`; line: 261; reason: target-not-published
+- file: `notes/c-programming-exam-templates.md`; line: 899; reason: target-not-published
+- file: `notes/c-programming-exam-templates.md`; line: 900; reason: target-not-published
+- file: `notes/c-programming-exam-templates.md`; line: 901; reason: target-not-published
+- file: `notes/c-programming-exam-templates.md`; line: 902; reason: target-not-published
+- file: `notes/c-programming-exam-templates.md`; line: 903; reason: target-not-published
+- file: `notes/c-programming-exam-templates.md`; line: 904; reason: target-not-published
+- file: `notes/c-programming-exam-templates.md`; line: 905; reason: target-not-published
