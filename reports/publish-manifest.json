@@ -1,10 +1,10 @@
 {
   "contractVersion": "v1",
-  "generatedAt": "2026-11-27T04:21:36.256Z",
+  "generatedAt": "2026-11-27T04:34:39.361Z",
   "summary": {
-    "scannedVaultFiles": 879,
-    "publishCandidates": 26,
-    "synced": 26,
+    "scannedVaultFiles": 880,
+    "publishCandidates": 27,
+    "synced": 27,
     "warnings": 21,
     "errors": 0
   },
@@ -356,6 +356,21 @@
       "series": "技术实践",
       "seriesOrder": 1,
       "topic": "内存保护与故障诊断",
+      "warnings": []
+    },
+    {
+      "sourceVaultPath": "60-Publish/Blog/技术实践/多加了一次寄存器读取，为什么没改过的函数也变大了.md",
+      "collection": "blog",
+      "slug": "lto-two-byte-call-argument",
+      "url": "/blog/lto-two-byte-call-argument/",
+      "title": "多加了一次寄存器读取，为什么没改过的函数也变大了？",
+      "draft": false,
+      "publishedDate": "2026-11-27",
+      "visibility": "public",
+      "outputKind": "built",
+      "series": "技术实践",
+      "seriesOrder": 2,
+      "topic": "编译器优化与代码体积",
       "warnings": []
     },
     {

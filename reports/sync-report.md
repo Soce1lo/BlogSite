@@ -2,9 +2,9 @@
 
 ## Summary
 
-- scanned_vault_files: 879
-- publish_candidates: 26
-- synced: 26
+- scanned_vault_files: 880
+- publish_candidates: 27
+- synced: 27
 - skipped_private: 0
 - skipped_missing_slug: 0
 - skipped_missing_title: 0
@@ -15,7 +15,7 @@
 
 ## Outputs
 
-- blog: 15
+- blog: 16
 - notes: 6
 - projects: 5
 
@@ -34,6 +34,6 @@
 - wikilink warnings: `reports/wikilink-warnings.md`
 - asset warnings: `reports/asset-warnings.md`
 
-## 2026-11-27 导航与知识系统系列修订
+## 2026-11-27 编译器实验文章发布
 
-本次调整首页与项目栏目，修订六篇知识系统文章。全量预演与正式同步均生成 26 份受管副本，23 条链接告警，0 个错误。I2C 和 SPI 协议笔记沿用上一公开版本，保留已有互链，两条对应的歧义告警已从发布统计中扣除。六篇修订稿均为零告警。
+全量预演及正式同步各生成 27 份受管副本，23 条链接告警，0 个错误。本次新增的技术文章零告警。I2C 与 SPI 协议笔记沿用上一公开版本及其互链。发布清单按实际交付的副本计入 21 条既有告警。

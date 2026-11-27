@@ -1,10 +1,10 @@
 # Publish Manifest
 
 - contract_version: v1
-- generated_at: 2026-11-27T04:21:36.256Z
-- scanned_vault_files: 879
-- publish_candidates: 26
-- synced: 26
+- generated_at: 2026-11-27T04:34:39.361Z
+- scanned_vault_files: 880
+- publish_candidates: 27
+- synced: 27
 - warnings: 21
 - errors: 0
 
@@ -33,6 +33,7 @@
 | 60-Publish/Blog/KnowledgeVault 实践/让 Projects 回到真实项目：一次 Obsidian 项目边界重构.md | blog | obsidian-project-boundary-refactor | /blog/obsidian-project-boundary-refactor/ | published | 2026-08-27 | revised | 0 |
 | 60-Publish/Blog/嵌入式/STM32 嵌入式部件全景速通计划.md | projects | stm32-embedded-components-survey | /projects/stm32-embedded-components-survey/ | published | 2026-11-27 | built | 0 |
 | 60-Publish/Blog/技术实践/从 MPU 配置到故障定位：一次 Cortex-M4 实践.md | blog | cortex-m4-mpu-fault-diagnosis | /blog/cortex-m4-mpu-fault-diagnosis/ | published | 2026-11-18 | built | 0 |
+| 60-Publish/Blog/技术实践/多加了一次寄存器读取，为什么没改过的函数也变大了.md | blog | lto-two-byte-call-argument | /blog/lto-two-byte-call-argument/ | published | 2026-11-27 | built | 0 |
 | 60-Publish/Blog/投资学习/交易入门：从读图到策略回放.md | projects | trading-basics-strategy-replay | /projects/trading-basics-strategy-replay/ | published | 2026-11-27 | thought | 0 |
 | 60-Publish/Blog/生活消费/买电动牙刷时，我如何把营销声量还原成实际价值.md | blog | electric-toothbrush-value-first-buying | /blog/electric-toothbrush-value-first-buying/ | published | 2026-07-27 | thought | 0 |
 | 60-Publish/Blog/虚拟化/QEMU 设备模型实验.md | projects | qemu-machine-device-lab | /projects/qemu-machine-device-lab/ | published | 2026-11-27 | built | 0 |
